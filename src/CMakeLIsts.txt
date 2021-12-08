@@ -1,0 +1,40 @@
+set (MSE_CPP_SRCS
+    emu/device.cpp
+    emu/devcpu.cpp
+    emu/devsys.cpp
+    emu/machine.cpp
+    emu/sysconfig.cpp
+    emu/map/addrmap.cpp
+    emu/map/space.cpp
+    main/engine.cpp
+    main/main.cpp
+    main/user.cpp
+)
+
+set (MSE_H_SRCS
+    emu/core.h
+    emu/delegate.h
+    emu/device.h
+    emu/devcpu.h
+    emu/devsys.h
+    emu/driver.h
+    emu/machine.h
+    emu/sysconfig.h
+    emu/map/addrmap.h
+    emu/map/he.h
+    emu/map/hedr.h
+    emu/map/map.h
+    emu/map/maccess.h
+    emu/map/space.h
+    lib/util/osdcore.h
+    main/command.h
+    main/engine.h
+    main/user.h
+)
+
+add_definitions(-pthread -DENABLE_DEBUG)
+add_executable(mse ${MSE_CPP_SRCS} ${MSE_H_SRCS})
+target_link_libraries(mse
+    fmt::fmt
+    SDL2::SDL2
+)
