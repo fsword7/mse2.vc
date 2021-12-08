@@ -6,9 +6,12 @@ set (MSE_CPP_SRCS
     emu/sysconfig.cpp
     emu/map/addrmap.cpp
     emu/map/space.cpp
+    main/commands.cpp
     main/engine.cpp
     main/main.cpp
+    main/systems.cpp
     main/user.cpp
+    terminals/dec/vt100.cpp
 )
 
 set (MSE_H_SRCS
@@ -30,6 +33,8 @@ set (MSE_H_SRCS
     main/command.h
     main/engine.h
     main/user.h
+    terminals/dec/externs.h
+    terminals/dec/vt100.h
 )
 
 add_definitions(-pthread -DENABLE_DEBUG)
