@@ -5,16 +5,14 @@
 
 #pragma once
 
-class SystemEngine;
-
 class UserConsole
 {
 public:
-    UserConsole() = default;
-    ~UserConsole() = default;
+    UserConsole();
+    ~UserConsole();
 
     void prompt();
 
 private:
-    SystemEngine *engine = nullptr;
+    SystemEngine engine;
 };

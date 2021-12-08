@@ -30,20 +30,32 @@ private:
     args params;
 };
 
+class UserConsole;
+class SystemEngine;
+
+struct command_t
+{
+    using cmdFunc_t = int (*)(UserConsole *user, SystemEngine *engine, args_t &args);
+
+    ctag_t     *name;
+    cmdFunc_t   func;
+    command_t  *options;
+};
+
 class SystemEngine
 {
 public:
-    using cmdFunc_t = int (SystemEngine::*)(UserConsole *, args_t &);
-    using cmdDevice_t = int (SystemEngine::*)(UserConsole *, args_t &);
+    // using cmdFunc_t = int (SystemEngine::*)(UserConsole *, args_t &);
+    // using cmdDevice_t = int (SystemEngine::*)(UserConsole *, args_t &);
 
-    struct command_t
-    {
-        ctag_t *name;
-        cmdFunc_t func;
-        command_t *options;
-    };
+    // struct command_t
+    // {
+    //     ctag_t *name;
+    //     cmdFunc_t func;
+    //     command_t *options;
+    // };
 
-    static command_t mseCommands[];
+    // static command_t mseCommands[];
 
 public:
     SystemEngine() = default;
@@ -53,8 +65,7 @@ public:
     void execute(UserConsole *user, std::string cmdLine);
 
 private:
-    int cmdCreate(UserConsole *user, args_t &args);
-
+    // int cmdCreate(UserConsole *user, args_t &args);
 
     // command_t mseCommands2[2] =
     // {
@@ -62,4 +73,8 @@ private:
     //     // Terminator
     //     nullptr
     // };
+
+    static const SystemDriver *sysList[];
 };
+
+extern command_t mseCommands[];

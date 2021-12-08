@@ -4,8 +4,8 @@
 // Date:    12/7/2021
 
 #include "emu/core.h"
-#include "main/user.h"
 #include "main/engine.h"
+#include "main/user.h"
 
 int SystemEngine::split(cstag_t &cmdLine, args_t &args)
 {
@@ -32,19 +32,19 @@ void SystemEngine::execute(UserConsole *user, std::string cmdLine)
     if (args.isEmpty())
     ;
 
-    // command_t *cmd = &mseCommands[0];
-    // (cmd->*func)(user, args);
+    command_t *cmd = &mseCommands[0];
+    cmd->func(user, this, args);
 }
 
-int SystemEngine::cmdCreate(UserConsole *user, args_t &args)
-{
-    fmt::printf("Here is create command\n");
-    return 0;
-}
+// int SystemEngine::cmdCreate(UserConsole *user, args_t &args)
+// {
+//     fmt::printf("Here is create command\n");
+//     return 0;
+// }
 
-SystemEngine::command_t SystemEngine::mseCommands[] =
-{
-    { "create",     SystemEngine::cmdCreate,    nullptr },
-    // Terminator
-    nullptr
-};
+// SystemEngine::command_t SystemEngine::mseCommands[] =
+// {
+//     { "create",     SystemEngine::cmdCreate,    nullptr },
+//     // Terminator
+//     nullptr
+// };

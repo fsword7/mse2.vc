@@ -4,6 +4,7 @@
 // Date:    Dec 6, 2021
 
 #include "emu/core.h"
+#include "main/engine.h"
 #include "main/user.h"
 
 int main(int argc, char **argv)

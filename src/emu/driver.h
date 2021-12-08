@@ -39,11 +39,13 @@ struct SystemDriver
     ctag_t              *section;
     const DeviceType    &type;
     sysConfigure        configure;
-
+    void                *romEntries;
+    
     ctag_t              *description;
     ctag_t              *source; 
 };
 
+#define ROM_NAME(Name) nullptr
 
 #define SYSTEM_NAME(Name) Name##_driver
 #define SYSTEM_EXTERN(Name) extern const SystemDriver SYSTEM_NAME(Name)
@@ -51,13 +53,13 @@ struct SystemDriver
 
 #define SYSTEM_TRAITS(Name, FullName)                   \
 struct SYSTEM_TRAITS_NAME(Name) {                       \
-    static constexpr tag_t shortName[] = #Name;         \
-    static constexpr tag_t fullName[]  = FullName;      \
-    static constexpr tag_t fileName[]  = __FILE__;      \
+    static constexpr ctag_t shortName[] = #Name;         \
+    static constexpr ctag_t fullName[]  = FullName;      \
+    static constexpr ctag_t fileName[]  = __FILE__;      \
 };                                                      \
-constexpr tag_t SYSTEM_TRAITS_NAME(Name)::shortName[];  \
-constexpr tag_t SYSTEM_TRAITS_NAME(Name)::fullName[];   \
-constexpr tag_t SYSTEM_TRAITS_NAME(Name)::fileName[];
+constexpr ctag_t SYSTEM_TRAITS_NAME(Name)::shortName[];  \
+constexpr ctag_t SYSTEM_TRAITS_NAME(Name)::fullName[];   \
+constexpr ctag_t SYSTEM_TRAITS_NAME(Name)::fileName[];
 
 #define SYSTEM_TYPE(Name, Class)            \
 systemCreator<Class,                        \
@@ -67,7 +69,8 @@ systemCreator<Class,                        \
 
 
 #define CONSOLE(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
-extern const SystemDriver SYSTEM_NAME(Name) = \
+SYSTEM_TRAITS(Name, Description) \
+eextern const SystemDriver SYSTEM_NAME(Name) = \
 {                               \
     #Name,                      \
     #Parent,                    \
@@ -80,7 +83,8 @@ extern const SystemDriver SYSTEM_NAME(Name) = \
 };
 
 #define COMPUTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
-extern const SystemDriver SYSTEM_NAME(Name) = \
+SYSTEM_TRAITS(Name, Description) \
+eextern const SystemDriver SYSTEM_NAME(Name) = \
 {                               \
     #Name,                      \
     #Parent,                    \
@@ -93,6 +97,7 @@ extern const SystemDriver SYSTEM_NAME(Name) = \
 };
 
 #define TERMINAL(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
+SYSTEM_TRAITS(Name, Description) \
 extern const SystemDriver SYSTEM_NAME(Name) = \
 {                               \
     #Name,                      \
@@ -106,7 +111,8 @@ extern const SystemDriver SYSTEM_NAME(Name) = \
 };
 
 #define PRINTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
-extern const SystemDriver SYSTEM_NAME(Name) = \
+SYSTEM_TRAITS(Name, Description) \
+eextern const SystemDriver SYSTEM_NAME(Name) = \
 {                               \
     #Name,                      \
     #Parent,                    \
