@@ -22,6 +22,22 @@ namespace aspace
     template <> struct HandlerSize<2> { using uintx_t = uint32_t; };
     template <> struct HandlerSize<3> { using uintx_t = uint64_t; };
 
+    constexpr int determineDispatchLevel(int aWidth)
+    {
+        return (aWidth > HB_LEVEL3) ? 3 :
+               (aWidth > HB_LEVEL2) ? 2 :
+               (aWidth > HB_LEVEL1) ? 1 :
+               0;
+    }
+
+    constexpr int determineDispatchLowBits(int aWidth, int dWidth, int aShift)
+    {
+        return (aWidth > HB_LEVEL3) ? HB_LEVEL3 :
+               (aWidth > HB_LEVEL2) ? HB_LEVEL2 :
+               (aWidth > HB_LEVEL1) ? HB_LEVEL1 :
+               (dWidth - aShift);
+    }
+    
     class HandlerEntry
     {
     public:
