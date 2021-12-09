@@ -5,6 +5,7 @@ set (MSE_CPP_SRCS
     emu/machine.cpp
     emu/sysconfig.cpp
     emu/map/addrmap.cpp
+    emu/map/setup.cpp
     emu/map/space.cpp
     main/commands.cpp
     main/engine.cpp
