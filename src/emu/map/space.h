@@ -7,6 +7,60 @@ class ProcessorDevice;
 
 namespace aspace
 {
+    enum AddressType
+    {
+        asProgram = 0,  // Program address space
+        asData,         // Data address space
+        asIOPort        // I/O port address space
+    };
+    
+    class AddressConfig
+    {
+    public:
+        AddressConfig(ctag_t *name, endian_t eType,
+            uint16_t dWidth, uint16_t dRadix, uint16_t dPrecision, uint16_t bWidth,
+            uint16_t aWidth, uint16_t aRadix, uint16_t aPrecision, int16_t aShift)
+        : name(name), endianType(eType),
+          dataWidth(dWidth), dataRadix(dRadix), dataPrecision(dPrecision), byteWidth(bWidth),
+          addrWidth(aWidth), addrRadix(aRadix), addrPrecision(aPrecision), addrShift(aShift)
+        { }
+        ~AddressConfig() = default;
+
+        inline endian_t getEndianType() const   { return endianType; }
+        inline uint16_t getDataWidth() const    { return dataWidth; }
+        inline uint16_t getDataRadix() const    { return dataRadix; }
+        inline uint16_t getDataPrecison() const { return dataPrecision; }
+        inline uint16_t getByteWidth() const    { return byteWidth; }
+        inline uint16_t getAddrWidth() const    { return addrWidth; }
+        inline uint16_t getAddrRadix() const    { return addrRadix; }
+        inline uint16_t getAddrPrecison() const { return addrPrecision; }
+        inline int16_t  getAddrShift() const    { return addrShift; }
+        inline int16_t  getPageShift() const    { return pageShift; }
+
+    private:
+        ctag_t *name = nullptr;
+
+        endian_t endianType = LittleEndian;
+        uint16_t dataWidth = 0;
+        uint16_t dataRadix = 0;
+        uint16_t dataPrecision = 0;
+        uint16_t byteWidth = 0;
+
+        uint16_t addrWidth = 0;
+        uint16_t addrRadix = 0;
+        uint16_t addrPrecision = 0;
+        int16_t  addrShift = 0;
+        int16_t  pageShift = 0;
+    };
+
+    struct AddressSpaceConfig
+    {
+        const AddressType    type;
+        const AddressConfig *config;
+    };
+
+    using cAddressConfig = const AddressConfig;
+
     class AddressSpaceInstaller
     {
     protected:
@@ -73,6 +127,11 @@ namespace aspace
         virtual void write32u(offs_t addr, uint32_t data, ProcessorDevice *cpu = nullptr) = 0;
         virtual void write64(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
         virtual void write64u(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
+
+        // AddressType     space;
+        // cAddressConfig &config;
+        // Device         &device;
+        // MemoryManager  &manger;
 
         // Unmapped/no-operation read/write access
         HandlerEntry *unmapRead = nullptr;
