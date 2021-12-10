@@ -90,7 +90,8 @@ public:
 
     Device *create(const SystemConfig &config, cstag_t &name, Device *owner, uint64_t clock) const
     {
-        return nullptr;
+        assert(creator != nullptr);
+        return creator(config, *this, name, owner, clock);
     }
 
     // Getter function calls
