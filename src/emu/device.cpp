@@ -6,12 +6,15 @@
 #include "emu/core.h"
 
 Device::Device(const SystemConfig &config, const DeviceType &type, cstag_t &name, Device *owner, uint64_t clock)
-: type(type), config(config), devName(name), owner(owner), clock(clock)
+: type(type), sysConfig(config), devName(name), owner(owner), clock(clock)
 {
 
 }
 
 void Device::configure(SystemConfig &config)
 {
-    
+    assert (&config == &sysConfig);
+
+    // Device initialization
+    devConfigure(config);
 }

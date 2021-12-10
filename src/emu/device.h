@@ -140,20 +140,26 @@ public:
     virtual ~Device() = default;
 
     // Getter function calls
-    inline const SystemConfig &getConfig() const    { return config; }
+    inline const SystemConfig &getConfig() const    { return sysConfig; }
     inline Device *getOwner() const                 { return owner; }
     inline uint64_t getClock() const                { return clock; }
     inline cstag_t &getDeviceName() const           { return devName; }
     inline cstag_t &getTagName() const              { return tagName; }
 
+    inline ctag_t *getFullName() const  { return type.getFullName(); }
+    inline ctag_t *getShortName() const { return type.getShortName(); }
+
     void configure(SystemConfig &config);
+
+    // Virtual device function calls
+    virtual void devConfigure(SystemConfig &config) {}
 
 protected:
     Device(const SystemConfig &config, const DeviceType &type, cstag_t &name, Device *owner, uint64_t clock);
 
 private:
-    const DeviceType &type;
-    const SystemConfig &config;
+    const DeviceType   &type;
+    const SystemConfig &sysConfig;
 
     Device *owner = nullptr;
 

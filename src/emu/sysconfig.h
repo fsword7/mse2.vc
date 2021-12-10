@@ -11,14 +11,16 @@ class SystemConfig
 public:
     SystemConfig(const SystemDriver &driver, cstag_t &name);
 
-    Device *addDeviceType(const DeviceType &type, cstag_t &name, uint64_t clock = 0);
+    Device *createSystemDevice(const DeviceType &type, cstag_t &name, uint64_t clock = 0);
     Device *addDevice(Device *dev, Device *owner = nullptr);
 
     // Getter function calls
     inline Device *getSystemDevice() const { return sysDevice; }
-    inline Device *getCOnfigDevice() const { return cfgDevice; }
-    
+    inline Device *getConfigDevice() const { return !cfgDevice.empty() ? cfgDevice.top() : nullptr; }
+
 private:
+    const SystemDriver &driver;
+
     Device *sysDevice = nullptr;
-    Device *cfgDevice = nullptr;
+    std::stack<Device *> cfgDevice;
 };

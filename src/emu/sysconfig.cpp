@@ -6,13 +6,16 @@
 #include "emu/core.h"
 
 SystemConfig::SystemConfig(const SystemDriver &driver, cstag_t &name)
+: driver(driver)
 {
-    addDeviceType(driver.type, name, 0);
+    createSystemDevice(driver.type, name, 0);
 }
 
-Device *SystemConfig::addDeviceType(const DeviceType &type, cstag_t &name, uint64_t clock)
+Device *SystemConfig::createSystemDevice(const DeviceType &type, cstag_t &name, uint64_t clock)
 {
     Device *owner = nullptr;
+
+    fmt::printf("%s: Creating %s system...\n", name, type.getShortName());
 
     Device *sys = type.create(*this, name, nullptr, clock);
     return addDevice(sys, owner);
@@ -20,20 +23,25 @@ Device *SystemConfig::addDeviceType(const DeviceType &type, cstag_t &name, uint6
 
 Device *SystemConfig::addDevice(Device *dev, Device *owner)
 {
-
     if (owner != nullptr)
     {
+        // Adding device under owning device
+        fmt::printf("%s: Adding %s(%s) device\n", owner->getDeviceName(),
+            dev->getDeviceName(), dev->getShortName());
         owner->addNode(dev);
     }
     else
     {
-        // System device
+        // Set system device
         assert(sysDevice == nullptr);
         sysDevice = dev;
     }
 
-    // Initialize device
+    // Initialize configuring device
+    fmt::printf("%s: Start device configuration...\n", dev->getDeviceName());
+    cfgDevice.push(dev);
     dev->configure(*this);
 
+    cfgDevice.pop();
     return dev;
 }

@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include <vector>
+#include <stack>
 
 #include <filesystem>
 #include <cassert>
