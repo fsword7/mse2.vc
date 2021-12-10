@@ -17,6 +17,8 @@ public:
     // Getter function calls
     inline Device *getSystemDevice() const { return sysDevice; }
     inline Device *getConfigDevice() const { return !cfgDevice.empty() ? cfgDevice.top() : nullptr; }
+    
+    inline const SystemDriver &getSystemDriver() const { return driver; }
 
 private:
     const SystemDriver &driver;

@@ -10,7 +10,7 @@
 
 void vt100_Device::vt100(SystemConfig &config)
 {
-
+    fmt::printf("VT100 device configuration here.\n");
 }
 
 void vt100_Device::vt100_init()
