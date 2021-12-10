@@ -11,8 +11,12 @@ int main(int argc, char **argv)
 {
     std::cout << "Welcome to Multi-System Emulator System\n" << std::endl;
 
-    UserConsole user;
+    SystemEngine engine;
+    engine.ginit();
+
+    UserConsole user(engine);
     user.prompt();
 
+    engine.gexit();
     exit(0);
 }

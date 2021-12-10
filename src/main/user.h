@@ -8,11 +8,11 @@
 class UserConsole
 {
 public:
-    UserConsole();
+    UserConsole(SystemEngine &engine);
     ~UserConsole();
 
     void prompt();
 
 private:
-    SystemEngine engine;
+    SystemEngine &engine;
 };

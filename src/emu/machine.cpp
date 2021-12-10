@@ -12,3 +12,8 @@ Machine::Machine(const SystemConfig &config, cstag_t &sysName)
 {
 
 }
+
+Machine::~Machine()
+{
+    
+}

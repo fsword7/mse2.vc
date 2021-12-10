@@ -7,7 +7,8 @@
 #include "main/engine.h"
 #include "main/user.h"
 
-UserConsole::UserConsole()
+UserConsole::UserConsole(SystemEngine &engine)
+: engine(engine)
 {
 }
 

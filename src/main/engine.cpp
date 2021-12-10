@@ -4,8 +4,31 @@
 // Date:    12/7/2021
 
 #include "emu/core.h"
+#include "emu/machine.h"
 #include "main/engine.h"
 #include "main/user.h"
+
+std::vector<Machine *> SystemEngine::machines;
+
+void SystemEngine::ginit()
+{
+    machines.clear();
+}
+
+void SystemEngine::gexit()
+{
+    for (auto mach : machines)
+        delete mach;
+    machines.clear();
+}
+
+Machine *SystemEngine::findSystem(cstag_t &name)
+{
+    for (auto mach : machines)
+        if (name == mach->getDeviceName())
+            return mach;
+    return nullptr;
+}
 
 int SystemEngine::split(cstag_t &cmdLine, args_t &args)
 {

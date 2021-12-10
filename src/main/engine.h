@@ -32,6 +32,7 @@ private:
 
 class UserConsole;
 class SystemEngine;
+class Machine;
 
 struct command_t
 {
@@ -61,6 +62,12 @@ public:
     SystemEngine() = default;
     ~SystemEngine() = default;
 
+    // Global initialization routines
+    void ginit();
+    void gexit();
+
+    Machine *findSystem(cstag_t &name);
+
     int split(cstag_t &cmdLine, args_t &args);
     void execute(UserConsole *user, std::string cmdLine);
 
@@ -75,6 +82,7 @@ private:
     // };
 
     static const SystemDriver *sysList[];
+    static std::vector<Machine *> machines;
 };
 
 extern command_t mseCommands[];

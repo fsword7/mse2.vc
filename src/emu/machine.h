@@ -9,6 +9,8 @@ public:
     Machine(const SystemConfig &config, cstag_t &sysName);
     ~Machine();
 
+    cstag_t getDeviceName() const { return std::string(sysDevice->getDeviceName()); }
+    
 private:
     const SystemConfig &config;
     cstag_t sysName;
