@@ -9,13 +9,29 @@
 
 int cmdCreate(UserConsole *user, SystemEngine *engine, args_t &args)
 {
-    fmt::printf("Here is create command\n");
-    return 0;
+    std::string devName = args.getNext();
+    std::string sysName = args.getNext();
+
+    if (engine->findSystem(devName) != nullptr)
+    {
+        fmt::printf("%s: System already created.\n", devName);
+        return 0;
+    }
+
+    return engine->createMachine(user, devName, sysName);
+}
+
+int cmdQuit(UserConsole *user, SystemEngine *engine, args_t &args)
+{
+    return 1;
 }
 
 command_t mseCommands[] =
 {
     { "create", &cmdCreate, nullptr },
+    { "exit",   &cmdQuit,   nullptr },
+    { "quit",   &cmdQuit,   nullptr },
+    
     // Terminator
     nullptr
 };

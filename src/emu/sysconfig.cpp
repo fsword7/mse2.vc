@@ -23,6 +23,8 @@ Device *SystemConfig::createSystemDevice(const DeviceType &type, cstag_t &name, 
 
 Device *SystemConfig::addDevice(Device *dev, Device *owner)
 {
+    assert (dev != nullptr);
+
     if (owner != nullptr)
     {
         // Adding device under owning device

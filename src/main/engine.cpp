@@ -22,6 +22,17 @@ void SystemEngine::gexit()
     machines.clear();
 }
 
+const SystemDriver *SystemEngine::findSystemDriver(cstag_t &name)
+{
+    for (int idx = 0; sysList[idx]; idx++)
+    {
+        const SystemDriver *driver = sysList[idx];
+        if (name == std::string(driver->name))
+            return driver;
+    }
+    return nullptr;
+}
+
 Machine *SystemEngine::findSystem(cstag_t &name)
 {
     for (auto mach : machines)
@@ -45,7 +56,7 @@ int SystemEngine::split(cstag_t &cmdLine, args_t &args)
     return args.getSize();
 }
 
-void SystemEngine::execute(UserConsole *user, std::string cmdLine)
+int SystemEngine::execute(UserConsole *user, std::string cmdLine)
 {
     args_t args;
 
@@ -53,10 +64,37 @@ void SystemEngine::execute(UserConsole *user, std::string cmdLine)
     split(cmdLine, args);
 
     if (args.isEmpty())
-    ;
+        return 0;
 
-    command_t *cmd = &mseCommands[0];
-    cmd->func(user, this, args);
+    command_t *cmdList = mseCommands;
+    for (int idx = 0; cmdList[idx].name; idx++)
+    {
+        if (cmdList[idx].name == args.getArgument())
+        {
+            args.getNext();
+
+            if (cmdList[idx].func != nullptr)
+                return cmdList[idx].func(user, this, args);
+        }
+    }
+
+    fmt::printf("*** Unknown '%s' command\n", args.getArgument());
+    return 0;
+}
+
+int SystemEngine::createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName)
+{
+    const SystemDriver *driver = findSystemDriver(sysName);
+    if (driver == nullptr)
+    {
+        fmt::printf("%s: system '%s' not recongized.\n", devName, sysName);
+        return 0;
+    }
+
+    Machine *sysMachine = Machine::create(user, driver, devName);
+
+    machines.push_back(sysMachine);
+    return 0;
 }
 
 // int SystemEngine::cmdCreate(UserConsole *user, args_t &args)

@@ -67,9 +67,12 @@ public:
     void gexit();
 
     Machine *findSystem(cstag_t &name);
+    const SystemDriver *findSystemDriver(cstag_t &name);
+
+    int createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
 
     int split(cstag_t &cmdLine, args_t &args);
-    void execute(UserConsole *user, std::string cmdLine);
+    int execute(UserConsole *user, std::string cmdLine);
 
 private:
     // int cmdCreate(UserConsole *user, args_t &args);

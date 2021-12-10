@@ -19,12 +19,14 @@ UserConsole::~UserConsole()
 void UserConsole::prompt()
 {
     std::string cmdLine;
+    bool running = true;
 
-    while (1)
+    while (running)
     {
         std::cout << "MSE> " /* fmt::sprintf("MSE> ") */ << std::flush; 
         getline(std::cin, cmdLine);
 
-        engine.execute(this, cmdLine);
+        if (engine.execute(this, cmdLine))
+            running = false;
     } 
 };

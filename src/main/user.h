@@ -5,6 +5,8 @@
 
 #pragma once
 
+class SystemEngine;
+
 class UserConsole
 {
 public:
