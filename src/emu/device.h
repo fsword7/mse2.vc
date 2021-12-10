@@ -152,8 +152,23 @@ public:
 
     void configure(SystemConfig &config);
 
+    Device *findDevice(ctag_t *name);
+
     // Virtual device function calls
     virtual void devConfigure(SystemConfig &config) {}
+
+    template <class DeviceClass>
+    inline bool hasInterface(DeviceClass *&iface)
+    {
+        return (iface = dynamic_cast<DeviceClass *>(this)) != nullptr;
+    }
+
+    template <class DeviceClass>
+    inline bool hasInterface(DeviceClass *&iface) const
+    {
+        return (iface = dynamic_cast<const DeviceClass *>(this)) != nullptr;
+    }
+
 
 protected:
     Device(const SystemConfig &config, const DeviceType &type, cstag_t &name, Device *owner, uint64_t clock);
@@ -181,4 +196,102 @@ public:
 
 private:
 
+};
+
+class DeviceIterator
+{
+public:
+    DeviceIterator(Device &dev) : devRoot(dev) {}
+
+    class Iterator
+    {
+    public:
+        Iterator(Device *device) : curDevice(device) {}
+
+        // Required operator function calls
+        // bool operator == (const Iterator &iter) { return curDevice == iter.curDevice; }
+        bool operator != (const Iterator &iter) { return curDevice != iter.curDevice; }
+        Iterator operator ++ () { advance(); return *this; }
+        Iterator operator ++ (int) { const Iterator result(*this); ++*this; return result; }
+        Device &operator * () { assert(curDevice != nullptr); return *curDevice; }
+        Device *operator -> () { return curDevice; }
+
+    protected:
+        void advance()
+        {
+            if (curDevice == nullptr)
+                return;
+            
+            if (curDevice->hasChildren())
+            {
+                ownDevice = curDevice;
+                curDevice = ownDevice->getFirst();
+                depth++;
+
+                return;
+            }
+
+            while (depth > 0 && ownDevice != nullptr)
+            {
+                curDevice = ownDevice->getNext();
+                if (curDevice != nullptr)
+                    return;
+
+                curDevice = ownDevice;
+                ownDevice = ownDevice->getOwner();
+                depth--;
+            }
+            curDevice = nullptr;
+        }
+
+        Device *curDevice = nullptr;
+        Device *ownDevice = nullptr;
+        int depth = 0;
+    };
+
+    Iterator begin() { return Iterator(&devRoot); }
+    Iterator end()   { return Iterator(nullptr); }
+
+private:
+    Device &devRoot;
+};
+
+template <class InterfaceType>
+class InterfaceIterator
+{
+public:
+    InterfaceIterator(Device &dev) : devRoot(dev) {}
+
+    class Iterator : public DeviceIterator::Iterator
+    {
+    public:
+        Iterator(Device *device) : DeviceIterator::Iterator(device) { findInterface(); }
+
+        // Required operator function calls
+        // bool operator == (const Iterator &iter) { return iface == iter.iface; }
+        bool operator != (const Iterator &iter) { return iface != iter.iface; }
+        Iterator operator ++ () { advance(); findInterface(); return *this; }
+        Iterator operator ++ (int) { const Iterator result(*this); ++*this; return result; }
+        Device &operator * () { assert(iface != nullptr); return *iface; }
+        Device *operator -> () { return iface; }
+
+    private:
+        void findInterface()
+        {
+            for (; curDevice != nullptr; advance())
+            {
+                if (curDevice->hasInterface(iface))
+                    return;
+            }
+            iface = nullptr;
+        }
+
+        InterfaceType *iface = nullptr;
+    };
+
+    Iterator begin() { return Iterator(&devRoot); }
+    Iterator end()   { return Iterator(nullptr); }
+
+private:
+    Device &devRoot;
 };
