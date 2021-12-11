@@ -6,7 +6,8 @@
 class ProcessorDevice : public Device
 {
 public:
-    ProcessorDevice(const SystemConfig &config, const DeviceType &type, cstag_t &devName, uint64_t clock);
+    ProcessorDevice(const SystemConfig &config, const DeviceType &type,
+        cstag_t &devName, Device *owner, uint64_t clock);
 
 };
 

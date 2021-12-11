@@ -131,7 +131,31 @@ public:
 };
 
 #define DECLARE_DEVICE_TYPE(Type, Class) \
-extern DeviceCreator<Class> const &type;
+extern DeviceCreator<Class> const &Type;
+
+// #define DECLARE_DEVICE_TYPE(Type, Class)             \
+// extern DeviceCreator<Class> const &type;             \
+// extern template class DeviceFinder<Class, false>; \
+// extern template class DeviceFinder<Class, true>;
+
+// #define DECLARE_DEVICE_TYPE_NS(Type, Namespace, Class)       \
+// namespace Namespace { class Class; }                         \
+// extern template class DeviceFinder<Namespace::Class, false>; \
+// extern template class DeviceFinder<Namespace::Class, true>;
+
+#define DEFINE_DEVICE_TYPE(Type, Class, ShortName, FullName) \
+struct Class##_device_traits {                               \
+    static constexpr ctag_t shortName[] = ShortName;         \
+    static constexpr ctag_t fullName[]  = FullName;          \
+    static constexpr ctag_t fileName[]  = __FILE__;          \
+};                                                           \
+constexpr ctag_t Class##_device_traits::shortName[];         \
+constexpr ctag_t Class##_device_traits::fullName[];          \
+constexpr ctag_t Class##_device_traits::fileName[];          \
+DeviceCreator<Class> const &Type = deviceCreator<Class,      \
+    (Class##_device_traits::shortName),                      \
+    (Class##_device_traits::fullName),                       \
+    (Class##_device_traits::fileName)>;
 
 // ********
 
@@ -156,6 +180,10 @@ public:
 
     // Virtual device function calls
     virtual void devConfigure(SystemConfig &config) {}
+
+	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
+	// If cast fails, return null pointer. For more information, check
+	// https://en.cppreference.com/w/cpp/language/dynamic_cast.
 
     template <class DeviceClass>
     inline bool hasInterface(DeviceClass *&iface)

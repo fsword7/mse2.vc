@@ -6,8 +6,9 @@
 #include "emu/core.h"
 #include "emu/devcpu.h"
 
-ProcessorDevice::ProcessorDevice(const SystemConfig &config, const DeviceType &type, cstag_t &devName, uint64_t clock)
-: Device(config, type, devName, nullptr, clock)
+ProcessorDevice::ProcessorDevice(const SystemConfig &config, const DeviceType &type,
+    cstag_t &devName, Device *owner, uint64_t clock)
+: Device(config, type, devName, owner, clock)
 {
     
 }

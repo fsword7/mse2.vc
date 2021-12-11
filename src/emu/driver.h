@@ -51,12 +51,12 @@ struct SystemDriver
 #define SYSTEM_EXTERN(Name) extern const SystemDriver SYSTEM_NAME(Name)
 #define SYSTEM_TRAITS_NAME(Name) Name##_system_traits
 
-#define SYSTEM_TRAITS(Name, FullName)                   \
-struct SYSTEM_TRAITS_NAME(Name) {                       \
+#define SYSTEM_TRAITS(Name, FullName)                    \
+struct SYSTEM_TRAITS_NAME(Name) {                        \
     static constexpr ctag_t shortName[] = #Name;         \
     static constexpr ctag_t fullName[]  = FullName;      \
     static constexpr ctag_t fileName[]  = __FILE__;      \
-};                                                      \
+};                                                       \
 constexpr ctag_t SYSTEM_TRAITS_NAME(Name)::shortName[];  \
 constexpr ctag_t SYSTEM_TRAITS_NAME(Name)::fullName[];   \
 constexpr ctag_t SYSTEM_TRAITS_NAME(Name)::fileName[];

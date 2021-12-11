@@ -1,6 +1,8 @@
 set (MSE_CPP_SRCS
+    dev/cpu/i8080/i8080.cpp
     emu/device.cpp
     emu/devcpu.cpp
+    emu/devfind.cpp
     emu/devsys.cpp
     emu/machine.cpp
     emu/sysconfig.cpp
@@ -16,10 +18,12 @@ set (MSE_CPP_SRCS
 )
 
 set (MSE_H_SRCS
+    dev/cpu/i8080/i8080.h
     emu/core.h
     emu/delegate.h
     emu/device.h
     emu/devcpu.h
+    emu/devfind.h
     emu/devsys.h
     emu/driver.h
     emu/machine.h
