@@ -7,30 +7,31 @@
 #include "main/engine.h"
 #include "main/user.h"
 
-int cmdCreate(UserConsole *user, SystemEngine *engine, args_t &args)
+SystemEngine::cmdStatus SystemEngine::cmdCreate(UserConsole *user, args_t &args)
 {
     std::string devName = args.getNext();
     std::string sysName = args.getNext();
 
-    if (engine->findSystem(devName) != nullptr)
+    if (findSystem(devName) != nullptr)
     {
         fmt::printf("%s: System already created.\n", devName);
-        return 0;
+        return cmdOk;
     }
 
-    return engine->createMachine(user, devName, sysName);
+    createMachine(user, devName, sysName);
+    return cmdOk;
 }
 
-int cmdQuit(UserConsole *user, SystemEngine *engine, args_t &args)
+SystemEngine::cmdStatus SystemEngine::cmdQuit(UserConsole *user, args_t &args)
 {
-    return 1;
+    return cmdShutdown;
 }
 
-command_t mseCommands[] =
+SystemEngine::command_t SystemEngine::mseCommands[] =
 {
-    { "create", &cmdCreate, nullptr },
-    { "exit",   &cmdQuit,   nullptr },
-    { "quit",   &cmdQuit,   nullptr },
+    { "create", &SystemEngine::cmdCreate, nullptr },
+    { "exit",   &SystemEngine::cmdQuit,   nullptr },
+    { "quit",   &SystemEngine::cmdQuit,   nullptr },
     
     // Terminator
     nullptr

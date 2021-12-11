@@ -67,6 +67,8 @@ int SystemEngine::execute(UserConsole *user, std::string cmdLine)
         return 0;
 
     command_t *cmdList = mseCommands;
+    cmdStatus status = cmdNotFound; // default resulting status
+
     for (int idx = 0; cmdList[idx].name; idx++)
     {
         if (cmdList[idx].name == args.getArgument())
@@ -74,38 +76,28 @@ int SystemEngine::execute(UserConsole *user, std::string cmdLine)
             args.getNext();
 
             if (cmdList[idx].func != nullptr)
-                return cmdList[idx].func(user, this, args);
+                status = (this->*cmdList[idx].func)(user, args);
+            if (status == cmdShutdown)
+                return 1;
         }
     }
 
-    fmt::printf("*** Unknown '%s' command\n", args.getArgument());
+    if (status == cmdNotFound)
+        fmt::printf("*** Unknown '%s' command\n", args.getArgument());
     return 0;
 }
 
-int SystemEngine::createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName)
+bool SystemEngine::createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName)
 {
     const SystemDriver *driver = findSystemDriver(sysName);
     if (driver == nullptr)
     {
         fmt::printf("%s: system '%s' not recongized.\n", devName, sysName);
-        return 0;
+        return false;
     }
 
     Machine *sysMachine = Machine::create(user, driver, devName);
 
     machines.push_back(sysMachine);
-    return 0;
+    return true;
 }
-
-// int SystemEngine::cmdCreate(UserConsole *user, args_t &args)
-// {
-//     fmt::printf("Here is create command\n");
-//     return 0;
-// }
-
-// SystemEngine::command_t SystemEngine::mseCommands[] =
-// {
-//     { "create",     SystemEngine::cmdCreate,    nullptr },
-//     // Terminator
-//     nullptr
-// };

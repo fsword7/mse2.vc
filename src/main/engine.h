@@ -34,29 +34,25 @@ class UserConsole;
 class SystemEngine;
 class Machine;
 
-struct command_t
-{
-    using cmdFunc_t = int (*)(UserConsole *user, SystemEngine *engine, args_t &args);
-
-    ctag_t     *name;
-    cmdFunc_t   func;
-    command_t  *options;
-};
-
 class SystemEngine
 {
 public:
-    // using cmdFunc_t = int (SystemEngine::*)(UserConsole *, args_t &);
-    // using cmdDevice_t = int (SystemEngine::*)(UserConsole *, args_t &);
+    enum cmdStatus
+    {
+        cmdOk = 0,   // Successful
+        cmdNotFound, // Command not found (unknown)
+        cmdShutdown, // Multi-System Emulator Shutdown
+    };
 
-    // struct command_t
-    // {
-    //     ctag_t *name;
-    //     cmdFunc_t func;
-    //     command_t *options;
-    // };
+    using cmdFunc_t = cmdStatus (SystemEngine::*)(UserConsole *, args_t &);
+    using cmdDevice_t = cmdStatus (SystemEngine::*)(UserConsole *, args_t &);
 
-    // static command_t mseCommands[];
+    struct command_t
+    {
+        ctag_t *name;
+        cmdFunc_t func;
+        command_t *options;
+    };
 
 public:
     SystemEngine() = default;
@@ -69,23 +65,18 @@ public:
     Machine *findSystem(cstag_t &name);
     const SystemDriver *findSystemDriver(cstag_t &name);
 
-    int createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
+    bool createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
 
     int split(cstag_t &cmdLine, args_t &args);
     int execute(UserConsole *user, std::string cmdLine);
 
 private:
-    // int cmdCreate(UserConsole *user, args_t &args);
+    // Command function calls
+    cmdStatus cmdCreate(UserConsole *user, args_t &args);
+    cmdStatus cmdQuit(UserConsole *user, args_t &args);
 
-    // command_t mseCommands2[2] =
-    // {
-    //     { "create", cmdCreate, nullptr },
-    //     // Terminator
-    //     nullptr
-    // };
+    static command_t mseCommands[];
 
     static const SystemDriver *sysList[];
     static std::vector<Machine *> machines;
 };
-
-extern command_t mseCommands[];
