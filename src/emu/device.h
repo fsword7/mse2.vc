@@ -162,6 +162,8 @@ DeviceCreator<Class> const &Type = deviceCreator<Class,      \
 class Device : public BindedObject, public List<Device>
 {
 public:
+    using ifaceList_t = std::vector<DeviceInterface *>;
+
     virtual ~Device() = default;
 
     // Getter function calls
@@ -175,7 +177,8 @@ public:
     inline ctag_t *getShortName() const { return type.getShortName(); }
 
     void configure(SystemConfig &config);
-
+    void addInterface(DeviceInterface *iface);
+    
     Device *findDevice(ctag_t *name);
 
     // Virtual device function calls
@@ -204,6 +207,8 @@ protected:
 private:
     const DeviceType   &type;
     const SystemConfig &sysConfig;
+
+    ifaceList_t ifaceList;
 
     Device *owner = nullptr;
 

@@ -16,5 +16,8 @@ public:
 
     void vt100(SystemConfig &config);
     void vt100_init();
+
+private:
+    i8080_cpuDevice *cpu = nullptr;
 };
 

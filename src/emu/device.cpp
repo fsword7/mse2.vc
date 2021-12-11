@@ -8,7 +8,12 @@
 Device::Device(const SystemConfig &config, const DeviceType &type, cstag_t &name, Device *owner, uint64_t clock)
 : type(type), sysConfig(config), devName(name), owner(owner), clock(clock)
 {
+    ifaceList.clear();
+}
 
+void Device::addInterface(DeviceInterface *iface)
+{
+    ifaceList.push_back(iface);
 }
 
 Device *Device::findDevice(ctag_t *name)

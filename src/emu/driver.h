@@ -3,6 +3,8 @@
 // Author:  Tim Stark (fsword007@gmail.com)
 // Date:    Dec 6, 2021
 
+#pragma once
+
 class Device;
 class DeviceType;
 class SystemConfig;

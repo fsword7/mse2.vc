@@ -3,6 +3,8 @@
 // Author:  Tim Stark (fsword007@gmail.com)
 // Date:    12/7/2021
 
+#pragma once
+
 class SystemDevice : public Device
 {
 public:
