@@ -37,3 +37,13 @@ void Device::configure(SystemConfig &config)
     // Device initialization
     devConfigure(config);
 }
+
+void Device::registerObject(ObjectFinder *object)
+{
+    objectList.push_back(object);
+}
+
+bool Device::findObjects()
+{
+    return false;   
+}

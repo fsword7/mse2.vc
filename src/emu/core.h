@@ -10,6 +10,8 @@
 #include <stack>
 
 #include <filesystem>
+#include <type_traits>
+
 #include <cassert>
 
 #include <fmt/printf.h>
@@ -50,4 +52,6 @@ typedef std::string         stag_t;
 #include "emu/delegate.h"
 #include "emu/driver.h"
 #include "emu/sysconfig.h"
+#include "emu/devfind.h"
 #include "emu/device.h"
+#include "emu/templates.h"

@@ -12,9 +12,9 @@
 
 void vt100_Device::vt100(SystemConfig &config)
 {
-    fmt::printf("VT100 device configuration here.\n");
+    // fmt::printf("VT100 device configuration here.\n");
 
-    // cpu = i8080(config, "cpu", 0);
+    i8080(config, cpu, "cpu", 0);
 }
 
 void vt100_Device::vt100_init()

@@ -125,16 +125,17 @@ public:
     template <typename... Args>
     DeviceClass *operator () (SystemConfig &config, cstag_t &devName, Args&&... args) const;
 
-    // template <typename... Exposed, bool Required, typename... Args>
-    // DeviceClass *operator () (SystemConfig &config, DeviceFinder<Exposed, Required> &finder, cstag_t &devName, Args &&... args) const;
+    template <typename Exposed, bool Required, typename... Args>
+    DeviceClass &operator () (SystemConfig &config, DeviceFinder<Exposed, Required> &finder,
+        cstag_t &devName, Args &&... args) const;
 
 };
 
 #define DECLARE_DEVICE_TYPE(Type, Class) \
 extern DeviceCreator<Class> const &Type;
 
-// #define DECLARE_DEVICE_TYPE(Type, Class)             \
-// extern DeviceCreator<Class> const &type;             \
+// #define DECLARE_DEVICE_TYPE(Type, Class)          \
+// class Class;                                      \
 // extern template class DeviceFinder<Class, false>; \
 // extern template class DeviceFinder<Class, true>;
 
@@ -181,6 +182,9 @@ public:
     
     Device *findDevice(ctag_t *name);
 
+    void registerObject(ObjectFinder *object);
+    bool findObjects();
+
     // Virtual device function calls
     virtual void devConfigure(SystemConfig &config) {}
 
@@ -209,6 +213,7 @@ private:
     const SystemConfig &sysConfig;
 
     ifaceList_t ifaceList;
+    std::vector<ObjectFinder *> objectList;
 
     Device *owner = nullptr;
 

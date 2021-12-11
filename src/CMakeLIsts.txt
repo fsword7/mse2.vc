@@ -27,6 +27,7 @@ set (MSE_H_SRCS
     emu/devsys.h
     emu/driver.h
     emu/machine.h
+    emu/templates.h
     emu/sysconfig.h
     emu/map/addrmap.h
     emu/map/he.h

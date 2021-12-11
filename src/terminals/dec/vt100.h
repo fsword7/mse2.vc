@@ -9,7 +9,8 @@ class vt100_Device : public SystemDevice
 {
 public:
     vt100_Device(const SystemConfig &config, const DeviceType &type, cstag_t &devName, uint64_t clock)
-    : SystemDevice(config, type, devName, clock)
+    : SystemDevice(config, type, devName, clock),
+      cpu(*this, "i8080")
     {
 
     }
@@ -18,6 +19,5 @@ public:
     void vt100_init();
 
 private:
-    i8080_cpuDevice *cpu = nullptr;
+    RequiredDevice<i8080_cpuDevice> cpu;
 };
-
