@@ -4,6 +4,7 @@
 // Date:    12/8/2021
 
 #include "emu/core.h"
+#include "emu/map/map.h"
 #include "emu/map/addrmap.h"
 #include "emu/devsys.h"
 #include "emu/devcpu.h"
@@ -16,8 +17,8 @@ void vt100_Device::vt100(SystemConfig &config)
     // fmt::printf("VT100 device configuration here.\n");
 
     i8080(config, cpu, "cpu", 0);
-    // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
-    // cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
+    cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
+    cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
     
 }
 

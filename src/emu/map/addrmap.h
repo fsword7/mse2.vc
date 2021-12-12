@@ -124,9 +124,10 @@ namespace aspace
     class AddressList
     {
         friend class AddressEntry;
+        friend class AddressSpace;
         
     public:
-        AddressList(Device &device, int space);
+        AddressList(Device &device, map::AddressType space);
         ~AddressList();
 
         inline void setGlobalAddressMask(offs_t mask)   { gaddrMask = mask; }

@@ -12,7 +12,8 @@ class diMemory;
 namespace aspace
 {
     class MemoryManager;
-    
+    class AddressList;
+
     enum AddressType
     {
         asProgram = 0,  // Program address space
@@ -143,6 +144,11 @@ namespace aspace
         cAddressConfig &config;
         Device         &device;
         MemoryManager  &manager;
+
+        AddressList *map = nullptr;
+
+        offs_t   addrMask = 0;
+        uint64_t unmapValue = 0;
 
         // Unmapped/no-operation read/write access
         HandlerEntry *unmapRead = nullptr;

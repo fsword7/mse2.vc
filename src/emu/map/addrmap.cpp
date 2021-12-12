@@ -4,14 +4,27 @@
 // Date:    12/7/2021
 
 #include "emu/core.h"
+#include "emu/map/map.h"
 #include "emu/map/addrmap.h"
+#include "emu/dimem.h"
 
 using namespace aspace;
 
-AddressList::AddressList(Device &dev, int space)
+AddressList::AddressList(Device &dev, AddressType space)
 : device(dev), addrSpace(space)
 {
     list.clear();
+
+    diMemory *bus = nullptr;
+    dev.hasInterface(bus);
+    assert(bus != nullptr);
+
+    cAddressConfig *config = bus->getAddressConfig(space);
+    assert(config != nullptr);
+
+    Constructor map = bus->getAddressMap(space);
+    if (!map.isNull())
+        map(*this);
 }
 
 AddressList::~AddressList()
@@ -32,7 +45,7 @@ AddressEntry &AddressList::operator () (offs_t start, offs_t end)
 // ********
 
 AddressEntry::AddressEntry(Device &dev, AddressList &map, offs_t start, offs_t end)
-: device(dev), map(map),
+: device(dev), map(map), addrStart(start), addrEnd(end),
   read8(dev),   read8o(dev),   read8om(dev),
   read16(dev),  read16o(dev),  read16om(dev),
   read32(dev),  read32o(dev),  read32om(dev),
