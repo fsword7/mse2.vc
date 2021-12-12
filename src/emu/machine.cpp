@@ -8,7 +8,7 @@
 #include "main/user.h"
 
 Machine::Machine(const SystemConfig &config, cstag_t &sysName)
-: config(config), sysName(sysName),
+: memoryManager(*this), config(config), sysName(sysName),
   sysDevice(config.getSystemDevice())
 {
 

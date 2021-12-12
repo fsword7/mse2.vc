@@ -5,6 +5,8 @@
 
 #include "emu/core.h"
 #include "emu/map/map.h"
+#include "emu/map/memmgr.h"
+#include "emu/dimem.h"
 
 namespace aspace
 {
@@ -21,6 +23,34 @@ namespace aspace
         const HandlerWrite<dWidth, aShift> *const *dispatchWrite = nullptr;
 
     public:
+        AddressSpaceSpecfic(MemoryManager &manager, diMemory &bus, AddressType space, int addrWidth)
+        : AddressSpace(manager, bus, space)
+        {
+            Device &dev = bus.getOwningDevice();
+
+            // Set new unmapped/nop dispatch calls
+            // unmapRead = new HandlerReadUnmapped<dWidth, aShift>(this);
+            // unmapWrite = new HandlerWriteUnmapped<dWidth, aSHift>(this);
+            // nopRead = new HandlerReadNop<aWidth, aShift>(this);
+            // nopWrite = new HandlerWriteNop<aWifth, aShift>(this);
+
+            // Global address range for dispatch calls
+            HandlerEntry::range r = { 0, static_cast<offs_t>(~0ull >> ((sizeof(offs_t) * 8) - addrWidth)) };
+
+            switch (addrWidth)
+            {
+                // case 4:
+                //     rootRead = new HandlerReadDispatch<4, dWidth, aShift>(this, r, nullptr);
+                //     rootWrite = new HandlerWriteDispatch<4, dWidth, aShift>(this, r, nullptr);
+                //     break;
+            }
+
+            fmt::printf("%s: Global address range %0*llX - %0*llX (%d-bit addressing)\n",
+                dev.getDeviceName(), config.getAddrPrecision(), r.start,
+                config.getAddrPrecision(), r.end, addrWidth);
+            // fmt::printf("%s: Global address mask: %llX Unmapped value: %02X\n",
+            //     dev.getDeviceName(), addrMask, unmapValue);
+        }
 
         uint8_t read8(offs_t addr, ProcessorDevice *cpu)
         {
@@ -239,4 +269,38 @@ namespace aspace
             
         }
     };
+
+    // ********
+
+    constexpr std::initializer_list<AddressType> AddressTypes = { asProgram, asData, asIOPort };
+    
+    ctag_t *asDescrip[] = { "program", "data", "I/O port" };
+
+    void MemoryManager::allocate(UserConsole *user, diMemory &bus)
+    {
+        Device &dev = bus.getOwningDevice();
+
+        for (auto space : AddressTypes)
+        {
+            cAddressConfig *config = bus.getAddressConfig(space);
+            if (config == nullptr)
+                continue;
+
+            fmt::printf("%s: Allocating %s address space...\n",
+                dev.getDeviceName(), asDescrip[space]);
+
+            int level = determineDispatchLevel(config->getAddrWidth());
+            int eType = config->getEndianType() == BigEndian ? 0x0400 : 0x0000;
+
+            switch (eType | (level << 8) | config->getDataWidth() | (config->getAddrShift() & 0x3))
+            {
+
+            default:
+                fmt::printf("%s: Invalid address configuration - address %d width %d shift\n",
+                    dev.getDeviceName(), config->getAddrWidth(), config->getAddrShift());
+                break;
+            }
+        }
+    }
 }
+ 

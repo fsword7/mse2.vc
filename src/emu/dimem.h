@@ -18,6 +18,8 @@ class diMemory : public DeviceInterface
 
         virtual map::AddressConfigList getAddressConfigList() const = 0;
 
+        inline int getAddressConfigCount() const { return mapAddressConfigList.size(); }
+        
         inline map::cAddressConfig *getAddressConfig(map::AddressType space = map::asProgram)
         {
             assert(space < mapAddressConfigList.size());

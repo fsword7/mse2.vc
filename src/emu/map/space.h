@@ -32,16 +32,16 @@ namespace aspace
         { }
         ~AddressConfig() = default;
 
-        inline endian_t getEndianType() const   { return endianType; }
-        inline uint16_t getDataWidth() const    { return dataWidth; }
-        inline uint16_t getDataRadix() const    { return dataRadix; }
-        inline uint16_t getDataPrecison() const { return dataPrecision; }
-        inline uint16_t getByteWidth() const    { return byteWidth; }
-        inline uint16_t getAddrWidth() const    { return addrWidth; }
-        inline uint16_t getAddrRadix() const    { return addrRadix; }
-        inline uint16_t getAddrPrecison() const { return addrPrecision; }
-        inline int16_t  getAddrShift() const    { return addrShift; }
-        inline int16_t  getPageShift() const    { return pageShift; }
+        inline endian_t getEndianType() const    { return endianType; }
+        inline uint16_t getDataWidth() const     { return dataWidth; }
+        inline uint16_t getDataRadix() const     { return dataRadix; }
+        inline uint16_t getDataPrecision() const { return dataPrecision; }
+        inline uint16_t getByteWidth() const     { return byteWidth; }
+        inline uint16_t getAddrWidth() const     { return addrWidth; }
+        inline uint16_t getAddrRadix() const     { return addrRadix; }
+        inline uint16_t getAddrPrecision() const { return addrPrecision; }
+        inline int16_t  getAddrShift() const     { return addrShift; }
+        inline int16_t  getPageShift() const     { return pageShift; }
 
     private:
         ctag_t *name = nullptr;
