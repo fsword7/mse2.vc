@@ -29,8 +29,20 @@ class diMemory : public DeviceInterface
         void diCompleteConfig() override;
 
         // Address space setup routines
+        template <typename Space>
+        void allocate(map::MemoryManager &manager, map::AddressType space)
+        {
+            assert((space >= 0) && (space < mapAddressConfigList.size()));
+            assert(mapAddressConfigList[space] != nullptr);
+
+            mapAddressSpaceList.resize(std::max(int(mapAddressSpaceList.size()), space+1));
+            assert(mapAddressSpaceList[space] == nullptr);
+
+            mapAddressSpaceList[space] = new Space(manager, *this, space, mapAddressConfigList[space]->getAddrWidth());
+        }
+
         void prepare(UserConsole *user)
-        { 
+        {
             for (auto &space : mapAddressSpaceList)
                 if (space != nullptr)
                     space->prepare(user);

@@ -28,6 +28,7 @@ namespace aspace
 
     void AddressSpace::populate(UserConsole *user)
     {
-
+        fmt::printf("%s: Populating for %s address space\n",
+            device.getDeviceName(), asInfo[space]);
     }
 }

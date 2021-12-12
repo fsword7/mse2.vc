@@ -12,7 +12,7 @@ namespace aspace
 {
 
     template <int Level, int dWidth, int aShift, endian_t eType>
-    class AddressSpaceSpecfic : public AddressSpace
+    class AddressSpaceSpecific : public AddressSpace
     {
     private:
         HandlerRead<dWidth, aShift> *rootRead = nullptr;
@@ -23,7 +23,7 @@ namespace aspace
         const HandlerWrite<dWidth, aShift> *const *dispatchWrite = nullptr;
 
     public:
-        AddressSpaceSpecfic(MemoryManager &manager, diMemory &bus, AddressType space, int addrWidth)
+        AddressSpaceSpecific(MemoryManager &manager, diMemory &bus, AddressType space, int addrWidth)
         : AddressSpace(manager, bus, space)
         {
             Device &dev = bus.getOwningDevice();
@@ -52,67 +52,67 @@ namespace aspace
             //     dev.getDeviceName(), addrMask, unmapValue);
         }
 
-        uint8_t read8(offs_t addr, ProcessorDevice *cpu)
+        uint8_t read8(offs_t addr, ProcessorDevice *cpu) override
         {
             return 0;
         }
 
-        uint16_t read16(offs_t addr, ProcessorDevice *cpu)
+        uint16_t read16(offs_t addr, ProcessorDevice *cpu) override
         {
             return 0;
         }
 
-        uint16_t read16u(offs_t addr, ProcessorDevice *cpu)
+        uint16_t read16u(offs_t addr, ProcessorDevice *cpu) override
         {
             return 0;
         }
 
-        uint32_t read32(offs_t addr, ProcessorDevice *cpu)
-        {
-            return 0;
-        }
-        
-        uint32_t read32u(offs_t addr, ProcessorDevice *cpu)
-        {
-            return 0;
-        }
-
-        uint64_t read64(offs_t addr, ProcessorDevice *cpu)
+        uint32_t read32(offs_t addr, ProcessorDevice *cpu) override
         {
             return 0;
         }
         
-        uint64_t read64u(offs_t addr, ProcessorDevice *cpu)
+        uint32_t read32u(offs_t addr, ProcessorDevice *cpu) override
+        {
+            return 0;
+        }
+
+        uint64_t read64(offs_t addr, ProcessorDevice *cpu) override
+        {
+            return 0;
+        }
+        
+        uint64_t read64u(offs_t addr, ProcessorDevice *cpu) override
         {
             return 0;
         }
 
 
-        void write8(offs_t addr, uint8_t data, ProcessorDevice *cpu)
+        void write8(offs_t addr, uint8_t data, ProcessorDevice *cpu) override
         {
         }
 
-        void write16(offs_t addr, uint16_t data, ProcessorDevice *cpu)
+        void write16(offs_t addr, uint16_t data, ProcessorDevice *cpu) override
         {
         }
 
-        void write16u(offs_t addr, uint16_t data, ProcessorDevice *cpu)
+        void write16u(offs_t addr, uint16_t data, ProcessorDevice *cpu) override
         {
         }
 
-        void write32(offs_t addr, uint32_t data, ProcessorDevice *cpu)
+        void write32(offs_t addr, uint32_t data, ProcessorDevice *cpu) override
         {
         }
         
-        void write32u(offs_t addr, uint32_t data, ProcessorDevice *cpu)
+        void write32u(offs_t addr, uint32_t data, ProcessorDevice *cpu) override
         {
         }
 
-        void write64(offs_t addr, uint64_t data, ProcessorDevice *cpu)
+        void write64(offs_t addr, uint64_t data, ProcessorDevice *cpu) override
         {
         }
         
-        void write64u(offs_t addr, uint64_t data, ProcessorDevice *cpu)
+        void write64u(offs_t addr, uint64_t data, ProcessorDevice *cpu) override
         {
         }
 
@@ -294,6 +294,62 @@ namespace aspace
 
             switch (eType | (level << 8) | config->getDataWidth() | (config->getAddrShift() & 0x3))
             {
+            // 8-bit data access
+            case 0x0000 | 0x0000 | 8:    bus.allocate<AddressSpaceSpecific<0, 0, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 8:    bus.allocate<AddressSpaceSpecific<1, 0, 0, LittleEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 8:    bus.allocate<AddressSpaceSpecific<0, 0, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 8:    bus.allocate<AddressSpaceSpecific<1, 0, 0, BigEndian>>(*this, space); break;
+
+            // 16-bit data access
+            case 0x0000 | 0x0000 | 16+0: bus.allocate<AddressSpaceSpecific<0, 1, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0000 | 16+1: bus.allocate<AddressSpaceSpecific<0, 1, 1, LittleEndian>>(*this, space); break;
+
+            case 0x0000 | 0x0100 | 16+0: bus.allocate<AddressSpaceSpecific<1, 1, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 16+1: bus.allocate<AddressSpaceSpecific<1, 1, 1, LittleEndian>>(*this, space); break;
+
+            case 0x0400 | 0x0000 | 16+0: bus.allocate<AddressSpaceSpecific<0, 1, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 16+1: bus.allocate<AddressSpaceSpecific<0, 1, 1, BigEndian>>(*this, space); break;
+
+            case 0x0400 | 0x0100 | 16+0: bus.allocate<AddressSpaceSpecific<1, 1, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 16+1: bus.allocate<AddressSpaceSpecific<1, 1, 1, BigEndian>>(*this, space); break;
+
+            // 32-bit data access
+            case 0x0000 | 0x0000 | 32+0: bus.allocate<AddressSpaceSpecific<0, 2, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0000 | 32+1: bus.allocate<AddressSpaceSpecific<0, 2, 1, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0000 | 32+2: bus.allocate<AddressSpaceSpecific<0, 2, 2, LittleEndian>>(*this, space); break;
+
+            case 0x0000 | 0x0100 | 32+0: bus.allocate<AddressSpaceSpecific<1, 2, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 32+1: bus.allocate<AddressSpaceSpecific<1, 2, 1, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 32+2: bus.allocate<AddressSpaceSpecific<1, 2, 2, LittleEndian>>(*this, space); break;
+
+            case 0x0400 | 0x0000 | 32+0: bus.allocate<AddressSpaceSpecific<0, 2, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 32+1: bus.allocate<AddressSpaceSpecific<0, 2, 1, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 32+2: bus.allocate<AddressSpaceSpecific<0, 2, 2, BigEndian>>(*this, space); break;
+
+            case 0x0400 | 0x0100 | 32+0: bus.allocate<AddressSpaceSpecific<1, 2, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 32+1: bus.allocate<AddressSpaceSpecific<1, 2, 1, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 32+2: bus.allocate<AddressSpaceSpecific<1, 2, 2, BigEndian>>(*this, space); break;
+
+            // 64-bit data access
+            case 0x0000 | 0x0000 | 64+0: bus.allocate<AddressSpaceSpecific<0, 2, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0000 | 64+1: bus.allocate<AddressSpaceSpecific<0, 2, 1, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0000 | 64+2: bus.allocate<AddressSpaceSpecific<0, 2, 2, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0000 | 64+3: bus.allocate<AddressSpaceSpecific<0, 2, 3, LittleEndian>>(*this, space); break;
+
+            case 0x0000 | 0x0100 | 64+0: bus.allocate<AddressSpaceSpecific<1, 2, 0, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 64+1: bus.allocate<AddressSpaceSpecific<1, 2, 1, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 64+2: bus.allocate<AddressSpaceSpecific<1, 2, 2, LittleEndian>>(*this, space); break;
+            case 0x0000 | 0x0100 | 64+3: bus.allocate<AddressSpaceSpecific<1, 2, 3, LittleEndian>>(*this, space); break;
+
+            case 0x0400 | 0x0000 | 64+0: bus.allocate<AddressSpaceSpecific<0, 2, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 64+1: bus.allocate<AddressSpaceSpecific<0, 2, 1, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 64+2: bus.allocate<AddressSpaceSpecific<0, 2, 2, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0000 | 64+3: bus.allocate<AddressSpaceSpecific<0, 2, 3, BigEndian>>(*this, space); break;
+
+            case 0x0400 | 0x0100 | 64+0: bus.allocate<AddressSpaceSpecific<1, 2, 0, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 64+1: bus.allocate<AddressSpaceSpecific<1, 2, 1, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 64+2: bus.allocate<AddressSpaceSpecific<1, 2, 2, BigEndian>>(*this, space); break;
+            case 0x0400 | 0x0100 | 64+3: bus.allocate<AddressSpaceSpecific<1, 2, 3, BigEndian>>(*this, space); break;
 
             default:
                 fmt::printf("%s: Invalid address configuration - address %d width %d shift\n",
