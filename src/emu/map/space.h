@@ -6,9 +6,13 @@
 #pragma once
 
 class ProcessorDevice;
+class UserConsole;
+class diMemory;
 
 namespace aspace
 {
+    class MemoryManager;
+    
     enum AddressType
     {
         asProgram = 0,  // Program address space
@@ -110,8 +114,12 @@ namespace aspace
     class AddressSpace : public AddressSpaceInstaller
     {
     public:
-        AddressSpace() = default;
+        AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space);
         virtual ~AddressSpace() = default;
+
+        // Setup initialization routines
+        void prepare(UserConsole *user);
+        void populate(UserConsole *user);
 
     protected:
         // Virtual function calls
@@ -131,10 +139,10 @@ namespace aspace
         virtual void write64(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
         virtual void write64u(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
 
-        // AddressType     space;
-        // cAddressConfig &config;
-        // Device         &device;
-        // MemoryManager  &manger;
+        AddressType     space;
+        cAddressConfig &config;
+        Device         &device;
+        MemoryManager  &manager;
 
         // Unmapped/no-operation read/write access
         HandlerEntry *unmapRead = nullptr;

@@ -9,7 +9,7 @@
 #include "emu/dimem.h"
 
 diMemory::diMemory(Device *owner)
-: DeviceInterface(owner, "memory")
+: DeviceInterface(owner, "memory"), owner(*owner)
 { }
 
 void diMemory::diCompleteConfig()
