@@ -3,8 +3,11 @@
 // Author:  Tim Stark
 // Date:    12/10/2021
 
+#pragma once
+
 class Machine;
 class diMemory;
+class UserConsole;
 
 namespace aspace
 {
@@ -14,6 +17,7 @@ namespace aspace
             MemoryManager(Machine &sys) : sysMachine(sys) {}
             ~MemoryManager() = default;
 
+            void init(UserConsole *user);
             void allocate(UserConsole *user, diMemory &bus);
 
         private:

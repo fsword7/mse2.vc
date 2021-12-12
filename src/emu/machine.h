@@ -13,10 +13,13 @@ public:
     Machine(const SystemConfig &config, cstag_t &sysName);
     ~Machine();
 
-    cstag_t getDeviceName() const { return std::string(sysDevice->getDeviceName()); }
+    inline cstag_t getDeviceName() const { return std::string(sysDevice->getDeviceName()); }
+    inline Device *getSystemDevice() const { return sysDevice; }
     
     static Machine *create(UserConsole *user, const SystemDriver *driver, cstag_t &devName);
 
+    void start(UserConsole *user);
+    
 private:
     const SystemConfig &config;
     cstag_t sysName;

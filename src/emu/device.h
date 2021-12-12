@@ -322,8 +322,8 @@ public:
         bool operator != (const Iterator &iter) { return iface != iter.iface; }
         Iterator operator ++ () { advance(); findInterface(); return *this; }
         Iterator operator ++ (int) { const Iterator result(*this); ++*this; return result; }
-        Device &operator * () { assert(iface != nullptr); return *iface; }
-        Device *operator -> () { return iface; }
+        InterfaceType &operator * () { assert(iface != nullptr); return *iface; }
+        InterfaceType *operator -> () { return iface; }
 
     private:
         void findInterface()

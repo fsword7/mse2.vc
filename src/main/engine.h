@@ -74,6 +74,7 @@ private:
     // Command function calls
     cmdStatus cmdCreate(UserConsole *user, args_t &args);
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
+    cmdStatus cmdStart(UserConsole *user, args_t &args);
 
     static command_t mseCommands[];
 

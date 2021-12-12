@@ -27,3 +27,18 @@ Machine *Machine::create(UserConsole *user, const SystemDriver *driver, cstag_t 
     return sysMachine;
 }
 
+void Machine::start(UserConsole *user)
+{
+    assert(sysDevice != nullptr);
+
+    try {
+
+        // Initializing memory management system
+        memoryManager.init(user);
+    }
+
+    catch (...)
+    {
+        fmt::printf("Unhandled exception\n");
+    }
+}

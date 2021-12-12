@@ -9,6 +9,7 @@ set (MSE_CPP_SRCS
     emu/machine.cpp
     emu/sysconfig.cpp
     emu/map/addrmap.cpp
+    emu/map/memmgr.cpp
     emu/map/setup.cpp
     emu/map/space.cpp
     main/commands.cpp
@@ -37,6 +38,7 @@ set (MSE_H_SRCS
     emu/map/he.h
     emu/map/hedr.h
     emu/map/map.h
+    emu/map/memmgr.h
     emu/map/maccess.h
     emu/map/space.h
     lib/util/osdcore.h
