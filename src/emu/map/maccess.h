@@ -3,6 +3,8 @@
 // Author:  Tim Stark (fsword007@gmail.com)
 // Date:    12/7/2021
 
+#pragma once
+
 namespace aspace
 {
     template <int Level, int dWidth, int aShift, endian_t eType>

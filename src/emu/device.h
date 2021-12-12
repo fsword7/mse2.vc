@@ -122,6 +122,8 @@ public:
         return new DeviceClass(config, devName, owner, std::forward<Args>(args)...);
     }
 
+    // For complete function calls, see them in templates.h file.
+    
     template <typename... Args>
     DeviceClass *operator () (SystemConfig &config, cstag_t &devName, Args&&... args) const;
 
@@ -179,7 +181,8 @@ public:
 
     void configure(SystemConfig &config);
     void addInterface(DeviceInterface *iface);
-    
+    void finishConfig();
+
     Device *findDevice(ctag_t *name);
 
     void registerObject(ObjectFinder *object);
@@ -228,12 +231,21 @@ protected:
 
 class DeviceInterface
 {
+    friend class Device;
+
 public:
-    DeviceInterface() = default;
+    DeviceInterface(Device *owner, ctag_t *name);
     virtual ~DeviceInterface() = default;
 
-private:
+    inline Device *getOwningDevice() const { return owner; }
+    inline ctag_t *getName() const         { return diName; }
 
+    // Virtual device interface function calls
+    virtual void diCompleteConfig() {}
+
+private:
+    Device *owner;
+    ctag_t *diName;
 };
 
 class DeviceIterator

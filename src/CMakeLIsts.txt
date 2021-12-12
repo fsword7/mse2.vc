@@ -4,6 +4,8 @@ set (MSE_CPP_SRCS
     emu/devcpu.cpp
     emu/devfind.cpp
     emu/devsys.cpp
+    emu/diexec.cpp
+    emu/dimem.cpp
     emu/machine.cpp
     emu/sysconfig.cpp
     emu/map/addrmap.cpp
@@ -25,6 +27,8 @@ set (MSE_H_SRCS
     emu/devcpu.h
     emu/devfind.h
     emu/devsys.h
+    emu/diexec.h
+    emu/dimem.h
     emu/driver.h
     emu/machine.h
     emu/templates.h

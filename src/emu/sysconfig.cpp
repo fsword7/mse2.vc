@@ -9,6 +9,13 @@ SystemConfig::SystemConfig(const SystemDriver &driver, cstag_t &name)
 : driver(driver)
 {
     createSystemDevice(driver.type, name, 0);
+
+    // Complete final configuration
+    for (auto &dev : DeviceIterator(*sysDevice))
+    {
+        fmt::printf("%s: completing final configuration\n", dev.getDeviceName());
+        dev.finishConfig();
+    }
 }
 
 Device *SystemConfig::createSystemDevice(const DeviceType &type, cstag_t &name, uint64_t clock)

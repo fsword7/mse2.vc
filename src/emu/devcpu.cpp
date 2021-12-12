@@ -8,7 +8,8 @@
 
 ProcessorDevice::ProcessorDevice(const SystemConfig &config, const DeviceType &type,
     cstag_t &devName, Device *owner, uint64_t clock)
-: Device(config, type, devName, owner, clock)
+: Device(config, type, devName, owner, clock),
+  diMemory(this), diExecute(this)
 {
     
 }

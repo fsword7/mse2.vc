@@ -7,3 +7,5 @@
 
 #include "emu/map/space.h"
 #include "emu/map/maccess.h"
+
+namespace map = aspace;

@@ -3,6 +3,8 @@
 // Author:  Tim Stark (fsword007@gmail.com)
 // Date:    Dec 7, 2021
 
+#pragma once
+
 class ProcessorDevice;
 
 namespace aspace
@@ -59,6 +61,7 @@ namespace aspace
         const AddressConfig *config;
     };
 
+    using AddressConfigList = std::vector<AddressSpaceConfig>;
     using cAddressConfig = const AddressConfig;
 
     class AddressSpaceInstaller

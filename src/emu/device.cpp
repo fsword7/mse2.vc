@@ -38,6 +38,12 @@ void Device::configure(SystemConfig &config)
     devConfigure(config);
 }
 
+void Device::finishConfig()
+{
+    for (auto *iface : ifaceList)
+        iface->diCompleteConfig();
+}
+
 void Device::registerObject(ObjectFinder *object)
 {
     objectList.push_back(object);
@@ -46,4 +52,12 @@ void Device::registerObject(ObjectFinder *object)
 bool Device::findObjects()
 {
     return false;   
+}
+
+// ********
+
+DeviceInterface::DeviceInterface(Device *owner, ctag_t *name)
+: owner(owner), diName(name)
+{
+    owner->addInterface(this);
 }

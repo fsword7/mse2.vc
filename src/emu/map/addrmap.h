@@ -9,6 +9,8 @@ namespace aspace
 {
     class AddressList;
 
+    using Constructor = NamedDelegate<void (AddressList &)>;
+    
     enum mapType
     {
         mapNone = 0,

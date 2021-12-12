@@ -5,6 +5,8 @@
 
 class UserConsole;
 
+#include "emu/map/memmgr.h"
+
 class Machine
 {
 public:
@@ -20,4 +22,5 @@ private:
     cstag_t sysName;
     Device *sysDevice = nullptr;
 
+    // MemoryManager memoryManager;
 };

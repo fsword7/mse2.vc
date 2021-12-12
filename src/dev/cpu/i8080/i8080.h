@@ -14,6 +14,11 @@ public:
         Device *owner, uint64_t clock);
     virtual ~i8080_cpuDevice() = default;
 
+protected:
+    map::AddressConfigList getAddressConfigList() const override;
+
+    map::AddressConfig mapProgramConfig;
+    map::AddressConfig mapIOPortConfig;
 };
 
 class i8080a_cpuDevice : public i8080_cpuDevice
