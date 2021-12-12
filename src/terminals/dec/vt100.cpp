@@ -16,6 +16,9 @@ void vt100_Device::vt100(SystemConfig &config)
     // fmt::printf("VT100 device configuration here.\n");
 
     i8080(config, cpu, "cpu", 0);
+    // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
+    // cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
+    
 }
 
 void vt100_Device::vt100_init()

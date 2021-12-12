@@ -10,6 +10,32 @@
 
 class diMemory : public DeviceInterface
 {
+    private:
+        template <typename T, typename U>
+        struct isRelatedClass {
+            static constexpr bool value = std::is_convertible<std::add_pointer<T>, std::add_pointer<U>>::value;
+        };
+
+        template <typename T, typename U>
+        struct isRelatedDevice {
+            static constexpr bool value = isDevice<T>::value && isRelatedClass<T, U>::value;
+        };
+
+        template <typename T, typename U>
+        struct isRelatedInterface {
+            static constexpr bool value = isInterface<T>::value && isRelatedClass<T, U>::value;
+        };
+
+        template <typename T, typename U>
+        struct isUnrelatedDevice {
+            static constexpr bool value = isDevice<T>::value && !isRelatedClass<T, U>::value;
+        };
+
+        template <typename T, typename U>
+        struct isUnrelatedInterface {
+            static constexpr bool value = isInterface<T>::value && !isRelatedClass<T, U>::value;
+        };
+
     public:
         diMemory(Device *owner);
         virtual ~diMemory() = default;
@@ -25,6 +51,37 @@ class diMemory : public DeviceInterface
             assert(space < mapAddressConfigList.size());
             return mapAddressConfigList[space];
         }
+
+        // template <typename T, typename U, typename Return, typename... Args>
+        // std::enable_if_t<isUnrelatedDevice<Device, T>::value>
+        // setAddressMap(map::AddressType space, T &obj, Return (U::*func)(Args...))
+        // {
+        //     setAddressMap(space, map::Constructor(func, obj.getDeviceName(), &dynamic_cast<U &>(obj)));
+        // }
+
+        template <typename T, typename Return, typename... Args>
+        std::enable_if_t<isRelatedDevice<Device, T>::value>
+        setAddressMap(map::AddressType space, Return (T::*func)(Args...))
+        {
+            const SystemConfig &config = getOwningDevice().getConfig();
+            Device *dev = config.getConfigDevice();
+
+            fmt::printf("%s: (related device) set address list map\n", dev->getDeviceName());
+            setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), &dynamic_cast<T &>(*dev)));
+        }
+
+        template <typename T, typename Return, typename... Args>
+        std::enable_if_t<isUnrelatedDevice<Device, T>::value>
+        setAddressMap(map::AddressType space, Return (T::*func)(Args...))
+        {
+            const SystemConfig &config = getOwningDevice().getConfig();
+            Device *dev = config.getConfigDevice();
+
+            fmt::printf("%s: (unrelated device) set address list map\n", dev->getDeviceName());
+            setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), &dynamic_cast<T &>(*dev)));
+        }
+
+        void setAddressMap(map::AddressType space, map::Constructor map);
 
         void diCompleteConfig() override;
 

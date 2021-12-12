@@ -12,6 +12,7 @@ diMemory::diMemory(Device *owner)
 : DeviceInterface(owner, "memory"), owner(*owner)
 { }
 
+
 void diMemory::diCompleteConfig()
 {
     map::AddressConfigList list = getAddressConfigList();
@@ -22,4 +23,11 @@ void diMemory::diCompleteConfig()
             mapAddressConfigList.resize(entry.type + 1);
         mapAddressConfigList[entry.type] = entry.config;
     }
+}
+
+void diMemory::setAddressMap(map::AddressType space, map::Constructor map)
+{
+    if (space >= mapAddressList.size())
+        mapAddressList.resize(space+1);
+    mapAddressList[space] = std::move(map);
 }
