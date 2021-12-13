@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <stack>
+#include <map>
 
 #include <filesystem>
 #include <type_traits>
