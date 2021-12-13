@@ -13,6 +13,7 @@ namespace map
 {
     class MemoryManager;
     class AddressList;
+    class AddressEntry;
 
     // enum AddressType
     // {
@@ -135,12 +136,16 @@ namespace map
     class AddressSpace : public AddressSpaceInstaller
     {
     public:
+        enum AccessType { accRead, accWrite };
+
         AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space);
         virtual ~AddressSpace() = default;
 
         // Setup initialization routines
         void prepare(UserConsole *user);
         void populate(UserConsole *user);
+
+        void populateEntry(const AddressEntry *entry, AccessType acc);
 
     protected:
         // Virtual function calls

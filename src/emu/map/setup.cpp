@@ -130,9 +130,176 @@ namespace map
         }
     }
 
+    void AddressSpace::populateEntry(const AddressEntry *entry, AccessType acc)
+    {
+        mapHandler data = (acc == accRead) ? entry->read : entry->write;
+
+        switch (data.type)
+        {
+            case mapNone:
+                return;
+
+            case mapROMSpace:
+                if (acc == accWrite)
+                    return;
+                // Do nothing
+            case mapRAMSpace:
+                break;
+            
+            case mapDelegate:
+                if (acc == accRead)
+                {
+                    switch (data.bits)
+                    {
+                        case 8:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read8);
+                            break;
+                        case 16:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read16);
+                            break;
+                        case 32:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read32);
+                            break;
+                        case 64:
+                             setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read64);
+                            break;
+                   }
+                }
+                else if (acc == accWrite)
+                {
+                    switch (data.bits)
+                    {
+                        case 8:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write8);
+                            break;
+                        case 16:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write16);
+                            break;
+                        case 32:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write32);
+                            break;
+                        case 64:
+                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write64);
+                            break;
+                   }
+                }
+                break;
+
+            case mapDelegateO:
+                if (acc == accRead)
+                {
+                    switch (data.bits)
+                    {
+                        case 8:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read8o);
+                            break;
+                        case 16:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read16o);
+                            break;
+                        case 32:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read32o);
+                            break;
+                        case 64:
+                             setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read64o);
+                            break;
+                   }
+                }
+                else if (acc == accWrite)
+                {
+                    switch (data.bits)
+                    {
+                        case 8:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write8o);
+                            break;
+                        case 16:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write16o);
+                            break;
+                        case 32:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write32o);
+                            break;
+                        case 64:
+                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write64o);
+                            break;
+                   }                    
+                }
+                break;
+
+            case mapDelegateOM:
+                if (acc == accRead)
+                {
+                    switch (data.bits)
+                    {
+                        case 8:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read8om);
+                            break;
+                        case 16:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read16om);
+                            break;
+                        case 32:
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read32om);
+                            break;
+                        case 64:
+                             setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->read64om);
+                            break;
+                   }
+                }
+                else if (acc == accWrite)
+                {
+                     switch (data.bits)
+                    {
+                        case 8:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write8om);
+                            break;
+                        case 16:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write16om);
+                            break;
+                        case 32:
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write32om);
+                            break;
+                        case 64:
+                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                                entry->write64om);
+                            break;
+                   }                   
+                }
+                break;
+        }
+    }
+
     void AddressSpace::populate(UserConsole *user)
     {
         fmt::printf("%s: Populating for %s address space\n",
             device.getDeviceName(), asInfo[space]);
+
+        assert(map != nullptr);
+
+        for (AddressEntry *entry : map->list)
+        {
+            populateEntry(entry, accRead);
+            populateEntry(entry, accWrite);
+        }
     }
 }
