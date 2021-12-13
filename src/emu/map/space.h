@@ -9,7 +9,7 @@ class ProcessorDevice;
 class UserConsole;
 class diMemory;
 
-namespace aspace
+namespace map
 {
     class MemoryManager;
     class AddressList;

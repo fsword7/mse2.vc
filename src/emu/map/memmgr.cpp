@@ -7,7 +7,7 @@
 #include "emu/machine.h"
 #include "emu/dimem.h"
 
-using namespace aspace;
+using namespace map;
 
 void MemoryManager::init(UserConsole *user)
 {

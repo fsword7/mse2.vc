@@ -27,7 +27,7 @@ void vt100_Device::vt100_init()
 
 }
 
-void vt100_Device::vt100_setMemoryMap(aspace::AddressList &map)
+void vt100_Device::vt100_setMemoryMap(map::AddressList &map)
 {
     map.setUnmappedHigh();
     map(0x0000, 0x1FFF).rom().region("vt100fw");
@@ -36,7 +36,7 @@ void vt100_Device::vt100_setMemoryMap(aspace::AddressList &map)
     map(0xA000, 0xBFFF).rom();
 }
 
-void vt100_Device::vt100_setIOPort(aspace::AddressList &map)
+void vt100_Device::vt100_setIOPort(map::AddressList &map)
 {
     map.setUnmappedHigh();
 }

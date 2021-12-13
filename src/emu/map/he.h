@@ -11,7 +11,7 @@
 #define HB_LEVEL1   16
 #define HB_LEVEL0   0
 
-namespace aspace
+namespace map
 {
     class AddressSpace;
 

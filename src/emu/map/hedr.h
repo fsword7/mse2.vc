@@ -5,7 +5,7 @@
 
 #pragma once
 
-namespace aspace
+namespace map
 {
     template <int highBits, int dWidth, int aShift>
     class HandlerReadDispatch : public HandlerRead<dWidth, aShift>

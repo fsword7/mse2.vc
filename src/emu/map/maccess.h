@@ -5,7 +5,7 @@
 
 #pragma once
 
-namespace aspace
+namespace map
 {
     template <int Level, int dWidth, int aShift, endian_t eType>
     class MemoryAccessSpecific

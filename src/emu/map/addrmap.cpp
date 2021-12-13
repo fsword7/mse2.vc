@@ -8,7 +8,7 @@
 #include "emu/map/addrmap.h"
 #include "emu/dimem.h"
 
-using namespace aspace;
+using namespace map;
 
 AddressList::AddressList(Device &dev, AddressType space)
 : device(dev), addrSpace(space)

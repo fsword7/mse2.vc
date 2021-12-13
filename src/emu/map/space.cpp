@@ -8,7 +8,7 @@
 #include "emu/map/memmgr.h"
 #include "emu/dimem.h"
 
-namespace aspace
+namespace map
 {
 
     template <int Level, int dWidth, int aShift, endian_t eType>

@@ -25,5 +25,5 @@ private:
     cstag_t sysName;
     Device *sysDevice = nullptr;
 
-    aspace::MemoryManager memoryManager;
+    map::MemoryManager memoryManager;
 };

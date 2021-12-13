@@ -18,8 +18,8 @@ public:
     void vt100(SystemConfig &config);
     void vt100_init();
 
-    void vt100_setMemoryMap(aspace::AddressList &map);
-    void vt100_setIOPort(aspace::AddressList &map);
+    void vt100_setMemoryMap(map::AddressList &map);
+    void vt100_setIOPort(map::AddressList &map);
     
 private:
     RequiredDevice<i8080_cpuDevice> cpu;

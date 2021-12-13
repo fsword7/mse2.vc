@@ -9,7 +9,7 @@
 #include "emu/dimem.h"
 #include "main/user.h"
 
-namespace aspace
+namespace map
 {
     static ctag_t *asInfo[] = { "program", "data", "I/O port" };
 

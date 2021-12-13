@@ -9,7 +9,7 @@ class Machine;
 class diMemory;
 class UserConsole;
 
-namespace aspace
+namespace map
 {
     class MemoryManager
     {

@@ -5,7 +5,7 @@
 
 #pragma once
 
-namespace aspace
+namespace map
 {
     class AddressList;
 
