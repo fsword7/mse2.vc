@@ -14,12 +14,12 @@ namespace map
     class MemoryManager;
     class AddressList;
 
-    enum AddressType
-    {
-        asProgram = 0,  // Program address space
-        asData,         // Data address space
-        asIOPort        // I/O port address space
-    };
+    // enum AddressType
+    // {
+    //     asProgram = 0,  // Program address space
+    //     asData,         // Data address space
+    //     asIOPort        // I/O port address space
+    // };
     
     class AddressConfig
     {
@@ -43,6 +43,26 @@ namespace map
         inline uint16_t getAddrPrecision() const { return addrPrecision; }
         inline int16_t  getAddrShift() const     { return addrShift; }
         inline int16_t  getPageShift() const     { return pageShift; }
+
+        offs_t convertAddressToByte(offs_t offset) const
+        {
+            return (addrShift < 0) ? (offset << -addrShift) : (offset >> addrShift);
+        }
+
+        offs_t convertByteToAddress(offs_t bytes) const
+        {
+            return (addrShift >= 0) ? (bytes << addrShift) : (bytes >> -addrShift);
+        }
+
+        offs_t convertAddressToByteEnd(offs_t offset) const
+        {
+            return (addrShift < 0) ? ((offset << -addrShift) | ((1ull << -addrShift) - 1ull)) : (offset >> addrShift);
+        }
+
+        offs_t convertByteToAddressEnd(offs_t bytes) const
+        {
+            return (addrShift >= 0) ? ((bytes << addrShift) | ((1ull << addrShift) - 1ull)) : (bytes >> -addrShift);
+        }
 
     private:
         ctag_t *name = nullptr;

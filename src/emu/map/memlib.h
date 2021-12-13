@@ -11,15 +11,21 @@ namespace map
     {
     public:
         MemoryBlock(cstag_t &name, size_t bytes, int width, endian_t type)
-        : name(name), length(bytes), width(width), eType(type)
+        : name(name), size(bytes), width(width), eType(type)
         {
+            assert(width == 8 || width == 16 || width == 32 || width == 64);
+            
+            // Now allocating memory space
+            data.resize(bytes);
         }
+
+        inline uint8_t *getData() const { return data.data(); }
 
     private:
         mutable std::vector<uint8_t> data;
 
         cstag_t     name;
-        size_t      length;
+        size_t      size;
         int         width;
         endian_t    eType;
     };
@@ -32,12 +38,20 @@ namespace map
         {
             assert(width == 8 || width == 16 || width == 32 || width == 64);
 
+            data.resize(bytes);
         }
 
+        inline uint8_t *getData() const { return data.data(); }
+        inline size_t getSize() const   { return data.size(); }
+
+        uint8_t *getBase() { return data.size() > 0 ? data.data() : nullptr; }
+        uint8_t *getEnd()  { return getBase() + data.size(); }
+
     private:
-        std::vector<uint8_t> data;
+        mutable std::vector<uint8_t> data;
 
         Machine     *system = nullptr;
+        size_t      size;
         cstag_t     name;
         int         width;
         endian_t    eType;
@@ -52,6 +66,36 @@ namespace map
         {
         }
 
+        inline uint8_t *getData() const { return reinterpret_cast<uint8_t *>(data); }
+        inline cstag_t &getErrorMessage() const { return errMessage; }
+
+        bool compare(size_t bytes, int precision, int width, endian_t type)
+        {
+            if (width != bitWidth)
+            {
+                errMessage = fmt::sprintf("share '%s' found with unexpected width (expected %d, found %d)",
+                    name, width, bitWidth);
+                return false;
+            }
+
+            if (bytes != size)
+            {
+                errMessage = fmt::sprintf("share '%s' found with unexpected size (expected %0*llX, found %0*llX)",
+                    name, precision, bytes, precision, size);
+                return false;
+            }
+
+            if (type != eType)
+            {
+                errMessage = fmt::sprintf("share '%s' found with unexpected endian type (expected %s, found %s)",
+                    name, type  == LittleEndian ? "little" : "big",
+                    eType == LittleEndian ? "little" : "big");
+                return false;
+            }
+
+            return true;
+        }
+
     private:
         void        *data;
         size_t      size;
@@ -59,6 +103,8 @@ namespace map
         endian_t    eType;
         int         bitWidth;
         int         byteWidth;
+
+        std::string errMessage;
     };
 
     class MemoryBank

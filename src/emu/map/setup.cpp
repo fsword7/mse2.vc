@@ -47,6 +47,86 @@ namespace map
                 config.getAddrPrecision(), entry->addrMask,
                 config.getAddrPrecision(), entry->addrMirror);
 
+            if (entry->shareName != nullptr)
+            {
+                MemoryShare *share = manager.findShare(entry->shareName);
+
+                if (share == nullptr)
+                {
+                    // Allocate new shared memory space
+                    size_t bytes = config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart);
+
+                    fmt::printf("%s(%s): creating share '%s' of length %0*llX (%d) bytes\n",
+                        device.getDeviceName(), asInfo[space], entry->shareName,
+                        config.getAddrPrecision(), bytes, bytes);
+
+                    share = manager.allocateShare(device, space, entry->shareName,
+                        bytes, config.getDataWidth(), config.getEndianType());
+                    entry->memData = (uint8_t *)share->getData();
+                }
+                else
+                {
+                    // Assign existing shared memory space
+                    size_t bytes = config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart);
+
+                    if (share->compare(bytes, config.getAddrPrecision(), config.getDataWidth(), config.getEndianType()))
+                        entry->memData = (uint8_t *)share->getData();
+                    else
+                    {
+                        fmt::printf("%s(%s): %s\n", device.getDeviceName(), asInfo[space],
+                            share->getErrorMessage());
+                        // Allocating anonymous memory space safely as default below...
+                    }
+                }
+            }
+
+            if (entry->regionName != nullptr)
+            {
+                MemoryRegion *region = manager.findRegion(entry->regionName);
+
+                if (region != nullptr)
+                {
+                    // Determine ending address for expandable memory space
+                    if (region->getSize() < (entry->addrEnd - entry->addrStart + 1))
+                    {
+                        fmt::printf("%s(%s): %0*llX-%0*llX - expandable range up to %0*llX\n",
+                            device.getDeviceName(), asInfo[space],
+                            config.getAddrPrecision(), entry->addrStart,
+                            config.getAddrPrecision(), (entry->addrStart + region->getSize()) - 1,
+                            config.getAddrPrecision(), entry->addrEnd,
+                            entry->regionName);
+
+                        // Adjust new ending address for desired memory length
+                        entry->addrEnd = entry->addrStart + region->getSize() - 1;
+                    }
+
+                    // Assign region memory space.
+                    entry->memData = region->getData();
+                }
+                else
+                {
+                    fmt::printf("%s(%s): %0*llX-%0*llX - non-existant region '%s'\n",
+                        device.getDeviceName(), asInfo[space],
+                        config.getAddrPrecision(), entry->addrStart,
+                        config.getAddrPrecision(), entry->addrEnd,
+                        entry->regionName);
+
+                    // Allocating anonymous memory space safely as default below...
+                }
+            }
+
+            if (entry->memData == nullptr && (entry->read.type == mapROMSpace ||
+                entry->read.type == mapRAMSpace || entry->write.type == mapRAMSpace))
+            {
+                fmt::printf("%s(%s): %0*llX-%0*llX - allocating anonymous memory space\n",
+                    device.getDeviceName(), asInfo[space],
+                    config.getAddrPrecision(), entry->addrStart,
+                    config.getAddrPrecision(), entry->addrEnd);
+
+                entry->memData = manager.allocateMemory(device, space, "(anonymous)",
+                    config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
+                    config.getDataWidth(), config.getEndianType());
+            }
         }
     }
 

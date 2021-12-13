@@ -46,6 +46,16 @@ typedef const char          ctag_t;
 typedef const std::string   cstag_t;
 typedef std::string         stag_t;
 
+namespace map
+{
+    enum AddressType
+    {
+        asProgram = 0,  // Program address space
+        asData,         // Data address space
+        asIOPort        // I/O port address space
+    };
+}
+
 // OSD core package
 #include "lib/util/osdcore.h"
 

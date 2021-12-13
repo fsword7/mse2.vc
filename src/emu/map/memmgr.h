@@ -13,6 +13,8 @@ class UserConsole;
 
 namespace map
 {
+    enum AddressType;
+
     class MemoryManager
     {
         public:
@@ -28,6 +30,24 @@ namespace map
 
             void init(UserConsole *user);
             void allocate(UserConsole *user, diMemory &bus);
+
+            // Memory block function calls
+            uint8_t *allocateMemory(Device &owner, AddressType space, cstag_t &name,
+                size_t bytes, int dWidth, endian_t eTYpe);
+
+            // Memory region function calls
+            MemoryRegion *allocateRegion(Device &owner, AddressType space, cstag_t &name,
+                size_t bytes, int dWidth, endian_t eType);
+            void releaeRegion(cstag_t &name);
+            MemoryRegion *findRegion(cstag_t &name);
+
+            // Memory share function calls
+            MemoryShare *allocateShare(Device &owner, AddressType space, cstag_t &name,
+                size_t bytes, int dWidth, endian_t eType);
+            MemoryShare *findShare(cstag_t &name);
+
+            // Memory block function calls
+            MemoryBank *findBank(cstag_t &name);
 
         private:
             Machine &sysMachine;

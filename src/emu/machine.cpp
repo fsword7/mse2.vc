@@ -31,14 +31,14 @@ void Machine::start(UserConsole *user)
 {
     assert(sysDevice != nullptr);
 
-    try {
+    // try {
 
         // Initializing memory management system
         memoryManager.init(user);
-    }
+    // }
 
-    catch (...)
-    {
-        fmt::printf("Unhandled exception\n");
-    }
+    // catch (...)
+    // {
+    //     fmt::printf("Unhandled exception\n");
+    // }
 }
