@@ -6,6 +6,9 @@
 #include "emu/core.h"
 #include "emu/map/map.h"
 #include "emu/map/memmgr.h"
+#include "emu/map/hedr.h"
+#include "emu/map/hedw.h"
+
 #include "emu/dimem.h"
 
 namespace map
@@ -37,12 +40,154 @@ namespace map
             // Global address range for dispatch calls
             HandlerEntry::range r = { 0, static_cast<offs_t>(~0ull >> ((sizeof(offs_t) * 8) - addrWidth)) };
 
+            // new HandlerReadDispatch<4, dWidth, aShift>(this, r, nullptr);
+
             switch (addrWidth)
             {
-                // case 4:
-                //     rootRead = new HandlerReadDispatch<4, dWidth, aShift>(this, r, unmapRead);
-                //     rootWrite = new HandlerWriteDispatch<4, dWidth, aShift>(this, r, unmapWrite);
-                //     break;
+                case 4:
+                    rootRead = new HandlerReadDispatch<4, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<4, dWidth, aShift>(this, r, nullptr);
+                    break;
+                
+                case 5:
+                    rootRead = new HandlerReadDispatch<5, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<5, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 6:
+                    rootRead = new HandlerReadDispatch<6, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<6, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 7:
+                    rootRead = new HandlerReadDispatch<7, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<7, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 8:
+                    rootRead = new HandlerReadDispatch<8, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<8, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 9:
+                    rootRead = new HandlerReadDispatch<9, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<9, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 10:
+                    rootRead = new HandlerReadDispatch<10, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<10, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 11:
+                    rootRead = new HandlerReadDispatch<11, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<11, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 12:
+                    rootRead = new HandlerReadDispatch<12, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<12, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 13:
+                    rootRead = new HandlerReadDispatch<13, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<13, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 14:
+                    rootRead = new HandlerReadDispatch<14, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<14, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 15:
+                    rootRead = new HandlerReadDispatch<15, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<15, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 16:
+                    rootRead = new HandlerReadDispatch<16, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<16, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 17:
+                    rootRead = new HandlerReadDispatch<17, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<17, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 18:
+                    rootRead = new HandlerReadDispatch<18, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<18, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 19:
+                    rootRead = new HandlerReadDispatch<19, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<19, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 20:
+                    rootRead = new HandlerReadDispatch<20, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<20, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 21:
+                    rootRead = new HandlerReadDispatch<21, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<21, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 22:
+                    rootRead = new HandlerReadDispatch<22, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<22, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 23:
+                    rootRead = new HandlerReadDispatch<23, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<23, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 24:
+                    rootRead = new HandlerReadDispatch<24, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<24, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 25:
+                    rootRead = new HandlerReadDispatch<25, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<25, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 26:
+                    rootRead = new HandlerReadDispatch<26, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<26, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 27:
+                    rootRead = new HandlerReadDispatch<27, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<27, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 28:
+                    rootRead = new HandlerReadDispatch<28, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<28, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 29:
+                    rootRead = new HandlerReadDispatch<29, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<29, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 30:
+                    rootRead = new HandlerReadDispatch<30, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<30, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 31:
+                    rootRead = new HandlerReadDispatch<31, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<31, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 32:
+                    rootRead = new HandlerReadDispatch<32, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<32, dWidth, aShift>(this, r, nullptr);
+                    break;
             }
 
             fmt::printf("%s: Global address range %0*llX - %0*llX (%d-bit addressing)\n",

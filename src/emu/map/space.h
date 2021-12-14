@@ -144,8 +144,18 @@ namespace map
         virtual ~AddressSpace() = default;
 
         uint64_t getUnmapped() const { return unmapValue; }
-        HandlerEntry *getUnmappedRead() const { return unmapRead; }
-        HandlerEntry *getUnmappedWrite() const { return unmapWrite; }
+        
+        template <int dWidth, int aShift>
+        HandlerReadUnmapped<dWidth, aShift> *getUnmappedRead() const 
+        { 
+            return static_cast<HandlerReadUnmapped<dWidth, aShift> *>(unmapRead);
+        }
+
+        template <int dWidth, int aShift>
+        HandlerWriteUnmapped<dWidth, aShift> *getUnmappedWrite() const
+        { 
+            return static_cast<HandlerWriteUnmapped<dWidth, aShift> *>(unmapWrite);
+        }
         
         // Setup initialization routines
         void prepare(UserConsole *user);

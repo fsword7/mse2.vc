@@ -5,6 +5,7 @@
 
 #include "emu/core.h"
 #include "emu/map/he.h"
+#include "emu/map/heun.h"
 #include "emu/map/space.h"
 #include "emu/map/hedr.h"
 

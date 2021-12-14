@@ -287,6 +287,9 @@ namespace map
                    }                   
                 }
                 break;
+
+            default:
+                break;
         }
     }
 
