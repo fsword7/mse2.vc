@@ -102,6 +102,7 @@ namespace map
         virtual ~HandlerRead() = default;
 
         virtual uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu = nullptr) const = 0;
+        virtual void *getAccess(offs_t offset) const { return nullptr; }
     };
 
     template <int dWidth, int aShift>
@@ -119,6 +120,7 @@ namespace map
         virtual ~HandlerWrite() = default;
 
         virtual void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu = nullptr) const = 0;
+        virtual void *getAccess(offs_t offset) const { return nullptr; }
     };
 
 }

@@ -7,7 +7,7 @@
 
 namespace map
 {
-    template <dWidth, aShift>
+    template <int dWidth, int aShift>
     class HandlerReadAddress : public HandlerRead<dWidth, aShift>
     {
     public:
@@ -31,7 +31,7 @@ namespace map
         offs_t maskAddress = 0;
     };
 
-    template <dWidth, aShift>
+    template <int dWidth, int aShift>
     class HandlerWriteAddress : public HandlerWrite<dWidth, aShift>
     {
     public:

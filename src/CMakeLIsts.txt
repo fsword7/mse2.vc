@@ -48,6 +48,7 @@ set (MSE_H_SRCS
     emu/map/hea.h
     emu/map/hedr.h
     emu/map/hedw.h
+    emu/map/hem.h
     emu/map/heun.h
     emu/map/map.h
     emu/map/memlib.h
