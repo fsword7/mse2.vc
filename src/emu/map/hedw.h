@@ -1,21 +1,21 @@
-// hedr.h - read handler entry package - dispatch
+// hedw.h - Write Handler Entry - Dispatch
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/8/2021
+// Author:  Tim Stark
+// Date:    12/14/2021
 
 #pragma once
 
 namespace map
 {
     template <int highBits, int dWidth, int aShift>
-    class HandlerReadDispatch : public HandlerRead<dWidth, aShift>
+    class HandlerWriteDispatch : public HandlerWrite<dWidth, aShift>
     {
     public:
         using uintx_t = typename HandlerSize<dWidth>::uintx_t;
 
-        HandlerReadDispatch(AddressSpace *space, const HandlerEntry::range &init,
-            HandlerRead<dWidth, aShift> *handler = nullptr)
-        : HandlerRead<dWidth, aShift>(space, HandlerEntry::heDispatch)
+        HandlerWriteDispatch(AddressSpace *space, const HandlerEntry::range &init,
+            HandlerWrite<dWidth, aShift> *handler = nullptr)
+        : HandlerWrite<dWidth, aShift>(space, HandlerEntry::heDispatch)
         {
             // Initialize dispatch table
             // if (handler == nullptr)
@@ -29,22 +29,22 @@ namespace map
             }
         }
 
-        ~HandlerReadDispatch()
+        ~HandlerWriteDispatch()
         {
             // Clear all dispatch table
             for (int idx = 0; idx < count; idx++)
                 dispatch[idx]->unref();
         }
 
-        HandlerRead<dWidth, aShift> *const *getDispatch() const { return dispatch; }
+        HandlerWrite<dWidth, aShift> *const *getDispatch() const { return dispatch; }
 
         std::string getName() { return "dispatch"; }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
         {
             offs_t off = (offset >> lowBits) & bitMask;
             assert(dispatch[off] != nullptr);
-            return dispatch[off]->read(offset, mask);
+            dispatch[off]->write(offset, data, mask);
         }
 
     protected:
@@ -58,7 +58,7 @@ namespace map
         static constexpr offs_t   highMask = makeBitmask<offs_t>(highBits) ^ lowMask;
         static constexpr offs_t   upMask   = ~makeBitmask<offs_t>(highBits);
 
-        HandlerRead<dWidth, aShift> *dispatch[count];
+        HandlerWrite<dWidth, aShift> *dispatch[count];
         HandlerEntry::range ranges[count];
     };
 }

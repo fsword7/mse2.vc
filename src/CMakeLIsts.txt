@@ -9,6 +9,14 @@ set (MSE_CPP_SRCS
     emu/machine.cpp
     emu/sysconfig.cpp
     emu/map/addrmap.cpp
+    emu/map/hedr0.cpp
+    emu/map/hedr1.cpp
+    emu/map/hedr2.cpp
+    emu/map/hedr3.cpp
+    emu/map/hedw0.cpp
+    emu/map/hedw1.cpp
+    emu/map/hedw2.cpp
+    emu/map/hedw3.cpp
     emu/map/heun.cpp
     emu/map/memmgr.cpp
     emu/map/setup.cpp
@@ -37,7 +45,9 @@ set (MSE_H_SRCS
     emu/sysconfig.h
     emu/map/addrmap.h
     emu/map/he.h
+    emu/map/hea.h
     emu/map/hedr.h
+    emu/map/hedw.h
     emu/map/heun.h
     emu/map/map.h
     emu/map/memlib.h

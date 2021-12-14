@@ -144,6 +144,8 @@ namespace map
         virtual ~AddressSpace() = default;
 
         uint64_t getUnmapped() const { return unmapValue; }
+        HandlerEntry *getUnmappedRead() const { return unmapRead; }
+        HandlerEntry *getUnmappedWrite() const { return unmapWrite; }
         
         // Setup initialization routines
         void prepare(UserConsole *user);
