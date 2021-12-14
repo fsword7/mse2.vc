@@ -144,6 +144,7 @@ namespace map
                     return;
                 // Do nothing
             case mapRAMSpace:
+                setMemorySpace(entry->addrStart, entry->addrEnd, entry->addrMirror, entry->memData, acc);
                 break;
             
             case mapDelegate:

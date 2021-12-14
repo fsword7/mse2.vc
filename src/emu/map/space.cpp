@@ -48,8 +48,8 @@ namespace map
             fmt::printf("%s: Global address range %0*llX - %0*llX (%d-bit addressing)\n",
                 dev.getDeviceName(), config.getAddrPrecision(), r.start,
                 config.getAddrPrecision(), r.end, addrWidth);
-            // fmt::printf("%s: Global address mask: %llX Unmapped value: %02X\n",
-            //     dev.getDeviceName(), addrMask, unmapValue);
+            fmt::printf("%s: Global address mask: %0*llX Unmapped value: %02X\n",
+                dev.getDeviceName(), config.getAddrPrecision(), addrMask, unmapValue);
         }
 
         uint8_t read8(offs_t addr, ProcessorDevice *cpu) override
@@ -116,6 +116,42 @@ namespace map
         {
         }
 
+        void convertAddressMirror(offs_t start, offs_t end, offs_t mirror,
+            offs_t &nstart, offs_t &nend, offs_t &nmask, offs_t &nmirror)
+        {
+            offs_t lowMask    = (config.getDataWidth() >> config.getAddrShift()) - 1;
+            offs_t setBits    = start | end;
+            offs_t changeBits = start ^ end;
+
+            changeBits |= changeBits >> 1;
+            changeBits |= changeBits >> 2;
+            changeBits |= changeBits >> 4;
+            changeBits |= changeBits >> 8;
+            changeBits |= changeBits >> 16;
+
+            nstart  = start;
+            nend    = end;
+            nmask   = changeBits;
+            nmirror = mirror;
+        }
+
+        void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) override
+        {
+            assert(data != nullptr);
+
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            if (acc == accRead)
+            {
+
+            }
+
+            if (acc == accWrite)
+            {
+
+            }
+        }
 
         // 8-bit read device delegate call setup
         void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  const read8d_t &handler) override

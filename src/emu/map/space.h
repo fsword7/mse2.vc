@@ -97,6 +97,10 @@ namespace map
         virtual ~AddressSpaceInstaller() = default;
 
     public:
+        enum AccessType { accRead, accWrite };
+
+        virtual void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) = 0;
+
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const read8d_t &handler) = 0;
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const read8do_t &handler) = 0;
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const read8dom_t &handler) = 0;
@@ -136,8 +140,6 @@ namespace map
     class AddressSpace : public AddressSpaceInstaller
     {
     public:
-        enum AccessType { accRead, accWrite };
-
         AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space);
         virtual ~AddressSpace() = default;
 
