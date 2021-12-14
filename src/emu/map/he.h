@@ -14,7 +14,8 @@
 namespace map
 {
     class AddressSpace;
-
+    class ProcessorDevice;
+    
     // Data width - types
     template <int dWidth> struct HandlerSize { };
     template <> struct HandlerSize<0> { using uintx_t = uint8_t; };
@@ -98,6 +99,9 @@ namespace map
         : HandlerEntry(space, flags)
         { }
 
+        virtual ~HandlerRead() = default;
+
+        virtual uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu = nullptr) const = 0;
     };
 
     template <int dWidth, int aShift>
@@ -112,6 +116,9 @@ namespace map
         : HandlerEntry(space, flags)
         { }
         
+        virtual ~HandlerWrite() = default;
+
+        virtual void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu = nullptr) const = 0;
     };
 
 }

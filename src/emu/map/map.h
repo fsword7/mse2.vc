@@ -4,6 +4,7 @@
 // Date:    12/7/2021
 
 #include "emu/map/he.h"
+#include "emu/map/heun.h"
 
 #include "emu/map/space.h"
 #include "emu/map/maccess.h"

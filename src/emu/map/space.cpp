@@ -29,10 +29,10 @@ namespace map
             Device &dev = bus.getOwningDevice();
 
             // Set new unmapped/nop dispatch calls
-            // unmapRead = new HandlerReadUnmapped<dWidth, aShift>(this);
-            // unmapWrite = new HandlerWriteUnmapped<dWidth, aSHift>(this);
-            // nopRead = new HandlerReadNop<aWidth, aShift>(this);
-            // nopWrite = new HandlerWriteNop<aWifth, aShift>(this);
+            unmapRead = new HandlerReadUnmapped<dWidth, aShift>(this);
+            unmapWrite = new HandlerWriteUnmapped<dWidth, aShift>(this);
+            nopRead = new HandlerReadNop<dWidth, aShift>(this);
+            nopWrite = new HandlerWriteNop<dWidth, aShift>(this);
 
             // Global address range for dispatch calls
             HandlerEntry::range r = { 0, static_cast<offs_t>(~0ull >> ((sizeof(offs_t) * 8) - addrWidth)) };
@@ -40,8 +40,8 @@ namespace map
             switch (addrWidth)
             {
                 // case 4:
-                //     rootRead = new HandlerReadDispatch<4, dWidth, aShift>(this, r, nullptr);
-                //     rootWrite = new HandlerWriteDispatch<4, dWidth, aShift>(this, r, nullptr);
+                //     rootRead = new HandlerReadDispatch<4, dWidth, aShift>(this, r, unmapRead);
+                //     rootWrite = new HandlerWriteDispatch<4, dWidth, aShift>(this, r, unmapWrite);
                 //     break;
             }
 

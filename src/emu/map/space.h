@@ -143,6 +143,8 @@ namespace map
         AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space);
         virtual ~AddressSpace() = default;
 
+        uint64_t getUnmapped() const { return unmapValue; }
+        
         // Setup initialization routines
         void prepare(UserConsole *user);
         void populate(UserConsole *user);
