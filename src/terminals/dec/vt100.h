@@ -10,7 +10,8 @@ class vt100_Device : public SystemDevice
 public:
     vt100_Device(const SystemConfig &config, const DeviceType &type, cstag_t &devName, uint64_t clock)
     : SystemDevice(config, type, devName, clock),
-      cpu(*this, "i8080")
+      cpu(*this, "i8080"),
+      crt(*this, "VT100_Video")
     {
 
     }
@@ -23,4 +24,5 @@ public:
     
 private:
     RequiredDevice<i8080_cpuDevice> cpu;
+    RequiredDevice<vt100video_t> crt;
 };

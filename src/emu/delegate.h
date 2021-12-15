@@ -285,6 +285,8 @@ public:
     }
 };
 
+// FUNC macro definiton for delegate calls
+#define FUNC(func) &func, #func
 
 using read8d_t     = DeviceDelegate<uint8_t ()>;
 using read8do_t    = DeviceDelegate<uint8_t (offs_t)>;

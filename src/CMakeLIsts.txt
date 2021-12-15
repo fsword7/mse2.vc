@@ -1,5 +1,6 @@
 set (MSE_CPP_SRCS
     dev/cpu/i8080/i8080.cpp
+    dev/video/dec/vt100.cpp
     emu/device.cpp
     emu/devcpu.cpp
     emu/devfind.cpp
@@ -31,6 +32,7 @@ set (MSE_CPP_SRCS
 
 set (MSE_H_SRCS
     dev/cpu/i8080/i8080.h
+    dev/video/dec/vt100.h
     emu/core.h
     emu/delegate.h
     emu/device.h
