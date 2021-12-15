@@ -229,6 +229,8 @@ public:
 
     inline ctag_t *getName() const { return fncName; }
 
+    NamedDelegate &operator = (const NamedDelegate &src) = default;
+
 private:
     ctag_t *fncName = nullptr;
 };
@@ -243,7 +245,7 @@ public:
     { }
 
 private:
-    Device &base;
+    std::reference_wrapper<Device> base;
     ctag_t *devName = nullptr;
 };
 
@@ -259,6 +261,8 @@ private:
 
 public:
     explicit DeviceDelegate(Device &owner) : nbase(), DeviceDelegateHelper(owner) {}
+
+    DeviceDelegate &operator = (DeviceDelegate &src) = default;
 
     template <class D>
     DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (D::*func)(Args...), ctag_t *fncName)

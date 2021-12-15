@@ -104,20 +104,139 @@ namespace map
 
     public:
         // ROM/RAM access list
-        AddressEntry &ram()                 { read.type = mapRAMSpace; write.type = mapRAMSpace; return *this; }
-        AddressEntry &rom()                 { read.type = mapROMSpace; write.type = mapNOP;      return *this; }
-        AddressEntry &ronly()               { read.type = mapRAMSpace;  return *this; }
-        AddressEntry &wonly()               { write.type = mapRAMSpace; return *this; }
+        AddressEntry  &ram()                 { read.type = mapRAMSpace; write.type = mapRAMSpace; return *this; }
+        AddressEntry  &rom()                 { read.type = mapROMSpace; write.type = mapNOP;      return *this; }
+        AddressEntry  &ronly()               { read.type = mapRAMSpace;  return *this; }
+        AddressEntry  &wonly()               { write.type = mapRAMSpace; return *this; }
 
-        AddressEntry &expandable()          { expFlag = true; return *this; }
-        AddressEntry &unexpandable()        { expFlag = false; return *this; }
-        AddressEntry &size(offs_t size)     { memSize = size; return *this; }
+        AddressEntry  &expandable()          { expFlag = true; return *this; }
+        AddressEntry  &unexpandable()        { expFlag = false; return *this; }
+        AddressEntry  &size(offs_t size)     { memSize = size; return *this; }
 
-        AddressEntry &mirror(offs_t bits)   { addrMirror = bits; return *this; }
-        AddressEntry &mask(uint64_t mask);
+        AddressEntry  &mirror(offs_t bits)   { addrMirror = bits; return *this; }
+        AddressEntry  &mask(uint64_t mask);
 
-        AddressEntry &region(ctag_t *name, offs_t off = 0);
-        AddressEntry &share(ctag_t *name)   { shareName = name; return *this; }
+        AddressEntry  &region(ctag_t *name, offs_t off = 0);
+        AddressEntry  &share(ctag_t *name)   { shareName = name; return *this; }
+
+        AddressEntry  &r(read8d_t func);
+        AddressEntry  &r(read8do_t func);
+        AddressEntry  &r(read8dom_t func);
+
+        AddressEntry  &r(read16d_t func);
+        AddressEntry  &r(read16do_t func);
+        AddressEntry  &r(read16dom_t func);
+
+        AddressEntry  &r(read32d_t func);
+        AddressEntry  &r(read32do_t func);
+        AddressEntry  &r(read32dom_t func);
+
+        AddressEntry  &r(read64d_t func);
+        AddressEntry  &r(read64do_t func);
+        AddressEntry  &r(read64dom_t func);
+
+        AddressEntry  &w(write8d_t func);
+        AddressEntry  &w(write8do_t func);
+        AddressEntry  &w(write8dom_t func);
+
+        AddressEntry  &w(write16d_t func);
+        AddressEntry  &w(write16do_t func);
+        AddressEntry  &w(write16dom_t func);
+
+        AddressEntry  &w(write32d_t func);
+        AddressEntry  &w(write32do_t func);
+        AddressEntry  &w(write32dom_t func);
+
+        AddressEntry  &w(write64d_t func);
+        AddressEntry  &w(write64do_t func);
+        AddressEntry  &w(write64dom_t func);
+
+        // Implicit delegate function calls
+
+        template <typename T, bool Required>
+        static Device &findDevice(const DeviceFinder<T, Required> &finder)
+        {
+            Device *device = &finder.getOwningDevice();
+
+            assert(device != nullptr);
+            return *device;
+        }
+        
+        template <typename T, typename U>
+        static T *makePointer(U &object)
+        {
+            if constexpr (std::is_convertible_v<std::add_pointer_t<U>, std::add_pointer_t<T> >)
+                return mse_static_cast<T &>(object);
+            else
+                return &dynamic_cast<T &>(object);
+        }
+
+ 
+        template <typename T, typename rRet, typename... rArgs>
+        AddressEntry &r(rRet (T::*read)(rArgs...), ctag_t *readName)
+        {
+            return r(makeDelegate(read, makePointer<T>(device), readName, device.getDeviceName()));
+        }
+
+        template <typename T, typename wRet, typename... wArgs>
+        AddressEntry &w(wRet (T::*write)(wArgs...), ctag_t *writeName)
+        {
+            return w(makeDelegate(write, makePointer<T>(device), writeName, device.getDeviceName()));
+        }
+
+        template <typename T, typename rRet, typename... rArgs, typename U, typename wRet, typename... wArgs>
+        AddressEntry &rw(rRet (T::*read)(rArgs...), ctag_t *readName,
+                         wRet (U::*write)(wArgs...), ctag_t *writeName)
+        {
+            r(makeDelegate(read, makePointer<T>(device), readName, device.getDeviceName()));
+            w(makeDelegate(write, makePointer<U>(device), writeName, device.getDeviceName()));
+            return *this;
+        }
+
+
+        template <typename T, typename U, typename rRet, typename... rArgs>
+        AddressEntry &r(T &obj, rRet (U::*read)(rArgs...), ctag_t *readName)
+        {
+            return r(makeDelegate(*makePointer<U>(obj), read, readName));
+        }
+
+        template <typename T, typename U, typename wRet, typename... wArgs>
+        AddressEntry &w(T &obj, wRet (U::*write)(wArgs...), ctag_t *writeName)
+        {
+            return w(makeDelegate(*makePointer<U>(obj), write, writeName));
+        }
+
+        template <typename T, typename U, typename rRet, typename... rArgs, typename V, typename wRet, typename... wArgs>
+        AddressEntry &rw(T &obj, rRet (U::*read)(rArgs...), ctag_t *readName,
+                                 wRet (V::*write)(wArgs...), ctag_t *writeName)
+        {
+            return r(makeDelegate(*makePointer<U>(obj), read, readName))
+                  .w(makeDelegate(*makePointer<V>(obj), write, writeName));
+        }
+
+        template <typename T, bool Required, typename U, typename rRet, typename... rArgs>
+        AddressEntry &r(DeviceFinder<T, Required> &finder, rRet (U::*read)(rArgs...), ctag_t *readName)
+        {
+            Device &device(findDevice(finder));
+            return r(makeDelegate(device, "", read, readName));
+        }
+
+        template <typename T, bool Required, typename U, typename wRet, typename... wArgs>
+        AddressEntry &w(DeviceFinder<T, Required> &finder, wRet (U::*write)(wArgs...), ctag_t *writeName)
+        {
+            Device &device(findDevice(finder));
+            return w(makeDelegate(device, "", write, writeName));
+        }
+
+        template <typename T, bool Required, typename U, typename rRet, typename... rArgs, typename V, typename wRet, typename... wArgs>
+        AddressEntry &rw(DeviceFinder<T, Required> &finder,
+            rRet (U::*read)(rArgs...), ctag_t *readName,
+            wRet (V::*write)(wArgs...), ctag_t *writeName)
+        {
+            Device &device(findDevice(finder));
+            return r(makeDelegate(device, "", read, readName))
+                  .w(makeDelegate(device, "", write, writeName));
+        }
 
     };
 
