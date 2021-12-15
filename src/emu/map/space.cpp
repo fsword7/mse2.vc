@@ -42,7 +42,8 @@ namespace map
             // Global address range for dispatch calls
             HandlerEntry::range r = { 0, static_cast<offs_t>(~0ull >> ((sizeof(offs_t) * 8) - addrWidth)) };
 
-            // new HandlerReadDispatch<4, dWidth, aShift>(this, r, nullptr);
+            fmt::printf("%s: Assigning dispatch calls at %d-bit addressing (data %d shift %d)\n",
+                device.getDeviceName(), addrWidth, dWidth, aShift);
 
             switch (addrWidth)
             {
@@ -291,12 +292,16 @@ namespace map
 
             if (acc == accRead)
             {
-
+                auto handler = new HandlerReadMemory<dWidth, aShift>(this, data);
+                handler->setAddressSpace(nstart, nend);
+                rootRead->populate(nstart, nend, nmirror, handler);
             }
 
             if (acc == accWrite)
             {
-
+                auto handler = new HandlerWriteMemory<dWidth, aShift>(this, data);
+                handler->setAddressSpace(nstart, nend);
+                rootWrite->populate(nstart, nend, nmirror, handler);
             }
         }
 

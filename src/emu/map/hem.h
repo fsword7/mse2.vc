@@ -8,7 +8,7 @@
 namespace map
 {
     template <int dWidth, int aShift>
-    class HandlerReadMemory : HandlerReadAddress<dWidth, aShift>
+    class HandlerReadMemory : public HandlerReadAddress<dWidth, aShift>
     {
     public:
         using uintx_t = typename HandlerSize<dWidth>::uintx_t;
@@ -26,12 +26,12 @@ namespace map
 
         uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
         {
-            return base[((offset - this->baseAddress) & this->maskAddress) >> (dWidth - aShift)];
+            return base[((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift)];
         }
 
         void *getAccess(offs_t offset) const override
         {
-            return &base[((offset - this->baseAddress) & this->maskAddress) >> (dWidth - aShift)];
+            return &base[((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift)];
         }
 
     private:
@@ -39,7 +39,7 @@ namespace map
     };
 
     template <int dWidth, int aShift>
-    class HandlerWriteMemory : HandlerWriteAddress<dWidth, aShift>
+    class HandlerWriteMemory : public HandlerWriteAddress<dWidth, aShift>
     {
     public:
         using uintx_t = typename HandlerSize<dWidth>::uintx_t;
@@ -57,13 +57,13 @@ namespace map
 
         void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
         {
-            offs_t off = ((offset - this->baseAddress) & this->maskAddress) >> (dWidth - aShift);
+            offs_t off = ((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift);
             base[off] = (base[off] & ~mask) | (data & mask);
         }
 
         void *getAccess(offs_t offset) const override
         {
-            return &base[((offset - this->baseAddress) & this->maskAddress) >> (dWidth - aShift)];
+            return &base[((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift)];
         }
 
     private:

@@ -31,7 +31,10 @@ namespace map
         : name(name), endianType(eType),
           dataWidth(dWidth), dataRadix(dRadix), dataPrecision(dPrecision), byteWidth(bWidth),
           addrWidth(aWidth), addrRadix(aRadix), addrPrecision(aPrecision), addrShift(aShift)
-        { }
+        { 
+            assert (dWidth >= aShift);
+        }
+        
         ~AddressConfig() = default;
 
         inline endian_t getEndianType() const    { return endianType; }
