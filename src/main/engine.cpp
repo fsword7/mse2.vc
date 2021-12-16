@@ -41,6 +41,34 @@ Machine *SystemEngine::findSystem(cstag_t &name)
     return nullptr;
 }
 
+Device *SystemEngine::findDevice(cstag_t &name)
+{
+    if (dialedSystem == nullptr)
+        return nullptr;
+    
+    for (Device &dev : DeviceIterator(*dialedSystem))
+        if (dev.getDeviceName() == name)
+            return &dev;
+
+    return nullptr;
+}
+
+Device *SystemEngine::findDevice(UserConsole *user, cstag_t &name)
+{
+
+    if (dialedSystem == nullptr)
+    {
+        fmt::printf("Please dial system first\n");
+        return nullptr;
+    }
+    
+    for (Device &dev : DeviceIterator(*dialedSystem))
+        if (dev.getDeviceName() == name)
+            return &dev;
+
+    return nullptr;
+}
+
 int SystemEngine::split(cstag_t &cmdLine, args_t &args)
 {
     std::istringstream line(cmdLine);

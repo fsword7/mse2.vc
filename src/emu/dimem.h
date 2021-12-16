@@ -52,6 +52,12 @@ class diMemory : public DeviceInterface
             return mapAddressConfigList[space];
         }
 
+        inline map::AddressSpace *getAddressSpace(map::AddressType space = map::asProgram)
+        {
+            assert(space < mapAddressSpaceList.size());
+            return mapAddressSpaceList[space];
+        }
+
         // template <typename T, typename U, typename Return, typename... Args>
         // std::enable_if_t<isUnrelatedDevice<Device, T>::value>
         // setAddressMap(map::AddressType space, T &obj, Return (U::*func)(Args...))

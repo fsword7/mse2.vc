@@ -61,9 +61,12 @@ public:
     // Global initialization routines
     void ginit();
     void gexit();
+    
+    const SystemDriver *findSystemDriver(cstag_t &name);
 
     Machine *findSystem(cstag_t &name);
-    const SystemDriver *findSystemDriver(cstag_t &name);
+    Device *findDevice(UserConsole *user, cstag_t &name);
+    Device *findDevice(cstag_t &name);
 
     Machine *createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
     void dial(Machine *sysMachine, UserConsole *user);
@@ -75,6 +78,7 @@ private:
     // Command function calls
     cmdStatus cmdCreate(UserConsole *user, args_t &args);
     cmdStatus cmdDial(UserConsole *user, args_t &args);
+    cmdStatus cmdDump(UserConsole *user, args_t &args);
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
     cmdStatus cmdStart(UserConsole *user, args_t &args);
 

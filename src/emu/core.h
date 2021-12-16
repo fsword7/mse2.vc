@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <type_traits>
 
+#include <cstdio>
 #include <cassert>
 
 #include <fmt/printf.h>

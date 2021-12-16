@@ -166,7 +166,6 @@ namespace map
 
         void populateEntry(const AddressEntry *entry, AccessType acc);
 
-    protected:
         // Virtual function calls
         virtual uint8_t  read8(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
         virtual uint16_t read16(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
@@ -184,6 +183,7 @@ namespace map
         virtual void write64(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
         virtual void write64u(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
 
+    protected:
         AddressType     space;
         cAddressConfig &config;
         Device         &device;
