@@ -165,10 +165,10 @@ namespace map
                                 entry->read32);
                             break;
                         case 64:
-                             setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
                                 entry->read64);
                             break;
-                   }
+                    }
                 }
                 else if (acc == accWrite)
                 {
@@ -187,10 +187,10 @@ namespace map
                                 entry->write32);
                             break;
                         case 64:
-                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
                                 entry->write64);
                             break;
-                   }
+                    }
                 }
                 break;
 
@@ -212,10 +212,10 @@ namespace map
                                 entry->read32o);
                             break;
                         case 64:
-                             setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
                                 entry->read64o);
                             break;
-                   }
+                    }
                 }
                 else if (acc == accWrite)
                 {
@@ -234,10 +234,10 @@ namespace map
                                 entry->write32o);
                             break;
                         case 64:
-                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
                                 entry->write64o);
                             break;
-                   }                    
+                    }                    
                 }
                 break;
 
@@ -259,14 +259,14 @@ namespace map
                                 entry->read32om);
                             break;
                         case 64:
-                             setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                            setReadHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
                                 entry->read64om);
                             break;
-                   }
+                    }
                 }
                 else if (acc == accWrite)
                 {
-                     switch (data.bits)
+                    switch (data.bits)
                     {
                         case 8:
                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
@@ -281,10 +281,10 @@ namespace map
                                 entry->write32om);
                             break;
                         case 64:
-                             setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
+                            setWriteHandler(entry->addrStart, entry->addrEnd, entry->addrMask, entry->addrMirror,
                                 entry->write64om);
                             break;
-                   }                   
+                    }                   
                 }
                 break;
 

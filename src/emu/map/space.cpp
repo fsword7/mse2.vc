@@ -442,19 +442,29 @@ namespace map
         template <typename Write>
         void setWriteHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &whandler)
         {
-            
+
         }
 
         template <int accWidth, typename Read>
         void setReadHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Read &rhandler)
         {
-
+            if constexpr(dWidth < accWidth)
+            {
+                fmt::printf("%s: (R) Can't set a %d-bit handler in %d-bit bus\n",
+                    device.getDeviceName(), 8 << accWidth, 8 << dWidth);
+                return;
+            }
         }
 
         template <int accWidth, typename Write>
         void setWriteHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &whandler)
         {
-            
+            if constexpr(dWidth < accWidth)
+            {
+                fmt::printf("%s: (W) Can't set a %d-bit handler in %d-bit bus\n",
+                    device.getDeviceName(), 8 << accWidth, 8 << dWidth);
+                return;
+            }
         }
     };
 
