@@ -16,6 +16,42 @@
 namespace map
 {
 
+    template <typename Delegate> struct HandlerWidth;
+
+    template <> struct HandlerWidth<read8d_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<read8do_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<read8dom_t> { static constexpr int value = 0; };
+
+    template <> struct HandlerWidth<read16d_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<read16do_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<read16dom_t> { static constexpr int value = 1; };
+
+    template <> struct HandlerWidth<read32d_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<read32do_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<read32dom_t> { static constexpr int value = 2; };
+
+    template <> struct HandlerWidth<read64d_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<read64do_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<read64dom_t> { static constexpr int value = 3; };
+
+
+    template <> struct HandlerWidth<write8d_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<write8do_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<write8dom_t> { static constexpr int value = 0; };
+
+    template <> struct HandlerWidth<write16d_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<write16do_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<write16dom_t> { static constexpr int value = 1; };
+
+    template <> struct HandlerWidth<write32d_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<write32do_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<write32dom_t> { static constexpr int value = 2; };
+
+    template <> struct HandlerWidth<write64d_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<write64do_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<write64dom_t> { static constexpr int value = 3; };
+
+
     template <int Level, int dWidth, int aShift, endian_t eType>
     class AddressSpaceSpecific : public AddressSpace
     {
@@ -434,19 +470,19 @@ namespace map
         }
 
         template <typename Read>
-        void setReadHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Read &rhandler)
+        void setReadHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Read &rHandler)
         {
-
+            setReadHandlerHelper<HandlerWidth<Read>::value>(addrStart, addrEnd, addrMask, addrMirror, rHandler);
         }
 
         template <typename Write>
-        void setWriteHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &whandler)
+        void setWriteHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &wHandler)
         {
-
+            setWriteHandlerHelper<HandlerWidth<Write>::value>(addrStart, addrEnd, addrMask, addrMirror, wHandler);
         }
 
         template <int accWidth, typename Read>
-        void setReadHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Read &rhandler)
+        void setReadHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Read &rHandler)
         {
             if constexpr(dWidth < accWidth)
             {
@@ -454,10 +490,18 @@ namespace map
                     device.getDeviceName(), 8 << accWidth, 8 << dWidth);
                 return;
             }
+
+            fmt::printf("%s: %0*llX-%0*llX Mask %0*llX Mirror %0*llX - %d-bit read delegate %s on %d-bit bus\n",
+                device.getDeviceName(),
+                config.getAddrPrecision(), addrStart,
+                config.getAddrPrecision(), addrEnd,
+                config.getAddrPrecision(), addrMask,
+                config.getAddrPrecision(), addrMirror,
+                8 << accWidth, rHandler.getName(), 8 << dWidth);
         }
 
         template <int accWidth, typename Write>
-        void setWriteHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &whandler)
+        void setWriteHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &wHandler)
         {
             if constexpr(dWidth < accWidth)
             {
@@ -465,6 +509,15 @@ namespace map
                     device.getDeviceName(), 8 << accWidth, 8 << dWidth);
                 return;
             }
+
+             fmt::printf("%s: %0*llX-%0*llX Mask %0*llX Mirror %0*llX - %d-bit write delegate %s on %d-bit bus\n",
+                device.getDeviceName(),
+                config.getAddrPrecision(), addrStart,
+                config.getAddrPrecision(), addrEnd,
+                config.getAddrPrecision(), addrMask,
+                config.getAddrPrecision(), addrMirror,
+                8 << accWidth, wHandler.getName(), 8 << dWidth);
+
         }
     };
 
