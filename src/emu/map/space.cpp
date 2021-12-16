@@ -6,10 +6,13 @@
 #include "emu/core.h"
 #include "emu/map/map.h"
 #include "emu/map/memmgr.h"
+
 #include "emu/map/hedr.h"
 #include "emu/map/hedw.h"
+
 #include "emu/map/hea.h"
 #include "emu/map/hem.h"
+#include "emu/map/hedp.h"
 
 #include "emu/dimem.h"
 
@@ -498,6 +501,20 @@ namespace map
                 config.getAddrPrecision(), addrMask,
                 config.getAddrPrecision(), addrMirror,
                 8 << accWidth, rHandler.getName(), 8 << dWidth);
+
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            if (dWidth == accWidth)
+            {
+                auto handler = new HandlerReadDelegate<dWidth, aShift, Read>(this, 0, rHandler);
+                handler->setAddressSpace(nstart, nend);
+                rootRead->populate(nstart, nend, nmirror, handler);
+            }
+            else
+            {
+
+            }
         }
 
         template <int accWidth, typename Write>
@@ -510,13 +527,27 @@ namespace map
                 return;
             }
 
-             fmt::printf("%s: %0*llX-%0*llX Mask %0*llX Mirror %0*llX - %d-bit write delegate %s on %d-bit bus\n",
+            fmt::printf("%s: %0*llX-%0*llX Mask %0*llX Mirror %0*llX - %d-bit write delegate %s on %d-bit bus\n",
                 device.getDeviceName(),
                 config.getAddrPrecision(), addrStart,
                 config.getAddrPrecision(), addrEnd,
                 config.getAddrPrecision(), addrMask,
                 config.getAddrPrecision(), addrMirror,
                 8 << accWidth, wHandler.getName(), 8 << dWidth);
+
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            if (dWidth == accWidth)
+            {
+                auto handler = new HandlerWriteDelegate<dWidth, aShift, Write>(this, 0, wHandler);
+                handler->setAddressSpace(nstart, nend);
+                rootWrite->populate(nstart, nend, nmirror, handler);
+            }
+            else
+            {
+
+            }
 
         }
     };
