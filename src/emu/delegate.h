@@ -106,27 +106,27 @@ public:
     DelegateBase(stdFuncType func) : function(func) {}
 
     template <class FunctionClass>
-    DelegateBase(typename traits<FunctionClass>::member_ptr_func func, FunctionClass &obj)
-    : mfp(func, &obj, static_cast<Return *>(nullptr), static_cast<GenericStaticFunc>(nullptr)),
-      lateBinder(&obj)
+    DelegateBase(typename traits<FunctionClass>::member_ptr_func func, FunctionClass *obj)
+    : mfp(func, obj, static_cast<Return *>(nullptr), static_cast<GenericStaticFunc>(nullptr)),
+      lateBinder(obj)
     {
-        bind(&obj);
+        bind(obj);
     }
 
     template <class FunctionClass>
-    DelegateBase(typename traits<FunctionClass>::member_ptr_cfunc func, FunctionClass &obj)
-    : mfp(func, &obj, static_cast<Return *>(nullptr), static_cast<GenericStaticFunc>(nullptr)),
-      lateBinder(&obj)
+    DelegateBase(typename traits<FunctionClass>::member_ptr_cfunc func, FunctionClass *obj)
+    : mfp(func, obj, static_cast<Return *>(nullptr), static_cast<GenericStaticFunc>(nullptr)),
+      lateBinder(obj)
     {
-        bind(&obj);
+        bind(obj);
     }
 
     template <class FunctionClass>
-    DelegateBase(typename traits<FunctionClass>::static_ref_func func, FunctionClass &obj)
-    : mfp(func, &obj, static_cast<Return *>(nullptr), static_cast<GenericStaticFunc>(nullptr)),
-      lateBinder(&obj)
+    DelegateBase(typename traits<FunctionClass>::static_ref_func func, FunctionClass *obj)
+    : mfp(func, obj, static_cast<Return *>(nullptr), static_cast<GenericStaticFunc>(nullptr)),
+      lateBinder(obj)
     {
-        bind(&obj);
+        bind(obj);
     }
 
     bool isMemberFunction() const { return !mfp.isNull(); }
@@ -184,15 +184,15 @@ protected:
     Delegate() : base() {}
 
     template <class FunctionClass>
-    Delegate(member_ptr_func<FunctionClass> func, FunctionClass &obj)
+    Delegate(member_ptr_func<FunctionClass> func, FunctionClass *obj)
     : base(func, obj) {}
 
     template <class FunctionClass>
-    Delegate(member_ptr_cfunc<FunctionClass> func, FunctionClass &obj)
+    Delegate(member_ptr_cfunc<FunctionClass> func, FunctionClass *obj)
     : base(func, obj) {}
     
     template <class FunctionClass>
-    Delegate(static_ref_func<FunctionClass> func, FunctionClass &obj)
+    Delegate(static_ref_func<FunctionClass> func, FunctionClass *obj)
     : base(func, obj) {}
 
 
@@ -216,15 +216,15 @@ public:
     NamedDelegate() = default;
 
     template <class FunctionClass>
-    NamedDelegate(member_ptr_func<FunctionClass> func, ctag_t *name, FunctionClass &obj)
+    NamedDelegate(member_ptr_func<FunctionClass> func, ctag_t *name, FunctionClass *obj)
     : base(func, obj), fncName(name) {}
 
     template <class FunctionClass>
-    NamedDelegate(member_ptr_cfunc<FunctionClass> func, ctag_t *name, FunctionClass &obj)
+    NamedDelegate(member_ptr_cfunc<FunctionClass> func, ctag_t *name, FunctionClass *obj)
     : base(func, obj), fncName(name) {}
 
     template <class FunctionClass>
-    NamedDelegate(static_ref_func<FunctionClass> func, ctag_t *name, FunctionClass &obj)
+    NamedDelegate(static_ref_func<FunctionClass> func, ctag_t *name, FunctionClass *obj)
     : base(func, obj), fncName(name) {}
 
     inline ctag_t *getName() const { return fncName; }
@@ -320,3 +320,95 @@ using write32dom_t = DeviceDelegate<void (offs_t, uint32_t, uint32_t)>;
 using write64d_t   = DeviceDelegate<void (uint64_t)>;
 using write64do_t  = DeviceDelegate<void (offs_t, uint64_t)>;
 using write64dom_t = DeviceDelegate<void (offs_t, uint64_t, uint64_t)>;
+
+// ********
+
+template <typename D, typename T, typename Enable = void> struct device_class_rw { };
+
+template <typename D, typename T, typename Ret, typename... Args>
+struct device_class_rw<D, Ret (T::*)(Args...),
+    std::enable_if_t<std::is_constructible<D, Device &, ctag_t *, Ret (T::*)(Args...), ctag_t *>::value> > { using type = T; };
+template <typename D, typename T, typename Ret, typename... Args>
+struct device_class_rw<D, Ret (T::*)(Args...) const,
+    std::enable_if_t<std::is_constructible<D, Device &, ctag_t *, Ret (T::*)(Args...) const, ctag_t *>::value> > { using type = T; };
+template <typename D, typename T, typename Ret, typename... Args>
+struct device_class_rw<D, Ret (*)(T &, Args...),
+    std::enable_if_t<std::is_constructible<D, Device &, ctag_t *, Ret (*)(T &, Args...), ctag_t *>::value> > { using type = T; };
+
+template <typename D, typename T> using device_class_rw_t = typename device_class_rw<D, T>::type;
+
+template <typename T, typename Enable = void> struct delegate_rw_type;
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read8d_t, std::remove_reference_t<T> > > >
+    { using type = read8d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read8do_t, std::remove_reference_t<T> > > >
+    { using type = read8do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read8dom_t, std::remove_reference_t<T> > > >
+    { using type = read8dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read16d_t, std::remove_reference_t<T> > > >
+    { using type = read16d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read16do_t, std::remove_reference_t<T> > > >
+    { using type = read16do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read16dom_t, std::remove_reference_t<T> > > >
+    { using type = read16dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read32d_t, std::remove_reference_t<T> > > >
+    { using type = read32d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read32do_t, std::remove_reference_t<T> > > >
+    { using type = read32do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read32dom_t, std::remove_reference_t<T> > > >
+    { using type = read32dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read64d_t, std::remove_reference_t<T> > > >
+    { using type = read64d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read64do_t, std::remove_reference_t<T> > > >
+    { using type = read64do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<read64dom_t, std::remove_reference_t<T> > > >
+    { using type = read64dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write8d_t, std::remove_reference_t<T> > > >
+    { using type = write8d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write8do_t, std::remove_reference_t<T> > > >
+    { using type = write8do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write8dom_t, std::remove_reference_t<T> > > >
+    { using type = write8dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write16d_t, std::remove_reference_t<T> > > >
+    { using type = write16d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write16do_t, std::remove_reference_t<T> > > >
+    { using type = write16do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write16dom_t, std::remove_reference_t<T> > > >
+    { using type = write16dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write32d_t, std::remove_reference_t<T> > > >
+    { using type = write32d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write32do_t, std::remove_reference_t<T> > > >
+    { using type = write32do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write32dom_t, std::remove_reference_t<T> > > >
+    { using type = write32dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write64d_t, std::remove_reference_t<T> > > >
+    { using type = write64d_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write64do_t, std::remove_reference_t<T> > > >
+    { using type = write64do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write64dom_t, std::remove_reference_t<T> > > >
+    { using type = write64dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+
+template <typename T> using delegate_rw_t = typename delegate_rw_type<T>::type;
+template <typename T> using delegate_rw_device_class_t = typename delegate_rw_type<T>::device_class;
+
+
+template <typename T>
+inline delegate_rw_t<T> makeDelegate(Device &base, ctag_t *devName, T &&func, ctag_t *fncName)
+{
+    return delegate_rw_t<T>(base, devName, std::forward<T>(func), fncName);
+}
+
+template <typename T>
+inline delegate_rw_t<T> makeDelegate(delegate_rw_device_class_t<T> &object, T &&func, ctag_t *fncName)
+{
+    return delegate_rw_t<T>(object, std::forward<T>(func), fncName);
+}

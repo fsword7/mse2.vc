@@ -43,9 +43,9 @@ void vt100_Device::vt100_setIOPort(map::AddressList &map)
 {
     map.setUnmappedHigh();
 
-    // map(0x42, 0x42).w(crt, FUNC(vt100video_t::write8_brightness));
-    // map(0xA2, 0xA2).w(crt, FUNC(vt100video_t::write8_dc012));
-    // map(0xC2, 0xC2).w(crt, FUNC(vt100video_t::write8_dc011));
+    map(0x42, 0x42).w(crt, FUNC(vt100video_t::write8_brightness));
+    map(0xA2, 0xA2).w(crt, FUNC(vt100video_t::write8_dc012));
+    map(0xC2, 0xC2).w(crt, FUNC(vt100video_t::write8_dc011));
 }
 
 TERMINAL(vt100, nullptr, dec, vt100, vt100_Device, vt100, vt100_init, "DEC", "VT100 Terminal", SYSTEM_NOT_WORKING)

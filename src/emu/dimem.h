@@ -67,7 +67,7 @@ class diMemory : public DeviceInterface
             Device *dev = config.getConfigDevice();
 
             fmt::printf("%s: (related device) set address list map\n", dev->getDeviceName());
-            setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), dynamic_cast<T &>(*dev)));
+            setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), &dynamic_cast<T &>(*dev)));
         }
 
         template <typename T, typename Return, typename... Args>
@@ -78,7 +78,7 @@ class diMemory : public DeviceInterface
             Device *dev = config.getConfigDevice();
 
             fmt::printf("%s: (unrelated device) set address list map\n", dev->getDeviceName());
-            setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), dynamic_cast<T &>(*dev)));
+            setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), &dynamic_cast<T &>(*dev)));
         }
 
         void setAddressMap(map::AddressType space, map::Constructor map);
