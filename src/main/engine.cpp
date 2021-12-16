@@ -87,17 +87,34 @@ int SystemEngine::execute(UserConsole *user, std::string cmdLine)
     return 0;
 }
 
-bool SystemEngine::createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName)
+Machine *SystemEngine::createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName)
 {
     const SystemDriver *driver = findSystemDriver(sysName);
     if (driver == nullptr)
     {
         fmt::printf("%s: system '%s' not recongized.\n", devName, sysName);
-        return false;
+        return nullptr;
     }
 
     Machine *sysMachine = Machine::create(user, driver, devName);
 
-    machines.push_back(sysMachine);
-    return true;
+    if (sysMachine != nullptr)
+        machines.push_back(sysMachine);
+    return sysMachine;
+}
+
+void SystemEngine::dial(Machine *sysMachine, UserConsole *user)
+{
+    assert(user != nullptr);
+
+    // Switch console access for desired system machine.
+    if (dialedMachine != nullptr)
+        dialedMachine->setConsole(nullptr);
+    if (sysMachine != nullptr)
+        sysMachine->setConsole(user);
+
+    // Switch system machine and device as current
+    dialedMachine = sysMachine;
+    dialedSystem = (sysMachine != nullptr)
+        ? sysMachine->getSystemDevice() : nullptr;
 }

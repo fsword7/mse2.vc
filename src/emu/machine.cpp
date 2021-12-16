@@ -27,6 +27,11 @@ Machine *Machine::create(UserConsole *user, const SystemDriver *driver, cstag_t 
     return sysMachine;
 }
 
+void Machine::setConsole(UserConsole *user)
+{
+
+}
+
 void Machine::start(UserConsole *user)
 {
     assert(sysDevice != nullptr);

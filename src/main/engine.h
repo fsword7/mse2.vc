@@ -65,7 +65,8 @@ public:
     Machine *findSystem(cstag_t &name);
     const SystemDriver *findSystemDriver(cstag_t &name);
 
-    bool createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
+    Machine *createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
+    void dial(Machine *sysMachine, UserConsole *user);
 
     int split(cstag_t &cmdLine, args_t &args);
     int execute(UserConsole *user, std::string cmdLine);
@@ -73,8 +74,13 @@ public:
 private:
     // Command function calls
     cmdStatus cmdCreate(UserConsole *user, args_t &args);
+    cmdStatus cmdDial(UserConsole *user, args_t &args);
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
     cmdStatus cmdStart(UserConsole *user, args_t &args);
+
+private:
+    Machine *dialedMachine = nullptr;
+    Device *dialedSystem = nullptr;
 
     static command_t mseCommands[];
 

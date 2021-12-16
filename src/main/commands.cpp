@@ -19,7 +19,42 @@ SystemEngine::cmdStatus SystemEngine::cmdCreate(UserConsole *user, args_t &args)
         return cmdOk;
     }
 
-    createMachine(user, devName, sysName);
+    // Create and dial system machine
+    Machine *sysMachine = createMachine(user, devName, sysName);
+    if (sysMachine != nullptr)
+    {
+        dial(sysMachine, user);
+        fmt::printf("(%s): Dialed system '%s'\n",
+            args[0], devName);
+    }
+
+    return cmdOk;
+}
+
+SystemEngine::cmdStatus SystemEngine::cmdDial(UserConsole *user, args_t &args)
+{
+    std::string devName = args.getNext();
+
+    if (devName == "none")
+    {
+        dial(nullptr, user);
+        fmt::printf("(%s): Dialed system released\n", args[0]);
+    }
+    else
+    {
+        Machine *sysMachine = findSystem(devName);
+        if (sysMachine == nullptr)
+        {
+            fmt::printf("(%s): system '%s' not found - not dialed\n",
+                args[0], devName);
+            return cmdOk;
+        }
+
+        dial(sysMachine, user);
+        fmt::printf("(%s): Dialed system '%s'\n",
+            args[0], devName);
+    }
+
     return cmdOk;
 }
 
@@ -48,6 +83,7 @@ SystemEngine::cmdStatus SystemEngine::cmdQuit(UserConsole *user, args_t &args)
 SystemEngine::command_t SystemEngine::mseCommands[] =
 {
     { "create", &SystemEngine::cmdCreate, nullptr },
+    { "dial",   &SystemEngine::cmdDial,   nullptr },
     { "exit",   &SystemEngine::cmdQuit,   nullptr },
     { "start",  &SystemEngine::cmdStart,  nullptr },
     { "quit",   &SystemEngine::cmdQuit,   nullptr },

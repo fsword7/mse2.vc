@@ -18,7 +18,9 @@ public:
     
     static Machine *create(UserConsole *user, const SystemDriver *driver, cstag_t &devName);
 
+    // Function calls from system engine
     void start(UserConsole *user);
+    void setConsole(UserConsole *user);
     
 private:
     const SystemConfig &config;
