@@ -21,6 +21,11 @@ vt100_videoDevice::vt100_videoDevice(const SystemConfig &config, cstag_t &devNam
 {
 }
 
+uint8_t vt100_videoDevice::read8_test(offs_t offset)
+{
+    return offset;
+}
+
 void vt100_videoDevice::write8_dc011(offs_t offset, uint8_t data)
 {
 }

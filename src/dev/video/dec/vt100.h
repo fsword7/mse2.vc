@@ -17,6 +17,8 @@ namespace emu::video
         void write8_dc012(offs_t offset, uint8_t data);
         void write8_brightness(offs_t offset, uint8_t data);
 
+        uint8_t read8_test(offs_t offset);
+        
     protected:
         vt100_videoDevice(const SystemConfig &config, const DeviceType &type,
             cstag_t &devName, Device *owner, uint64_t clock);

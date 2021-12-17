@@ -41,7 +41,7 @@ namespace map
             fmt::printf("Low bits<%d, %d>: %d\n", dWidth, aShift, lowBits);
         }
 
-        HandlerRead<dWidth, aShift> *const *getDispatch() const { return dispatch; }
+        HandlerRead<dWidth, aShift> *const *getDispatch() const override { return dispatch; }
 
         std::string getName() { return "dispatch"; }
 

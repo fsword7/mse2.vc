@@ -11,7 +11,7 @@ i8080_cpuDevice::i8080_cpuDevice(const SystemConfig &config, const DeviceType &t
     cstag_t &devName, Device *owner, uint64_t clock)
 : ProcessorDevice(config, type, devName, owner, clock),
   mapProgramConfig("program", LittleEndian, 8, 16, 2, 8,  16, 16, 4, 0),
-  mapIOPortConfig("I/O", LittleEndian, 8, 16, 1, 8,  8, 16, 2, 0)
+  mapIOPortConfig("I/O", LittleEndian, 8, 16, 2, 8,  8, 16, 2, 0)
 {
 }
 

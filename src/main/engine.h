@@ -82,6 +82,8 @@ private:
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
     cmdStatus cmdStart(UserConsole *user, args_t &args);
 
+    template <map::AddressType type> cmdStatus tcmdDump(UserConsole *user, args_t &args);
+
 private:
     Machine *dialedMachine = nullptr;
     Device *dialedSystem = nullptr;

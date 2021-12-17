@@ -105,6 +105,8 @@ namespace map
 
         virtual ~HandlerRead() = default;
 
+        virtual HandlerRead<dWidth, aShift> *const *getDispatch() const { return nullptr; };
+
         virtual uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu = nullptr) const = 0;
         virtual void *getAccess(offs_t offset) const { return nullptr; }
 
@@ -143,6 +145,8 @@ namespace map
         }
         
         virtual ~HandlerWrite() = default;
+
+        virtual HandlerWrite<dWidth, aShift> *const *getDispatch() const { return nullptr; };
 
         virtual void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu = nullptr) const = 0;
         virtual void *getAccess(offs_t offset) const { return nullptr; }
