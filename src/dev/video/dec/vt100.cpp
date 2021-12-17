@@ -12,7 +12,8 @@ DEFINE_DEVICE_TYPE(VT100_VIDEO, vt100_videoDevice, "VT100_Video", "VT100 video c
 
 vt100_videoDevice::vt100_videoDevice(const SystemConfig &config, const DeviceType &type,
     cstag_t &devName, Device *owner, uint64_t clock)
-: Device(config, type, devName, owner, clock)
+: Device(config, type, devName, owner, clock),
+  diVideo(this)
 {
 }
 

@@ -43,7 +43,7 @@ void vt100_Device::vt100_setIOPort(map::AddressList &map)
 {
     map.setUnmappedHigh();
 
-    map(0x00, 0x0F).r(crt, FUNC(vt100video_t::read8_test));
+    // map(0x00, 0x0F).r(crt, FUNC(vt100video_t::read8_test));
     map(0x42, 0x42).w(crt, FUNC(vt100video_t::write8_brightness));
     map(0xA2, 0xA2).w(crt, FUNC(vt100video_t::write8_dc012));
     map(0xC2, 0xC2).w(crt, FUNC(vt100video_t::write8_dc011));

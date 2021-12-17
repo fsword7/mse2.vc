@@ -5,9 +5,11 @@
 
 #pragma once
 
+#include "emu/divideo.h"
+
 namespace emu::video
 {
-    class vt100_videoDevice : public Device
+    class vt100_videoDevice : public Device, public diVideo
     {
     public:
         vt100_videoDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);

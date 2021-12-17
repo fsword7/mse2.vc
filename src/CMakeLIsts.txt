@@ -7,6 +7,7 @@ set (MSE_CPP_SRCS
     emu/devsys.cpp
     emu/diexec.cpp
     emu/dimem.cpp
+    emu/divideo.cpp
     emu/machine.cpp
     emu/sysconfig.cpp
     emu/map/addrmap.cpp
@@ -42,8 +43,10 @@ set (MSE_H_SRCS
     emu/devsys.h
     emu/diexec.h
     emu/dimem.h
+    emu/divideo.h
     emu/driver.h
     emu/machine.h
+    emu/screen.h
     emu/templates.h
     emu/sysconfig.h
     emu/map/addrmap.h
