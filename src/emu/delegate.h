@@ -82,10 +82,19 @@ private:
     template <class FunctionClass>
     static GenericClass *bindLate(LateBindBase &object)
     {
-        FunctionClass *result = dynamic_cast<FunctionClass *>(&object);
-        if (result != nullptr)
-            return reinterpret_cast<GenericClass *>(result);
-        return nullptr;
+        fmt::printf("Attempting to bind member function (%llX)...\n", offs_t(&object));
+        fmt::printf("Type info: FunctionClass = %s LateBindBase = %s\n",
+            typeid(FunctionClass).name(), typeid(&object).name());
+
+        return reinterpret_cast<GenericClass *>(&object);
+        
+        // FunctionClass *result = dynamic_cast<FunctionClass *>(&object);
+        // if (result != nullptr)
+        //     return reinterpret_cast<GenericClass *>(result);
+        // Bad cast execption
+        // fmt::printf("Binding exception: expecting type %s (actual type %s)\n",
+        //     typeid(FunctionClass).name(), typeid(&object).name());
+        // return nullptr;
     }
 
     LateBindFunc binder = nullptr;
@@ -143,7 +152,7 @@ public:
     {
         if (stdfunc != nullptr)
             return stdfunc(std::forward<Args>(args)...);
-        else
+        else // if (function != nullptr)
             return (*function)(object, std::forward<Args>(args)...);
     }
 
@@ -154,7 +163,7 @@ protected:
     void bind(FunctionClass *obj)
     {
         object = reinterpret_cast<GenericClass *>(obj);
-        if (object != nullptr && !mfp.isNull())
+        if (object != nullptr && isMemberFunction())
             mfp.update(function, object);
     }
 
@@ -244,6 +253,11 @@ public:
     : base(owner), devName(name)
     { }
 
+    BindedObject &getBoundObject() const
+    {
+        return reinterpret_cast<BindedObject &>(base.get());
+    }
+
 private:
     std::reference_wrapper<Device> base;
     ctag_t *devName = nullptr;
@@ -267,7 +281,7 @@ public:
     template <class D>
     DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (D::*func)(Args...), ctag_t *fncName)
     : nbase(func, fncName, static_cast<D *>(nullptr)), DeviceDelegateHelper(dev, devName)
-    { }
+    { fmt::printf("Name: %s (%llX)\n", fncName, offs_t(&dev)); }
 
     template <class D>
     DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (D::*func)(Args...) const, ctag_t *fncName)
@@ -281,7 +295,8 @@ public:
 
     void resolve()
     {
-
+        if (!nbase::isNull() && !nbase::hasObject())
+            nbase::bindLate(getBoundObject());
     }
 };
 
