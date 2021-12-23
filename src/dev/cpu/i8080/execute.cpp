@@ -67,3 +67,45 @@ void i8080_cpuDevice::init()
 
     opCycleTable = is8080() ? i8080_cpuCycles : i8085_cpuCycles;
 }
+
+uint8_t i8080_cpuDevice::readi8()
+{
+    return mapProgram.read8(pcReg.uw++);
+}
+
+pair16_t i8080_cpuDevice::readi16()
+{
+    pair16_t w;
+
+    w.ub.l = mapProgram.read8(pcReg.uw++);
+    w.ub.h = mapProgram.read8(pcReg.uw++);
+
+    return w;
+}
+
+uint8_t i8080_cpuDevice::read8(offs_t addr)
+{
+    return mapProgram.read8(addr);
+}
+
+void i8080_cpuDevice::write8(offs_t addr, uint8_t data)
+{
+    mapProgram.write8(addr, data);
+}
+
+
+void i8080_cpuDevice::execute()
+{
+    uint8_t opCode;
+
+    pcBase = pcReg.uw;
+    opCode = readi8();
+
+    // Takes CPU cycles each instruction
+    opCount =- opCycleTable[opCode];
+
+    switch (opCode)
+    {
+
+    }
+}

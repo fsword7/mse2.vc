@@ -61,6 +61,14 @@ protected:
     inline bool is8080() { return idType == cpuid_8080 || idType == cpuid_8080A; }
     inline bool is8085() { return idType == cpuid_8085; }
 
+    // read/write access function calls
+    uint8_t readi8();
+    pair16_t readi16();
+    uint8_t read8(offs_t addr);
+    void write8(offs_t addr, uint8_t data);
+
+    void execute();
+
     cpuType idType;
 
     // General-purpose 8/16-bit registers
