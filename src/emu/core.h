@@ -59,6 +59,7 @@ namespace map
 
 // OSD core package
 #include "lib/util/osdcore.h"
+#include "lib/util/pair.h"
 
 // Common packages
 #include "emu/delegate.h"
