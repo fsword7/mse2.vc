@@ -12,16 +12,17 @@
 #include "dev/cpu/i8080/i8080.h"
 #include "dev/video/dec/vt100.h"
 #include "terminals/dec/vt100.h"
+#include "lib/util/xtal.h"
 
 void vt100_Device::vt100(SystemConfig &config)
 {
     // fmt::printf("VT100 device configuration here.\n");
 
-    i8080(config, cpu, "cpu", 0);
+    i8080(config, cpu, "cpu", XTAL(24'883'200) / 9);
     cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
     
-    VT100_VIDEO(config, crt, "crt", 0);
+    VT100_VIDEO(config, crt, "crt", XTAL(24'073'400));
 }
 
 void vt100_Device::vt100_init()

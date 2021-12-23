@@ -24,6 +24,7 @@ set (MSE_CPP_SRCS
     emu/map/memmgr.cpp
     emu/map/setup.cpp
     emu/map/space.cpp
+    lib/util/time.cpp
     main/commands.cpp
     main/engine.cpp
     main/main.cpp
@@ -63,6 +64,7 @@ set (MSE_H_SRCS
     emu/map/maccess.h
     emu/map/space.h
     lib/util/osdcore.h
+    lib/util/time.h
     main/command.h
     main/engine.h
     main/user.h
