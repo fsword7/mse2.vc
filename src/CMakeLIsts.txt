@@ -1,4 +1,5 @@
 set (MSE_CPP_SRCS
+    dev/cpu/i8080/execute.cpp
     dev/cpu/i8080/i8080.cpp
     dev/video/dec/vt100.cpp
     emu/device.cpp

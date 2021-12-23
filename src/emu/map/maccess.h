@@ -94,4 +94,13 @@ namespace map
         }
 
     };
+
+    template <int highBits, int dWidth, int aShift, endian_t eType>
+    struct MemoryAccess
+    {
+        static constexpr int Level = determineDispatchLevel(highBits);
+
+        using specific = MemoryAccessSpecific<Level, dWidth, aShift, eType>;
+        // using cache = MemoryAccessCache<Level, dWidth, aShift, eType>;
+    };
 }

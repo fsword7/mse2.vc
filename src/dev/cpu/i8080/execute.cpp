@@ -4,6 +4,7 @@
 // Date:    12/23/21
 
 #include "emu/core.h"
+#include "emu/map/map.h"
 #include "dev/cpu/i8080/i8080.h"
 
 const uint8_t i8080_cpuCycles[256] =

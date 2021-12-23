@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "emu/devcpu.h"
+
 // status register definition
 #define PSW_SF   0x80   // Signed bit
 #define PSW_ZF   0x40   // Zero bit
@@ -71,7 +73,7 @@ protected:
     pair16_t wzReg;
     uint16_t pcBase; // current base PC address
 
-    const uint8_t *const opCycleTable = nullptr;
+    const uint8_t *opCycleTable = nullptr;
     int64_t opCount = 0;
 
     uint8_t zspFlags[256]; // Z/P flag table
@@ -79,8 +81,8 @@ protected:
     map::AddressConfig mapProgramConfig;
     map::AddressConfig mapIOPortConfig;
 
-    // map::MemoryAccess<16, 0, 0, LittleEndian>::specific mapProgram;
-    // map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapIOPort;
+    map::MemoryAccess<16, 0, 0, LittleEndian>::specific mapProgram;
+    map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapIOPort;
 };
 
 class i8080a_cpuDevice : public i8080_cpuDevice

@@ -4,7 +4,7 @@
 // Date:    12/10/2021
 
 #include "emu/core.h"
-#include "emu/devcpu.h"
+#include "emu/map/map.h"
 #include "dev/cpu/i8080/i8080.h"
 
 i8080_cpuDevice::i8080_cpuDevice(const SystemConfig &config, const DeviceType &type,
