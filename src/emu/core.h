@@ -60,6 +60,7 @@ namespace map
 // OSD core package
 #include "lib/util/osdcore.h"
 #include "lib/util/pair.h"
+#include "lib/util/color.h"
 
 // Common packages
 #include "emu/delegate.h"
