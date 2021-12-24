@@ -10,7 +10,9 @@ set (MSE_CPP_SRCS
     emu/dimem.cpp
     emu/divideo.cpp
     emu/machine.cpp
+    emu/screen.cpp
     emu/sysconfig.cpp
+    emu/video.cpp
     emu/map/addrmap.cpp
     emu/map/hedp.cpp
     emu/map/hedr0.cpp
@@ -48,9 +50,10 @@ set (MSE_H_SRCS
     emu/divideo.h
     emu/driver.h
     emu/machine.h
-    emu/screen.h
     emu/templates.h
+    emu/screen.h
     emu/sysconfig.h
+    emu/video.h
     emu/map/addrmap.h
     emu/map/he.h
     emu/map/hea.h

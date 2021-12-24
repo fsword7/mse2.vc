@@ -6,6 +6,7 @@
 class UserConsole;
 
 #include "emu/map/memmgr.h"
+#include "emu/video.h"
 
 class Machine
 {
@@ -28,4 +29,5 @@ private:
     Device *sysDevice = nullptr;
 
     map::MemoryManager memoryManager;
+    VideoManager video;
 };

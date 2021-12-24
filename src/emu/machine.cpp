@@ -4,12 +4,13 @@
 // Date:    12/7/2021
 
 #include "emu/core.h"
+#include "emu/video.h"
 #include "emu/machine.h"
 #include "main/user.h"
 
 Machine::Machine(const SystemConfig &config, cstag_t &sysName)
 : memoryManager(*this), config(config), sysName(sysName),
-  sysDevice(config.getSystemDevice())
+  sysDevice(config.getSystemDevice()), video(*this)
 {
 
 }
