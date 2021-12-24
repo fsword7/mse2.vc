@@ -336,6 +336,10 @@ using write64d_t   = DeviceDelegate<void (uint64_t)>;
 using write64do_t  = DeviceDelegate<void (offs_t, uint64_t)>;
 using write64dom_t = DeviceDelegate<void (offs_t, uint64_t, uint64_t)>;
 
+// line read/write accesses
+using readl_t      = DeviceDelegate<int ()>;
+using writel_t     = DeviceDelegate<void (int)>;
+
 // ********
 
 template <typename D, typename T, typename Enable = void> struct device_class_rw { };
@@ -410,6 +414,11 @@ template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<w
     { using type = write64do_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
 template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<write64dom_t, std::remove_reference_t<T> > > >
     { using type = write64dom_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<readl_t, std::remove_reference_t<T> > > >
+    { using type = readl_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
+template <typename T> struct delegate_rw_type<T, std::void_t<device_class_rw_t<writel_t, std::remove_reference_t<T> > > >
+    { using type = writel_t; using device_class = device_class_rw_t<type, std::remove_reference_t<T> >; };
 
 
 template <typename T> using delegate_rw_t = typename delegate_rw_type<T>::type;
