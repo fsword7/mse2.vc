@@ -146,6 +146,7 @@ namespace map
         AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space);
         virtual ~AddressSpace() = default;
 
+        offs_t getAddrMask() const { return addrMask; }
         uint64_t getUnmapped() const { return unmapValue; }
         
         template <int dWidth, int aShift>
