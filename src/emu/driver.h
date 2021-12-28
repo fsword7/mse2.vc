@@ -41,13 +41,11 @@ struct SystemDriver
     ctag_t              *section;
     const DeviceType    &type;
     sysConfigure        configure;
-    void                *romEntries;
+    cfwEntry_t          *romEntries;
     
     ctag_t              *description;
     ctag_t              *source; 
 };
-
-#define ROM_NAME(Name) nullptr
 
 #define SYSTEM_NAME(Name) Name##_driver
 #define SYSTEM_EXTERN(Name) extern const SystemDriver SYSTEM_NAME(Name)
@@ -73,55 +71,55 @@ systemCreator<Class,                        \
 #define CONSOLE(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
 eextern const SystemDriver SYSTEM_NAME(Name) = \
-{                               \
-    #Name,                      \
-    #Parent,                    \
-    #Section,                   \
-    SYSTEM_TYPE(Name, Class),   \
+{                                \
+    #Name,                       \
+    #Parent,                     \
+    #Section,                    \
+    SYSTEM_TYPE(Name, Class),    \
     [] (SystemConfig &config, Device &owner) { static_cast<Class &>(owner).Configure(config); }, \
-    ROM_NAME(Name),             \
-    #Description,               \
-    __FILE__                    \
+    FW_NAME(Name),               \
+    #Description,                \
+    __FILE__                     \
 };
 
 #define COMPUTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
 eextern const SystemDriver SYSTEM_NAME(Name) = \
-{                               \
-    #Name,                      \
-    #Parent,                    \
-    #Section,                   \
-    SYSTEM_TYPE(Name, Class),   \
+{                                \
+    #Name,                       \
+    #Parent,                     \
+    #Section,                    \
+    SYSTEM_TYPE(Name, Class),    \
     [] (SystemConfig &config, Device &owner) { static_cast<Class &>(owner).Configure(config); }, \
-    ROM_NAME(Name),             \
-    #Description,               \
-    __FILE__                    \
+    FW_NAME(Name),               \
+    #Description,                \
+    __FILE__                     \
 };
 
 #define TERMINAL(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
 extern const SystemDriver SYSTEM_NAME(Name) = \
-{                               \
-    #Name,                      \
-    #Parent,                    \
-    #Section,                   \
-    SYSTEM_TYPE(Name, Class),   \
+{                                \
+    #Name,                       \
+    #Parent,                     \
+    #Section,                    \
+    SYSTEM_TYPE(Name, Class),    \
     [] (SystemConfig &config, Device &owner) { static_cast<Class &>(owner).Configure(config); }, \
-    ROM_NAME(Name),             \
-    #Description,               \
-    __FILE__                    \
+    FW_NAME(Name),               \
+    #Description,                \
+    __FILE__                     \
 };
 
 #define PRINTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
 eextern const SystemDriver SYSTEM_NAME(Name) = \
-{                               \
-    #Name,                      \
-    #Parent,                    \
-    #Section,                   \
-    SYSTEM_TYPE(Name, Class),   \
+{                                \
+    #Name,                       \
+    #Parent,                     \
+    #Section,                    \
+    SYSTEM_TYPE(Name, Class),    \
     [] (SystemConfig &config, Device &owner) { static_cast<Class &>(owner).Configure(config); }, \
-    ROM_NAME(Name),             \
-    #Description,               \
-    __FILE__                    \
+    FW_NAME(Name),               \
+    #Description,                \
+    __FILE__                     \
 };

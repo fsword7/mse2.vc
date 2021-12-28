@@ -64,6 +64,7 @@ namespace map
 
 // Common packages
 #include "emu/delegate.h"
+#include "emu/map/fw.h"
 #include "emu/driver.h"
 #include "emu/sysconfig.h"
 #include "emu/devfind.h"

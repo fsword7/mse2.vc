@@ -50,4 +50,18 @@ void vt100_Device::vt100_setIOPort(map::AddressList &map)
     map(0xC2, 0xC2).w(crt, FUNC(vt100video_t::write8_dc011));
 }
 
+static const fwEntry_t FW_NAME(vt100)[] =
+{      
+    FW_REGION("vt100fw", 0x2000, 0),
+    FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
+    FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
+    FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),
+    FW_LOAD("23-034e2-00.e40", 0x1800, 0x0800, 0, nullptr),
+
+    FW_REGION("chargen", 0x0800, 0),
+    FW_LOAD("23-018e2-00.e4", 0x0000, 0x0800, 0, nullptr),
+
+	FW_END
+};
+
 TERMINAL(vt100, nullptr, dec, vt100, vt100_Device, vt100, vt100_init, "DEC", "VT100 Terminal", SYSTEM_NOT_WORKING)
