@@ -20,17 +20,21 @@
 
 #define SET_WIDTH(x)		(((x) & 0x3) << 4)
 #define SET_FILL(x)			((((x) & 0xFF) << 16) | FW_FILL_DATA)
+#define SET_BIOS(x)			(((X) & 0xFF) << 16)
 
 #define	GET_WIDTH(x)		(((x) >> 4) & 0x3)
 #define GET_FILL(x)			(((x) >> 16) & 0xFF)
-
+#define GET_BIOS(x)			(((x) >> 16) & 0xFF)
 
 // ROM entry type token definitions
-#define FW_TYPE_END		    0			// End of ROM entry table
-#define FW_TYPE_REGION		1			// Region entry
-#define FW_TYPE_IMAGE		2			// ROM image space
-#define FW_TYPE_FILL		3			// Filling ROM space
-#define FW_TYPE_CONTAINER	4			// container package
+#define FW_TYPE_END		    	0			// End of ROM entry table
+#define FW_TYPE_REGION			1			// Region entry
+#define FW_TYPE_IMAGE			2			// ROM image space
+#define FW_TYPE_FILL			3			// Filling ROM space
+#define FW_TYPE_CONTAINER		4			// container package
+#define FW_TYPE_CARTRIDGE		5			// cartridge
+#define FW_TYPE_SYSTEM_BIOS		6			// system bios
+#define FW_TYPE_DEFAULT_BIOS	7			// default bios
 
 // Per-region ROM bit width definitions
 #define FW_REGION_8BIT		0x0000'0000	// 8-bit data width
@@ -57,6 +61,12 @@
 #define FW_CONTAINER(name) \
 	{ name, nullptr, FW_TYPE_CONTAINER, 0, 0, 0 }
 
+#define FW_SYSTEM_BIOS(value, name, desc) \
+	{ name, desc, FW_TYPE_SYSTEM_BIOS | SET_BIOS(value), 0, 0, 0 }
+
+#define FW_DEFAULT_BIOS(name) \
+	{ name, nullptr, FW_TYPE_DEFAULT_BIOS, 0, 0, 0 }
+
 #define FW_REGION(name, length, flags) \
 	{ name, nullptr, FW_TYPE_REGION | (flags), 0, length, 0 }
 
@@ -71,11 +81,13 @@
 #define FW_GETLENGTH(entry)		    ((entry)->length)
 #define FW_GETOFFSET(entry)		    ((entry)->offset)
 
-#define FWENTRY_ISCONTAINER(entry)	((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_CONTAINER)
-#define FWENTRY_ISREGION(entry)	    ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_REGION)
-#define FWENTRY_ISEND(entry)		((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_END)
-#define FWENTRY_ISFILE(entry)		((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_IMAGE)
-#define FWENTRY_ISREGIONEND(entry)	(FWENTRY_ISREGION(entry) || FWENTRY_ISEND(entry))
+#define FWENTRY_ISCONTAINER(entry)	  ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_CONTAINER)
+#define FWENTRY_ISSYSTEM_BIOS(entry)  ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_SYSTEM_BIOS)
+#define FWENTRY_ISDEFAULT_BIOS(entry) ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_DEFAULT_BIOS)
+#define FWENTRY_ISREGION(entry)	      ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_REGION)
+#define FWENTRY_ISEND(entry)		  ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_END)
+#define FWENTRY_ISFILE(entry)		  ((FW_GETFLAGS(entry) & FW_TYPE_MASK) == FW_TYPE_IMAGE)
+#define FWENTRY_ISREGIONEND(entry)	  (FWENTRY_ISREGION(entry) || FWENTRY_ISEND(entry))
 
 // ROM region entry
 #define FWREGION_GETNAME(entry)	    ((entry).name)
