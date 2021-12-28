@@ -25,6 +25,13 @@ map::AddressConfigList i8080_cpuDevice::getAddressConfigList() const
     };
 }
 
+void i8080_cpuDevice::devStart()
+{
+    // Assign memory spaces
+    getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
+    getAddressSpace(map::asIOPort)->setSpecificMemory(mapIOPort);
+}
+
 DEFINE_DEVICE_TYPE(i8080, i8080_cpuDevice, "i8080", "Intel 8080")
 DEFINE_DEVICE_TYPE(i8080a, i8080a_cpuDevice, "i8080A", "Intel 8080A")
 DEFINE_DEVICE_TYPE(i8085, i8085_cpuDevice, "i8085", "Intel 8085")

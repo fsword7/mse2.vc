@@ -253,6 +253,26 @@ namespace map
                 dev.getDeviceName(), config.getAddrPrecision(), addrMask, unmapValue);
         }
 
+        std::pair<const void *, const void *> getSpecificDispatches() override
+        {
+            std::pair<const void *, const void *> rw;
+
+            rw.first = dispatchRead;
+            rw.second = dispatchWrite;
+
+            return rw; 
+        }
+
+        std::pair<const void *, const void *> getCacheDispatches() override
+        {
+            std::pair<const void *, const void *> rw;
+
+            rw.first = rootRead;
+            rw.second = rootWrite;
+
+            return rw;
+        }
+       
         inline uintx_t readNative(offs_t addr, uintx_t mask, ProcessorDevice *cpu)
         {
             return dispatchRead[(addr & addrMask) >> pageBits]->read(addr, mask, cpu);

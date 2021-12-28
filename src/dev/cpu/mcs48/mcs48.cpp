@@ -27,6 +27,14 @@ map::AddressConfigList mcs48_cpuDevice::getAddressConfigList() const
     };
 }
 
+void mcs48_cpuDevice::devStart()
+{
+    // Assign memory spaces
+    getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
+    getAddressSpace(map::asData)->setSpecificMemory(mapData);
+    getAddressSpace(map::asIOPort)->setSpecificMemory(mapIOPort);
+}
+
 DEFINE_DEVICE_TYPE(i8035, i8035_cpuDevice, "i8035", "Intel 8035")
 DEFINE_DEVICE_TYPE(i8039, i8039_cpuDevice, "i8039", "Intel 8039")
 DEFINE_DEVICE_TYPE(i8040, i8040_cpuDevice, "i8040", "Intel 8039")

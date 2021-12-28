@@ -6,6 +6,7 @@
 #include "emu/core.h"
 #include "emu/map/he.h"
 #include "emu/map/heun.h"
+#include "emu/map/maccess.h"
 #include "emu/map/space.h"
 
 namespace map

@@ -109,6 +109,9 @@ public:
         Device *owner, uint64_t clock);
     virtual ~i8080_cpuDevice() = default;
 
+    // Virtual device function calls
+    void devStart() override;
+
 protected:
     map::AddressConfigList getAddressConfigList() const override;
 

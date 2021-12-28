@@ -167,6 +167,25 @@ namespace map
 
         void populateEntry(const AddressEntry *entry, AccessType acc);
 
+        virtual std::pair<const void *, const void *> getSpecificDispatches() = 0;
+        virtual std::pair<const void *, const void *> getCacheDispatches() = 0;
+ 
+        template <int Level, int dWidth, int aShift, endian_t eType>
+        void setSpecificMemory(MemoryAccessSpecific<Level, dWidth, aShift, eType> &memAccess)
+        {
+            std::pair<const void *, const void *> rw = getSpecificDispatches();
+
+            memAccess.set(this, addrMask, rw.first, rw.second);
+        }
+        
+        // template <int Level, int dWidth, int aShift, endian_t eType>
+        // void setCacheMemory(MemoryAccessCache<Level, dWidth, aShift, eType> &memAccess)
+        // {
+        //     std::pair<const void *, const void *> rw = getCacheDispatches();
+
+        //     memAccess.set(this, addrMask, rw.first, rw.second);
+        // }
+
         // Virtual function calls
         virtual uint8_t  read8(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
         virtual uint16_t read16(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;

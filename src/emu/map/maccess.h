@@ -7,6 +7,8 @@
 
 namespace map
 {
+    class AddressSpace;
+    
     template <int Level, int dWidth, int aShift, endian_t eType>
     class MemoryAccessSpecific
     {
@@ -38,10 +40,10 @@ namespace map
             return (addrShift >= 0) ? addr << addrShift : addr >> -addrShift;
         }
 
-        void set(AddressSpace *space, const void *read, const void *write)
+        void set(AddressSpace *space, offs_t mask, const void *read, const void *write)
         {
             this->space = space;
-            addrMask = space->getAddrMask();
+            addrMask = mask;
             readDispatch = (const HandlerRead<dWidth, aShift> *const *)(read);
             writeDispatch = (const HandlerWrite<dWidth, aShift> *const *)(write);
         }

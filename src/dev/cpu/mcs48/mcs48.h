@@ -14,6 +14,8 @@ public:
         cstag_t &devName, Device *owner, uint64_t clock, int paWidth, int daWidth);
     virtual ~mcs48_cpuDevice() = default;
 
+	// Virtual device function calls
+	void devStart() override;
 
 protected:
     map::AddressConfigList getAddressConfigList() const override;

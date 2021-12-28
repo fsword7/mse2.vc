@@ -190,6 +190,7 @@ public:
 
     // Virtual device function calls
     virtual void devConfigure(SystemConfig &config) {}
+    virtual void devStart() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
 	// If cast fails, return null pointer. For more information, check
