@@ -14,6 +14,12 @@
 #include "terminals/dec/vt100.h"
 #include "lib/util/xtal.h"
 
+uint32_t vt100_Device::vt100_updateScreen(ScreenDevice &screen, bitmap16_t &bitmap, const rect_t &clip)
+{
+    crt->updateVideo(bitmap, clip);
+    return 0;
+}
+
 void vt100_Device::vt100(SystemConfig &config)
 {
     // fmt::printf("VT100 device configuration here.\n");
@@ -22,6 +28,10 @@ void vt100_Device::vt100(SystemConfig &config)
     cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
     
+    screen_t *screen = Screen(config, "scr", scrRaster, Color::amber());
+    screen->setScreenArea(XTAL(24'073'400) * 2/3,  102*10, 0, 80*10,  262, 0, 25*10);
+    screen->setScreenUpdate(FUNC(vt100_Device::vt100_updateScreen));
+
     VT100_VIDEO(config, crt, "crt", XTAL(24'073'400));
 }
 

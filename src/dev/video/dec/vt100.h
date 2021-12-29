@@ -14,6 +14,8 @@ namespace emu::video
     public:
         vt100_videoDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);
 
+        void updateVideo(bitmap16_t &bitmap, const rect_t &clip);
+        
         // I/O acccess function calls
         void write8_dc011(offs_t offset, uint8_t data);
         void write8_dc012(offs_t offset, uint8_t data);

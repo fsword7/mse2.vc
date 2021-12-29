@@ -22,6 +22,11 @@ vt100_videoDevice::vt100_videoDevice(const SystemConfig &config, cstag_t &devNam
 {
 }
 
+void vt100_videoDevice::updateVideo(bitmap16_t &bitmap, const rect_t &clip)
+{
+
+}
+
 uint8_t vt100_videoDevice::read8_test(offs_t offset)
 {
     return offset;

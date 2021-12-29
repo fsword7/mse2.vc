@@ -258,6 +258,8 @@ public:
         return reinterpret_cast<BindedObject &>(base.get());
     }
 
+    void setName(ctag_t *name) { devName = name; }
+
 private:
     std::reference_wrapper<Device> base;
     ctag_t *devName = nullptr;
@@ -274,9 +276,13 @@ private:
     using nbase = NamedDelegate<ReturnType (Args...)>;
 
 public:
-    explicit DeviceDelegate(Device &owner) : nbase(), DeviceDelegateHelper(owner) {}
+    template <typename T>
+	using supportCallback = std::bool_constant<std::is_constructible_v<DeviceDelegate, Device &, ctag_t *, T, ctag_t *>>;
 
-    DeviceDelegate &operator = (DeviceDelegate &src) = default;
+    explicit DeviceDelegate(Device &owner) : nbase(), DeviceDelegateHelper(owner) {}
+    DeviceDelegate(const nbase &src) : nbase(src) {}
+
+    // DeviceDelegate &operator = (DeviceDelegate &src) = default;
 
     template <class D>
     DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (D::*func)(Args...), ctag_t *fncName)
@@ -292,6 +298,13 @@ public:
     DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (*func)(D &, Args...), ctag_t *fncName)
     : nbase(func, fncName, static_cast<D *>(nullptr)), DeviceDelegateHelper(dev, devName)
     { }
+
+	template <class D> void set(ReturnType (D::*func)(Args ...), ctag_t *name)
+		{ nbase::operator = (nbase(func, name, static_cast<D *>(nullptr))); setName(nullptr); }
+	template <class D> void set(ReturnType (D::*func)(Args ...) const, ctag_t *name)
+		{ nbase::operator = (nbase(func, name, static_cast<D *>(nullptr))); setName(nullptr); }
+	template <class D> void set(ReturnType (*func)(D &, Args ...), ctag_t *name)
+		{ nbase::operator = (nbase(func, name, static_cast<D *>(nullptr))); setName(nullptr); }
 
     void resolve()
     {

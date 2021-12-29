@@ -22,6 +22,8 @@ public:
     void vt100_setMemoryMap(map::AddressList &map);
     void vt100_setIOPort(map::AddressList &map);
     
+    uint32_t vt100_updateScreen(ScreenDevice &screen, bitmap16_t &bitmap, const rect_t &clip);
+
 private:
     RequiredDevice<i8080_cpuDevice> cpu;
     RequiredDevice<vt100video_t> crt;
