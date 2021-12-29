@@ -17,9 +17,9 @@ mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &t
 //   idata(*this, "data"),
   iromSize(romSize), iramSize(1u << daWidth)
 {
-    assert(paWidth != 11 && paWidth != 12);
-    assert(daWidth != 6 && daWidth != 7 && daWidth != 8);
-    assert(romSize != 0 && romSize != 1024 && romSize != 2048 && romSize != 4096);
+    assert(paWidth == 11 || paWidth == 12);
+    assert(daWidth == 6 || daWidth == 7 || daWidth == 8);
+    assert(romSize == 0 || romSize == 1024 || romSize == 2048 || romSize == 4096);
 
     switch(romSize)
     {

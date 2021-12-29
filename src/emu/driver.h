@@ -70,7 +70,7 @@ systemCreator<Class,                        \
 
 #define CONSOLE(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
-eextern const SystemDriver SYSTEM_NAME(Name) = \
+extern const SystemDriver SYSTEM_NAME(Name) = \
 {                                \
     #Name,                       \
     #Parent,                     \
@@ -84,7 +84,7 @@ eextern const SystemDriver SYSTEM_NAME(Name) = \
 
 #define COMPUTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
-eextern const SystemDriver SYSTEM_NAME(Name) = \
+extern const SystemDriver SYSTEM_NAME(Name) = \
 {                                \
     #Name,                       \
     #Parent,                     \
@@ -112,7 +112,7 @@ extern const SystemDriver SYSTEM_NAME(Name) = \
 
 #define PRINTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
-eextern const SystemDriver SYSTEM_NAME(Name) = \
+extern const SystemDriver SYSTEM_NAME(Name) = \
 {                                \
     #Name,                       \
     #Parent,                     \

@@ -37,6 +37,7 @@ set (MSE_CPP_SRCS
     main/main.cpp
     main/systems.cpp
     main/user.cpp
+    printers/epson/mx.cpp
     terminals/dec/vt100.cpp
 )
 
@@ -83,6 +84,8 @@ set (MSE_H_SRCS
     main/command.h
     main/engine.h
     main/user.h
+    printers/epson/externs.h
+    printers/epson/mx.h
     terminals/dec/externs.h
     terminals/dec/vt100.h
 )
