@@ -15,6 +15,8 @@ namespace map
     class AddressList;
     class AddressEntry;
 
+    using Constructor = NamedDelegate<void (AddressList &)>;
+  
     // enum AddressType
     // {
     //     asProgram = 0,  // Program address space
@@ -47,6 +49,10 @@ namespace map
         inline uint16_t getAddrPrecision() const { return addrPrecision; }
         inline int16_t  getAddrShift() const     { return addrShift; }
         inline int16_t  getPageShift() const     { return pageShift; }
+
+        // Internal address map list
+        inline void setAddressMap(Constructor map) { imap = map; }
+        inline Constructor getAddressMap() const   { return imap; }
 
         offs_t convertAddressToByte(offs_t offset) const
         {
@@ -82,6 +88,9 @@ namespace map
         uint16_t addrPrecision = 0;
         int16_t  addrShift = 0;
         int16_t  pageShift = 0;
+
+        // Internal mapping
+        Constructor imap = Constructor();
     };
 
     struct AddressSpaceConfig

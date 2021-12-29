@@ -25,6 +25,10 @@ AddressList::AddressList(Device &dev, AddressType space)
     Constructor map = bus->getAddressMap(space);
     if (!map.isNull())
         map(*this);
+
+    map = config->getAddressMap();
+    if (!map.isNull())
+        map(*this);
 }
 
 AddressList::~AddressList()

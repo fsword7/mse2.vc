@@ -9,7 +9,7 @@ namespace map
 {
     class AddressList;
 
-    using Constructor = NamedDelegate<void (AddressList &)>;
+    // using Constructor = NamedDelegate<void (AddressList &)>;
     
     enum mapType
     {
