@@ -15,6 +15,7 @@ namespace map
     enum mapType
     {
         mapNone = 0,
+        mapUnmapped,    // Unmapped
         mapNOP,         // No operating - do nothing
         mapAccess,      // Accessible
         mapROMSpace,    // ROM space
@@ -115,6 +116,14 @@ namespace map
         AddressEntry  &ronly()               { read.type = mapRAMSpace;  return *this; }
         AddressEntry  &wonly()               { write.type = mapRAMSpace; return *this; }
 
+        AddressEntry  &noprw()               { read.type = mapNOP; write.type = mapNOP; return *this; }
+        AddressEntry  &nopr()                { read.type = mapNOP; return *this; }
+        AddressEntry  &nopw()                { write.type = mapNOP; return *this; }
+
+        AddressEntry  &unmaprw()             { read.type = mapUnmapped; write.type = mapUnmapped; return *this; }
+        AddressEntry  &unmapr()              { read.type = mapUnmapped; return *this; }
+        AddressEntry  &unmapw()              { write.type = mapUnmapped; return *this; }
+
         AddressEntry  &expandable()          { expFlag = true; return *this; }
         AddressEntry  &unexpandable()        { expFlag = false; return *this; }
         AddressEntry  &size(offs_t size)     { memSize = size; return *this; }
@@ -124,6 +133,10 @@ namespace map
 
         AddressEntry  &region(ctag_t *name, offs_t off = 0);
         AddressEntry  &share(ctag_t *name)   { shareName = name; return *this; }
+
+        AddressEntry  &bankr(ctag_t *name)   { read.type = mapBank; read.name = name; return *this; }
+        AddressEntry  &bankw(ctag_t *name)   { write.type = mapBank; write.name = name; return *this; }
+        AddressEntry  &bankrw(ctag_t *name)  { bankr(name); bankw(name); return *this; }
 
         AddressEntry  &r(read8d_t func);
         AddressEntry  &r(read8do_t func);
