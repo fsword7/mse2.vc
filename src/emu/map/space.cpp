@@ -363,6 +363,11 @@ namespace map
             nmirror = mirror;
         }
 
+        void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool nopFlag)
+        {
+
+        }
+
         void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) override
         {
             assert(data != nullptr);
@@ -383,6 +388,16 @@ namespace map
                 handler->setAddressSpace(nstart, nend);
                 rootWrite->populate(nstart, nend, nmirror, handler);
             }
+        }
+
+        void setMemoryView(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryView *view) override
+        {
+
+        }
+
+        void setMemoryBank(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryBank *bank, uint64_t flags, AccessType acc) override
+        {
+
         }
 
         // 8-bit read device delegate call setup

@@ -12,6 +12,8 @@ class diMemory;
 namespace map
 {
     class MemoryManager;
+    class MemoryView;
+    class MemoryBank;
     class AddressList;
     class AddressEntry;
 
@@ -111,7 +113,12 @@ namespace map
     public:
         enum AccessType { accRead, accWrite };
 
+        virtual void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool nopFlag) = 0;
+
         virtual void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) = 0;
+
+        virtual void setMemoryView(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryView *view) = 0;
+        virtual void setMemoryBank(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryBank *bank, uint64_t flags, AccessType acc) = 0;
 
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, read8d_t handler) = 0;
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, read8do_t handler) = 0;

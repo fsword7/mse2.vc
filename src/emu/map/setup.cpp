@@ -133,11 +133,17 @@ namespace map
     void AddressSpace::populateEntry(const AddressEntry *entry, AccessType acc)
     {
         mapHandler data = (acc == accRead) ? entry->read : entry->write;
+        MemoryBank *bank = nullptr;
 
         switch (data.type)
         {
             case mapNone:
                 return;
+
+            case mapNOP:
+            case mapUnmapped:
+                setUnmapped(entry->addrStart, entry->addrEnd, entry->addrMirror, 0, acc, data.type == mapNOP);
+                break;
 
             case mapROMSpace:
                 if (acc == accWrite)
@@ -147,6 +153,15 @@ namespace map
                 setMemorySpace(entry->addrStart, entry->addrEnd, entry->addrMirror, entry->memData, acc);
                 break;
             
+            case mapBank:
+                setMemoryBank(entry->addrStart, entry->addrEnd, entry->addrMirror, bank, 0, acc);
+                break;
+
+            case mapView:
+                if (acc == accRead)
+                    setMemoryView(entry->addrStart, entry->addrEnd, entry->addrMirror, entry->mview);
+                break;
+
             case mapDelegate:
                 if (acc == accRead)
                 {
