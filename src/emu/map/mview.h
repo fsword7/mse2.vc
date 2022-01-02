@@ -21,6 +21,10 @@ namespace map
         public:
             virtual ~MemoryViewEntry() = default;
 
+            AddressEntry &operator () (offs_t start, offs_t end);
+
+            virtual void populate(AddressList *map = nullptr) = 0;
+
         protected:
             MemoryViewEntry(const AddressConfig &config, MemoryManager &bus, MemoryView &view, int id)
             : view(view), id(id)
@@ -30,6 +34,8 @@ namespace map
 
             MemoryView &view;
             int id;
+
+            AddressList *map = nullptr;
         };
 
         void init(offs_t sAddr, offs_t eAddr, cAddressConfig *nconfig)
