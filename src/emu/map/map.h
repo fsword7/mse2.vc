@@ -8,4 +8,4 @@
 
 #include "emu/map/maccess.h"
 #include "emu/map/space.h"
-
+#include "emu/map/mview.h"

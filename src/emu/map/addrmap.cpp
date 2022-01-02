@@ -19,7 +19,7 @@ AddressList::AddressList(Device &dev, AddressType space)
     dev.hasInterface(bus);
     assert(bus != nullptr);
 
-    cAddressConfig *config = bus->getAddressConfig(space);
+    config = bus->getAddressConfig(space);
     assert(config != nullptr);
 
     Constructor map = bus->getAddressMap(space);
@@ -60,6 +60,15 @@ AddressEntry::AddressEntry(Device &dev, AddressList &map, offs_t start, offs_t e
   write64(dev), write64o(dev), write64om(dev)
 {
 
+}
+
+void AddressEntry::view(MemoryView &nview)
+{
+    read.type = mapView;
+    write.type = mapView;
+    mview = &nview;
+
+    mview->init(addrStart, addrEnd, map.getConfig());
 }
 
 AddressEntry &AddressEntry::region(ctag_t *name, offs_t off)

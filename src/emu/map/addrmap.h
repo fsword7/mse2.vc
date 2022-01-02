@@ -8,6 +8,7 @@
 namespace map
 {
     class AddressList;
+    class MemoryView;
 
     // using Constructor = NamedDelegate<void (AddressList &)>;
     
@@ -20,6 +21,7 @@ namespace map
         mapRAMSpace,    // RAM space
         mapIOPort,      // I/O port space
         mapBank,        // Memory bank space
+        mapView,        // Memory view space
         mapDelegate,    // Device delegate call ()
         mapDelegateO,   // Device delegate call (offset)
         mapDelegateOM,  // Device delegate call (offset, mask)
@@ -66,6 +68,8 @@ namespace map
         uint64_t        maxSize = 0;
         bool            expFlag = false;
 
+        MemoryView     *mview = nullptr;
+
         // 8-bit device delegate calls
         read8d_t        read8;
         read8do_t       read8o;
@@ -103,6 +107,8 @@ namespace map
         write64dom_t    write64om;
 
     public:
+        void view(MemoryView &nview);
+
         // ROM/RAM access list
         AddressEntry  &ram()                 { read.type = mapRAMSpace; write.type = mapRAMSpace; return *this; }
         AddressEntry  &rom()                 { read.type = mapROMSpace; write.type = mapNOP;      return *this; }
@@ -255,11 +261,14 @@ namespace map
         inline void setUnmappedLow()                    { unmapValue = 0ull; }
 
         inline int getSize() const { return list.size(); }
+        
+        inline cAddressConfig *getConfig() const { return config; }
 
         AddressEntry &operator () (offs_t start, offs_t end);
 
     private:
         Device &device;
+        cAddressConfig *config = nullptr;
         int addrSpace = 0;
 
         offs_t   gaddrMask = 0;

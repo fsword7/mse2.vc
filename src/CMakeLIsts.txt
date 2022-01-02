@@ -27,6 +27,7 @@ set (MSE_CPP_SRCS
     emu/map/hedw3.cpp
     emu/map/heun.cpp
     emu/map/maccess.cpp
+    emu/map/mview.cpp
     emu/map/memmgr.cpp
     emu/map/setup.cpp
     emu/map/space.cpp
@@ -76,6 +77,7 @@ set (MSE_H_SRCS
     emu/map/memlib.h
     emu/map/memmgr.h
     emu/map/maccess.h
+    emu/map/mview.h
     emu/map/space.h
     lib/util/bitmap.h
     lib/util/color.h
