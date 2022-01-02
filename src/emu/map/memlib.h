@@ -109,7 +109,49 @@ namespace map
 
     class MemoryBank
     {
+    public:
+        MemoryBank(cstag_t tagName)
+        {
+            name = fmt::sprintf("Bank '%s'", tagName);
 
+            entries.clear();
+        }
+        ~MemoryBank() = default;
+
+        inline cstag_t getName() const { return name; }
+
+        void configureEntries(int startEntry, int nEntries, void *base, offs_t stride)
+        {
+            if (startEntry + nEntries >= entries.size())
+                entries.resize(startEntry + nEntries + 1);
+            for (int idx = 0; idx < nEntries; idx++)
+                entries[startEntry + idx] = reinterpret_cast<uint8_t *>(base) + (stride * idx);
+        }
+
+        void configureEntry(int entry, void *base)
+        {
+            if (entry < 0)
+                return;
+            if (entry >= entries.size())
+                entries.resize(entry+1);
+            entries[entry] = reinterpret_cast<uint8_t *>(base);
+        }
+
+        void setEntry(int entry)
+        {
+            if (entry < 0 && entries.empty())
+                return;
+            if (entry < 0 || entry >= entries.size())
+                return;
+            if (entries[entry] == nullptr)
+                return;
+            idxEntry = entry;
+        }
+
+    private:
+        std::vector<uint8_t *> entries;
+        int idxEntry = 0;
+        std::string name;
     };
 
     using BlockList  = std::vector<MemoryBlock *>;
