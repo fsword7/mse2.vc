@@ -7,6 +7,7 @@
 #include "emu/video.h"
 #include "emu/machine.h"
 #include "main/user.h"
+#include "emu/fwloader.h"
 
 Machine::Machine(const SystemConfig &config, cstag_t &sysName)
 : memoryManager(*this), config(config), sysName(sysName),
@@ -39,6 +40,8 @@ void Machine::start(UserConsole *user)
 
     // try {
 
+        FirmwareLoader(*this, *user);
+        
         // Initializing memory management system
         memoryManager.init(user);
     // }

@@ -100,8 +100,8 @@
 #define FWREGION_GETFILL(entry)	    GET_FILL(FWREGION_GETFLAGS(entry))
 
 #define FWREGION_ISROMDATA(entry)			(((entry).flags & FW_REGION_DATA) == FW_REGION_IMAGE)
-#define FWREGION_ISBIGENDIAN(entry)		    (((entry).flags & FW_ENDIANTYPE) == FW_REGION_BE)
-#define FWREGION_ISLITTLEENDIAN(entry)		(((entry).flags & FW_ENDIANTYPE) == FW_REGION_LE)
+#define FWREGION_ISBIGENDIAN(entry)		    (((entry).flags & FW_ENDIAN_TYPE) == FW_REGION_BE)
+#define FWREGION_ISLITTLEENDIAN(entry)		(((entry).flags & FW_ENDIAN_TYPE) == FW_REGION_LE)
 
 #define FWREGION_HASFILLVALUE(entry)		((entry).flags & FW_FILL_DATA)
 

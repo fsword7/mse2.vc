@@ -42,10 +42,12 @@ template <typename T, typename U> constexpr T makeBitmask(U n)
     return T((n < (8 * sizeof(T)) ? (std::make_unsigned_t<T>(1) << n) : std::make_unsigned_t<T>(0)) - 1);
 }
 
+typedef char                tag_t;
 typedef const char          cchar_t;
 typedef const char          ctag_t;
-typedef const std::string   cstag_t;
+
 typedef std::string         stag_t;
+typedef const std::string   cstag_t;
 
 namespace map
 {

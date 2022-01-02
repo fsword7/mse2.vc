@@ -16,7 +16,9 @@ public:
 
     inline cstag_t getDeviceName() const { return std::string(sysDevice->getDeviceName()); }
     inline Device *getSystemDevice() const { return sysDevice; }
-    
+
+    inline map::MemoryManager &getMemoryManager() { return memoryManager; }
+
     static Machine *create(UserConsole *user, const SystemDriver *driver, cstag_t &devName);
 
     // Function calls from system engine

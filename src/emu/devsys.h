@@ -11,7 +11,8 @@ public:
     SystemDevice(const SystemConfig &config, const DeviceType &type, cstag_t &devName, uint64_t clock);
 
     void devConfigure(SystemConfig &config) override;
-
+    cfwEntry_t *devGetFirmwareEntries() { return driver.romEntries; }
+    
 private:
     const SystemDriver &driver;
 };

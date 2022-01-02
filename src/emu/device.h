@@ -184,12 +184,14 @@ public:
     void finishConfig();
 
     Device *findDevice(ctag_t *name);
+    cfwEntry_t *getFirmwareEntries();
 
     void registerObject(ObjectFinder *object);
     bool findObjects();
 
     // Virtual device function calls
     virtual void devConfigure(SystemConfig &config) {}
+    virtual cfwEntry_t *devGetFirmwareEntries() { return nullptr; }
     virtual void devStart() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
@@ -224,6 +226,8 @@ private:
     uint64_t clock = 0;
     cstag_t  devName;
     cstag_t  tagName;
+
+    cfwEntry_t *fwEntries = nullptr;
 
 protected:
 

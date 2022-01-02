@@ -44,6 +44,20 @@ void Device::finishConfig()
         iface->diCompleteConfig();
 }
 
+cfwEntry_t *Device::getFirmwareEntries()
+{
+    static constexpr cfwEntry_t fwEmpty[] = { FW_END };
+
+    if (fwEntries == nullptr)
+    {
+        fwEntries = devGetFirmwareEntries();
+        if (fwEntries == nullptr)
+            fwEntries = fwEmpty;
+    } 
+
+    return fwEntries;
+}
+
 void Device::registerObject(ObjectFinder *object)
 {
     objectList.push_back(object);
