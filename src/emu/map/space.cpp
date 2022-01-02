@@ -416,6 +416,10 @@ namespace map
             offs_t nstart, nend, nmask, nmirror;
             convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
 
+            auto handlers = view->makeHandlers(*this, addrStart, addrEnd);
+            rootRead->populate(nstart, nend, nmirror, static_cast<HandlerRead<dWidth, aShift> *>(handlers.first));
+            rootWrite->populate(nstart, nend, nmirror, static_cast<HandlerWrite<dWidth, aShift> *>(handlers.second));
+            view->makeDispatches();
         }
 
         void setMemoryBank(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryBank *bank, uint64_t flags, AccessType acc) override
