@@ -113,7 +113,7 @@ namespace map
     public:
         enum AccessType { accRead, accWrite };
 
-        virtual void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool nopFlag) = 0;
+        virtual void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool quiet) = 0;
 
         virtual void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) = 0;
 

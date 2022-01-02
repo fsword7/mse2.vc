@@ -118,7 +118,8 @@ namespace map
         }
         ~MemoryBank() = default;
 
-        inline cstag_t getName() const { return name; }
+        inline uint8_t *getBase() const { return entries[idxEntry]; }
+        inline cstag_t getName() const  { return name; }
 
         void configureEntries(int startEntry, int nEntries, void *base, offs_t stride)
         {

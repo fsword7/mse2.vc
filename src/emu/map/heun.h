@@ -14,8 +14,8 @@ namespace map
         using uintx_t = typename HandlerRead<dWidth, aShift>::uintx_t;
         using base = HandlerRead<dWidth, aShift>;
 
-        HandlerReadUnmapped(AddressSpace *space)
-        : HandlerRead<dWidth, aShift>(space, 0)
+        HandlerReadUnmapped(AddressSpace *space, uint32_t flags = 0)
+        : HandlerRead<dWidth, aShift>(space, flags)
         { }
 
         ~HandlerReadUnmapped() = default;
@@ -35,8 +35,8 @@ namespace map
         using uintx_t = typename HandlerWrite<dWidth, aShift>::uintx_t;
         using base = HandlerWrite<dWidth, aShift>;
 
-        HandlerWriteUnmapped(AddressSpace *space)
-        : HandlerWrite<dWidth, aShift>(space, 0)
+        HandlerWriteUnmapped(AddressSpace *space, uint32_t flags = 0)
+        : HandlerWrite<dWidth, aShift>(space, flags)
         { }
 
         ~HandlerWriteUnmapped() = default;
@@ -57,8 +57,8 @@ namespace map
         using uintx_t = typename HandlerRead<dWidth, aShift>::uintx_t;
         using base = HandlerRead<dWidth, aShift>;
 
-        HandlerReadNop(AddressSpace *space)
-        : HandlerRead<dWidth, aShift>(space, 0)
+        HandlerReadNop(AddressSpace *space, uint32_t flags = 0)
+        : HandlerRead<dWidth, aShift>(space, flags)
         { }
 
         ~HandlerReadNop() = default;
@@ -78,8 +78,8 @@ namespace map
         using uintx_t = typename HandlerWrite<dWidth, aShift>::uintx_t;
         using base = HandlerWrite<dWidth, aShift>;
 
-        HandlerWriteNop(AddressSpace *space)
-        : HandlerWrite<dWidth, aShift>(space, 0)
+        HandlerWriteNop(AddressSpace *space, uint32_t flags = 0)
+        : HandlerWrite<dWidth, aShift>(space, flags)
         { }
 
         ~HandlerWriteNop() = default;

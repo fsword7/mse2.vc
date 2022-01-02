@@ -363,9 +363,30 @@ namespace map
             nmirror = mirror;
         }
 
-        void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool nopFlag)
+        void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool quiet)
         {
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
 
+            if (acc == accRead)
+            {
+                // auto handler = quiet ?
+                //     static_cast<HandlerRead<dWidth, aShift> *>(new HandlerReadNop<dWidth, aShift>(this)) : 
+                //     static_cast<HandlerRead<dWidth, aShift> *>(new HandlerReadUnmapped<dWidth, aShift>(this));
+                auto handler = static_cast<HandlerRead<dWidth, aShift> *>(quiet ? nopRead : unmapRead); 
+                handler->ref();
+                rootRead->populate(nstart, nend, nmirror, handler);
+            }
+
+            if (acc == accWrite)
+            {
+                // auto handler = quiet ?
+                //     static_cast<HandlerWrite<dWidth, aShift> *>(new HandlerWriteNop<dWidth, aShift>(this)) : 
+                //     static_cast<HandlerWrite<dWidth, aShift> *>(new HandlerWriteUnmapped<dWidth, aShift>(this));
+                auto handler = static_cast<HandlerWrite<dWidth, aShift> *>(quiet ? nopWrite : unmapWrite); 
+                handler->ref();
+                rootWrite->populate(nstart, nend, nmirror, handler);
+            }
         }
 
         void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) override
@@ -392,12 +413,31 @@ namespace map
 
         void setMemoryView(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryView *view) override
         {
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
 
         }
 
         void setMemoryBank(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryBank *bank, uint64_t flags, AccessType acc) override
         {
+            assert (bank != nullptr);
 
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            if (acc == accRead)
+            {
+                auto handler = new HandlerReadMemoryBank<dWidth, aShift>(this, flags, *bank);
+                handler->setAddressSpace(nstart, nend);
+                rootRead->populate(nstart, nend, nmirror, handler);
+            }
+
+            if (acc == accWrite)
+            {
+                auto handler = new HandlerWriteMemoryBank<dWidth, aShift>(this, flags, *bank);
+                handler->setAddressSpace(nstart, nend);
+                rootWrite->populate(nstart, nend, nmirror, handler);
+            }
         }
 
         // 8-bit read device delegate call setup
