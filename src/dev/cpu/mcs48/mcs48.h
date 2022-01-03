@@ -10,14 +10,25 @@
 // PSW flag definitions
 //
 // +---+---+---+---+---+---+---+---+
-// | C | A | F | B |   |     SP    |
+// | C | A | F | B | 1 |     SP    |
 // +---+---+---+---+---+---+---+---+
 
-#define PSW_C	0x80
-#define PSW_A	0x40
-#define PSW_F	0x20
-#define PSW_B	0x10
-#define PSW_SP  0x07
+#define PSW_C		0x80	// Carry flag
+#define PSW_A		0x40	// Half-carry flag
+#define PSW_F		0x20	// F0 flag
+#define PSW_B		0x10	// Register bank flag
+#define PSW_MBZ		0x08	// Must be zero
+#define PSW_SP		0x07	// Stack pointer in data space
+
+// P2 flags for UPI-41 processors
+#define P2_OBF		0x10
+#define P2_NIBF		0x20
+#define P2_DRQ		0x40
+#define P2_NDACK	0x80
+
+// STS register for UPI-41 processors
+#define STS_IBF		0x02
+#define STS_OBF		0x01
 
 #define R0 iRegs[0]
 #define R1 iRegs[1]
@@ -38,6 +49,15 @@
 class mcs48_cpuDevice : public ProcessorDevice
 {
 public:
+	// 8243 expander operations
+	enum opExpander
+	{
+		eopRead  = 0,
+		eopWrite = 1,
+		eopOR    = 2,
+		eopAND   = 3
+	};
+
     mcs48_cpuDevice(const SystemConfig &config, const DeviceType &type,
         cstag_t &devName, Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize);
     virtual ~mcs48_cpuDevice() = default;
@@ -57,7 +77,7 @@ protected:
 	void setData256(map::AddressList &map);
 
 	inline void eatCycles(int cycles) { cpuCycles -= cycles; }
-	// inline void updateRegisters() { iRegs = &idata[pswReg & PSW_B ? 24 : 0]; }
+	inline void updateRegisters() { /* iRegs = &idata[pswReg & PSW_B ? 24 : 0]; */ }
 	// RequiredSharedPointer<uint8_t> idata;
 
 	uint16_t iromSize; // Internal ROM size (1024, 2048 or 4096 bytes)
@@ -78,26 +98,60 @@ protected:
 	uint16_t pcReg;
 	uint16_t a11Reg;
 
+	uint8_t  p1Reg;
+	uint8_t  p2Reg;
+	bool     f1Reg;
+
+	uint8_t  dbbiReg;
+	uint8_t  dbboReg;
+	uint8_t  stsReg;
+
+	bool irqState;
+	bool irqPolled;
 	bool irqInProgress = false;
+	bool xirqEnable;
+	
+	bool tirqEnable;
+	bool timerOverflow;
+	bool timerFlag;
+	uint8_t timerReg;
+
+	bool dmaEnable;
+	bool flagsEnable;
 
 	uint64_t cpuCycles;
 
 	uint8_t read8i();
+	uint8_t getP2Mask();
 
 	// program space access function calls
-	uint8_t read8p(offs_t addr)            { return mapProgram.read8(addr); }
+	uint8_t read8p(offs_t addr)                { return mapProgram.read8(addr); }
 
 	// data space access function calls
-	uint8_t read8d(offs_t addr)             { return mapData.read8(addr); }
-	void write8d(offs_t addr, uint8_t data) { mapData.write8(addr, data); }
+	uint8_t read8d(offs_t addr)                { return mapData.read8(addr); }
+	void write8d(offs_t addr, uint8_t data)    { mapData.write8(addr, data); }
 
 	// I/O space access function calls
+	uint8_t read8io(offs_t addr)               { return mapIOPort.read8(addr); }
+	void write8io(offs_t addr, uint8_t data)   { mapIOPort.write8(addr, data); }
+
+	// port/bus (callback) function calls
+	uint8_t read8port(offs_t addr)             { return 0; }
+	void write8port(offs_t addr, uint8_t data) { }
+	uint8_t read8bus()                         { return 0; }
+	void write8bus(uint8_t data)               { }
+	uint8_t read8test(offs_t addr)             { return 0; }
+	void write8prog(int v)                     { }
+
+	// Expansion operation (8243 expander chip)
+	void expand(uint8_t port, opExpander op);
 
 	// Excute function calls
 	void exADD(uint8_t val);
 	void exADC(uint8_t val);
 	void exCALL(uint16_t addr);
 	void exJUMP(uint16_t addr);
+	void exJCC(bool flag);
 
 	void pushPCPSW();
 	void pullPCPSW();
@@ -142,6 +196,14 @@ protected:
 	void opANL_A_XR1();
 	void opANL_A_N();
 
+	void opANL_BUS_N();
+	void opANL_P1_N();
+	void opANL_P2_N();
+	void opANLD_P4_A();
+	void opANLD_P5_A();
+	void opANLD_P6_A();
+	void opANLD_P7_A();
+
 	void opCALL_0();
 	void opCALL_1();
 	void opCALL_2();
@@ -151,6 +213,224 @@ protected:
 	void opCALL_6();
 	void opCALL_7();
 
+	void opCLR_A();
+	void opCLR_C();
+	void opCLR_F0();
+	void opCLR_F1();
+
+	void opCPL_A();
+	void opCPL_C();
+	void opCPL_F0();
+	void opCPL_F1();
+
+	void opDA_A();
+
+	void opDEC_A();
+	void opDEC_R0();
+	void opDEC_R1();
+	void opDEC_R2();
+	void opDEC_R3();
+	void opDEC_R4();
+	void opDEC_R5();
+	void opDEC_R6();
+	void opDEC_R7();
+
+	void opDIS_I();
+	void opDIS_TCNTI();
+
+	void opDJNZ_R0();
+	void opDJNZ_R1();
+	void opDJNZ_R2();
+	void opDJNZ_R3();
+	void opDJNZ_R4();
+	void opDJNZ_R5();
+	void opDJNZ_R6();
+	void opDJNZ_R7();
+
+	void opEN_I();
+	void opEN_TCNTI();
+	void opEN_DMA();
+	void opEN_FLAGS();
+	void opENT0_CLK();
+
+	void opIN_A_P0();
+	void opIN_A_P1();
+	void opIN_A_P2();
+	void opINS_A_BUS();
+	void opIN_A_DBB();
+
+	void opINC_A();
+	void opINC_R0();
+	void opINC_R1();
+	void opINC_R2();
+	void opINC_R3();
+	void opINC_R4();
+	void opINC_R5();
+	void opINC_R6();
+	void opINC_R7();
+	void opINC_XR0();
+	void opINC_XR1();
+
+	void opJB_0();
+	void opJB_1();
+	void opJB_2();
+	void opJB_3();
+	void opJB_4();
+	void opJB_5();
+	void opJB_6();
+	void opJB_7();
+	void opJC();
+	void opJF0();
+	void opJF1();
+	void opJNC();
+	void opJNI();
+	void opJNIBF();
+	void opJNT_0();
+	void opJNT_1();
+	void opJNZ();
+	void opJOBF();
+	void opJTF();
+	void opJT_0();
+	void opJT_1();
+	void opJZ();
+
+	void opJMP_0();
+	void opJMP_1();
+	void opJMP_2();
+	void opJMP_3();
+	void opJMP_4();
+	void opJMP_5();
+	void opJMP_6();
+	void opJMP_7();
+	void opJMPP_XA();
+
+	void opMOV_A_N();
+	void opMOV_A_PSW();
+	void opMOV_A_R0();
+	void opMOV_A_R1();	
+	void opMOV_A_R2();
+	void opMOV_A_R3();
+	void opMOV_A_R4();
+	void opMOV_A_R5();
+	void opMOV_A_R6();
+	void opMOV_A_R7();
+	void opMOV_A_XR0();
+	void opMOV_A_XR1();
+	void opMOV_A_T();
+	
+	void opMOV_PSW_A();
+	void opMOV_STS_A();
+	void opMOV_R0_A();
+	void opMOV_R1_A();
+	void opMOV_R2_A();
+	void opMOV_R3_A();
+	void opMOV_R4_A();
+	void opMOV_R5_A();
+	void opMOV_R6_A();
+	void opMOV_R7_A();
+	void opMOV_R0_N();
+	void opMOV_R1_N();
+	void opMOV_R2_N();
+	void opMOV_R3_N();
+	void opMOV_R4_N();
+	void opMOV_R5_N();
+	void opMOV_R6_N();
+	void opMOV_R7_N();
+	void opMOV_T_A();
+	void opMOV_XR0_A();
+	void opMOV_XR1_A();
+	void opMOV_XR0_N();
+	void opMOV_XR1_N();
+
+	void opMOVD_A_P4();
+	void opMOVD_A_P5();
+	void opMOVD_A_P6();
+	void opMOVD_A_P7();
+	void opMOVD_P4_A();
+	void opMOVD_P5_A();
+	void opMOVD_P6_A();
+	void opMOVD_P7_A();
+
+	void opMOVP_A_XA();
+	void opMOVP3_A_XA();
+
+	void opMOVX_A_XR0();
+	void opMOVX_A_XR1();
+	void opMOVX_XR0_A();
+	void opMOVX_XR1_A();
+
+	void opNOP();
+
+	void opORL_A_R0();
+	void opORL_A_R1();
+	void opORL_A_R2();
+	void opORL_A_R3();
+	void opORL_A_R4();
+	void opORL_A_R5();
+	void opORL_A_R6();
+	void opORL_A_R7();
+	void opORL_A_XR0();
+	void opORL_A_XR1();
+	void opORL_A_N();
+
+	void opORL_BUS_N();
+	void opORL_P1_N();
+	void opORL_P2_N();
+	void opORLD_P4_A();
+	void opORLD_P5_A();
+	void opORLD_P6_A();
+	void opORLD_P7_A();
+
+	void opOUTL_BUS_A();
+	void opOUTL_P0_A();
+	void opOUTL_P1_A();
+	void opOUTL_P2_A();
+	void opOUT_DBB_A();
+
+	void opRET();
+	void opRETR();
+
+	void opRL_A();
+	void opRLC_A();
+	void opRR_A();
+	void opRRC_A();
+
+	void opSEL_MB0();
+	void opSEL_MB1();
+	void opSEL_RB0();
+	void opSEL_RB1();
+
+	void opSTOP_TCNT();
+	void opSTOP_T();
+	void opSTRT_CNT();
+
+	void opSWAP_A();
+
+	void opXCH_A_R0();
+	void opXCH_A_R1();
+	void opXCH_A_R2();
+	void opXCH_A_R3();
+	void opXCH_A_R4();
+	void opXCH_A_R5();
+	void opXCH_A_R6();
+	void opXCH_A_R7();
+	void opXCH_A_XR0();
+	void opXCH_A_XR1();
+
+	void opXCHD_A_XR0();
+	void opXCHD_A_XR1();
+
+	void opXRL_A_R0();
+	void opXRL_A_R1();
+	void opXRL_A_R2();
+	void opXRL_A_R3();
+	void opXRL_A_R4();
+	void opXRL_A_R5();
+	void opXRL_A_R6();
+	void opXRL_A_R7();
+	void opXRL_A_XR0();
+	void opXRL_A_XR1();
+	void opXRL_A_N();
 };
 
 class i8021_cpuDevice : public mcs48_cpuDevice
