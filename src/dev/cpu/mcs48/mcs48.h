@@ -149,8 +149,11 @@ protected:
 	// Expansion operation (8243 expander chip)
 	void expand(uint8_t port, opExpander op);
 
-	// Opcode tables for varying MCS48 processors
+	// Opcode tables for MCS48 processor series
 	static const opExecute mcs48_Opcodes[];
+	static const opExecute i8021_Opcodes[];
+	static const opExecute i8022_Opcodes[];
+	static const opExecute upi41_Opcodes[];
 
 	// Excute function calls
 	void exADD(uint8_t val);
@@ -407,7 +410,7 @@ protected:
 	void opSEL_RB1();
 
 	void opSTOP_TCNT();
-	void opSTOP_T();
+	void opSTRT_T();
 	void opSTRT_CNT();
 
 	void opSWAP_A();

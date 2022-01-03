@@ -423,7 +423,7 @@ DO_OPC(SEL_RB0)       { eatCycles(1); pswReg &= ~PSW_B; updateRegisters(); }
 DO_OPC(SEL_RB1)       { eatCycles(1); pswReg |= PSW_B; updateRegisters(); }
 
 DO_OPC(STOP_TCNT)     { eatCycles(1);  }
-DO_OPC(STOP_T)        { eatCycles(1);  }
+DO_OPC(STRT_T)        { eatCycles(1);  }
 DO_OPC(STRT_CNT)
 {
     eatCycles(1);
