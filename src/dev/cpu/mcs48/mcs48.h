@@ -66,6 +66,8 @@ public:
 	void devStart() override;
 
 protected:
+	typedef void (mcs48_cpuDevice::*opExecute)();
+
     map::AddressConfigList getAddressConfigList() const override;
 	
 	void setProgram1024(map::AddressList &map);
@@ -147,6 +149,9 @@ protected:
 	// Expansion operation (8243 expander chip)
 	void expand(uint8_t port, opExpander op);
 
+	// Opcode tables for varying MCS48 processors
+	static const opExecute mcs48_Opcodes[];
+
 	// Excute function calls
 	void exADD(uint8_t val);
 	void exADC(uint8_t val);
@@ -159,7 +164,7 @@ protected:
 	void pullPC();
 
 	// Opcode function calls
-	void illegal();
+	void opIllegal();
 
 	void opADD_A_R0();
 	void opADD_A_R1();
