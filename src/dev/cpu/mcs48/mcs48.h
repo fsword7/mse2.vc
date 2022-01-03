@@ -97,6 +97,7 @@ protected:
 	uint8_t  pswReg;
 	uint16_t pcReg;
 	uint16_t a11Reg;
+	uint16_t fpcBase; // faulting PC address
 
 	uint8_t  p1Reg;
 	uint8_t  p2Reg;

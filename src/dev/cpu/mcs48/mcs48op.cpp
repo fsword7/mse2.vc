@@ -128,7 +128,9 @@ void mcs48_cpuDevice::exCALL(uint16_t addr)
 
 DO_OPC(illegal)
 {
-
+    eatCycles(1);
+    fmt::printf("%s(MCS48): Illegal instruction (%02X) at PC %03X\n",
+        getDeviceName(), read8p(fpcBase), fpcBase);
 }
 
 DO_OPC(opADD_A_R0)      { eatCycles(1); exADD(R0); }
