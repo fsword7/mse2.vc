@@ -32,7 +32,7 @@ constexpr const endian_t endianNative = BigEndian;
 #define ENDIAN_VALUE(endian, leValue, beValue)  ((endian == LittleEndian) ? (leValue) : (beValue))
 #define NATIVE_ENDIAN(leValue, beValue)         ENDIAN_VALUE(endianNative, leValue, beValue)
 
-namespace fd = std::filesystem;
+namespace fs = std::filesystem;
 
 // Using 64-bit addressing offset
 using offs_t = uint64_t;

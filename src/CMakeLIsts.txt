@@ -2,6 +2,7 @@ set (MSE_CPP_SRCS
     dev/cpu/i8080/execute.cpp
     dev/cpu/i8080/i8080.cpp
     dev/cpu/mcs48/mcs48.cpp
+    dev/cpu/mcs48/mcs48op.cpp
     dev/video/dec/vt100.cpp
     emu/device.cpp
     emu/devcb.cpp
@@ -11,6 +12,7 @@ set (MSE_CPP_SRCS
     emu/diexec.cpp
     emu/dimem.cpp
     emu/divideo.cpp
+    emu/fileio.cpp
     emu/fwloader.cpp
     emu/machine.cpp
     emu/screen.cpp
@@ -60,6 +62,7 @@ set (MSE_H_SRCS
     emu/dimem.h
     emu/divideo.h
     emu/driver.h
+    emu/fileio.h
     emu/fwloader.h
     emu/machine.h
     emu/templates.h

@@ -54,12 +54,23 @@ mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &t
 
 map::AddressConfigList mcs48_cpuDevice::getAddressConfigList() const
 {
-    return map::AddressConfigList
+    if (cpuFlags & CPUF_EXTERNAL_BUS)
     {
-        { map::asProgram, &mapProgramConfig },
-        { map::asData,    &mapDataConfig    },
-        { map::asIOPort,  &mapIOPortConfig  }
-    };
+        return map::AddressConfigList
+        {
+            { map::asProgram, &mapProgramConfig },
+            { map::asData,    &mapDataConfig    },
+            { map::asIOPort,  &mapIOPortConfig  }
+        };
+    }
+    else
+    {
+        return map::AddressConfigList
+        {
+            { map::asProgram, &mapProgramConfig },
+            { map::asData,    &mapDataConfig    }
+        };
+    }
 }
 
 void mcs48_cpuDevice::devStart()

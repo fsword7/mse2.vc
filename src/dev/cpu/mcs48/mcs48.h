@@ -7,6 +7,34 @@
 
 #include "emu/devcpu.h"
 
+// PSW flag definitions
+//
+// +---+---+---+---+---+---+---+---+
+// | C | A | F | B |   |     SP    |
+// +---+---+---+---+---+---+---+---+
+
+#define PSW_C	0x80
+#define PSW_A	0x40
+#define PSW_F	0x20
+#define PSW_B	0x10
+#define PSW_SP  0x07
+
+#define R0 iRegs[0]
+#define R1 iRegs[1]
+#define R2 iRegs[2]
+#define R3 iRegs[3]
+#define R4 iRegs[4]
+#define R5 iRegs[5]
+#define R6 iRegs[6]
+#define R7 iRegs[7]
+
+// MCS-48 feature defintions
+#define CPUF_EXTERNAL_BUS	0x80
+#define CPUF_MB				0x40
+#define CPUF_UPI41			0x04
+#define CPUF_802X			0x02
+#define CPUF_804X			0x01
+
 class mcs48_cpuDevice : public ProcessorDevice
 {
 public:
@@ -28,6 +56,8 @@ protected:
 	void setData128(map::AddressList &map);
 	void setData256(map::AddressList &map);
 
+	inline void eatCycles(int cycles) { cpuCycles -= cycles; }
+	// inline void updateRegisters() { iRegs = &idata[pswReg & PSW_B ? 24 : 0]; }
 	// RequiredSharedPointer<uint8_t> idata;
 
 	uint16_t iromSize; // Internal ROM size (1024, 2048 or 4096 bytes)
@@ -40,6 +70,87 @@ protected:
     map::MemoryAccess<12, 0, 0, LittleEndian>::specific mapProgram;
     map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapData;
     map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapIOPort;
+
+	uint8_t  cpuFlags;
+	uint8_t  *iRegs;
+	uint8_t	 aReg;
+	uint8_t  pswReg;
+	uint16_t pcReg;
+	uint16_t a11Reg;
+
+	bool irqInProgress = false;
+
+	uint64_t cpuCycles;
+
+	uint8_t read8i();
+
+	// program space access function calls
+	uint8_t read8p(offs_t addr)            { return mapProgram.read8(addr); }
+
+	// data space access function calls
+	uint8_t read8d(offs_t addr)             { return mapData.read8(addr); }
+	void write8d(offs_t addr, uint8_t data) { mapData.write8(addr, data); }
+
+	// I/O space access function calls
+
+	// Excute function calls
+	void exADD(uint8_t val);
+	void exADC(uint8_t val);
+	void exCALL(uint16_t addr);
+	void exJUMP(uint16_t addr);
+
+	void pushPCPSW();
+	void pullPCPSW();
+	void pullPC();
+
+	// Opcode function calls
+	void illegal();
+
+	void opADD_A_R0();
+	void opADD_A_R1();
+	void opADD_A_R2();
+	void opADD_A_R3();
+	void opADD_A_R4();
+	void opADD_A_R5();
+	void opADD_A_R6();
+	void opADD_A_R7();
+	void opADD_A_XR0();
+	void opADD_A_XR1();
+	void opADD_A_N();
+	
+	void opADC_A_R0();
+	void opADC_A_R1();
+	void opADC_A_R2();
+	void opADC_A_R3();
+	void opADC_A_R4();
+	void opADC_A_R5();
+	void opADC_A_R6();
+	void opADC_A_R7();
+	void opADC_A_XR0();
+	void opADC_A_XR1();
+	void opADC_A_N();
+
+	void opANL_A_R0();
+	void opANL_A_R1();
+	void opANL_A_R2();
+	void opANL_A_R3();
+	void opANL_A_R4();
+	void opANL_A_R5();
+	void opANL_A_R6();
+	void opANL_A_R7();
+	void opANL_A_XR0();
+	void opANL_A_XR1();
+	void opANL_A_N();
+
+	void opCALL_0();
+	void opCALL_1();
+	void opCALL_2();
+	void opCALL_3();
+	void opCALL_4();
+	void opCALL_5();
+	void opCALL_6();
+	void opCALL_7();
+
 };
 
 class i8021_cpuDevice : public mcs48_cpuDevice
