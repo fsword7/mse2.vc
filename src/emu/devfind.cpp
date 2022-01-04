@@ -8,7 +8,8 @@
 #include "emu/devfind.h"
 
 ObjectFinder::ObjectFinder(Device &owner, ctag_t *name)
-: base(owner), objName(name)
+: base(owner), objName(name),
+  fullObjectName(base.getFullDeviceName(std::string(name)))
 {
     owner.registerObject(this);
 }
@@ -21,7 +22,7 @@ void ObjectFinder::setObjectName(ctag_t *name)
 
 void *ObjectFinder::findMemoryRegion(uint8_t width, size_t &size, bool required) const
 {
-    map::MemoryRegion *region = base.findMemoryRegion(objName);
+    map::MemoryRegion *region = base.findMemoryRegion(fullObjectName.c_str());
 
     if (region == nullptr)
     {
@@ -36,7 +37,7 @@ void *ObjectFinder::findMemoryRegion(uint8_t width, size_t &size, bool required)
 
 void *ObjectFinder::findMemoryShared(uint8_t width, size_t &size, bool required) const
 {
-    map::MemoryShare *share = base.findMemoryShare(objName);
+    map::MemoryShare *share = base.findMemoryShare(fullObjectName.c_str());
 
     if (share == nullptr)
     {

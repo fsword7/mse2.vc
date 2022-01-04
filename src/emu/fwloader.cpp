@@ -64,6 +64,8 @@ void FirmwareLoader::processRegionList()
             rgnName = FWREGION_GETNAME(*entry);
             rgnLength = FWREGION_GETLENGTH(*entry);
 
+            cstag_t fullName = dev.getFullDeviceName(std::string(rgnName));
+
             fmt::printf("%s: Processing firmwarw region '%s' length %d (%X) bytes\n",
                 dev.getDeviceName(), rgnName, rgnLength, rgnLength);
 
@@ -73,7 +75,7 @@ void FirmwareLoader::processRegionList()
                 endian_t eType = FWREGION_ISBIGENDIAN(*entry) ? BigEndian : LittleEndian;
                 uint8_t  fill = 0;
 
-                region = bus.allocateRegion(dev, map::asProgram, rgnName, rgnLength, dWidth, eType);
+                region = bus.allocateRegion(dev, map::asProgram, fullName.c_str(), rgnLength, dWidth, eType);
 
                 if (FWREGION_HASFILLVALUE(*entry))
                     fill = FWREGION_GETFILL(*entry);

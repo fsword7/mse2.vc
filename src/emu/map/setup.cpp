@@ -49,7 +49,8 @@ namespace map
 
             if (entry->shareName != nullptr)
             {
-                MemoryShare *share = manager.findShare(entry->shareName);
+                cstag_t fullName = device.getFullDeviceName(entry->shareName);
+                MemoryShare *share = manager.findShare(fullName);
 
                 if (share == nullptr)
                 {
@@ -57,10 +58,10 @@ namespace map
                     size_t bytes = config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart);
 
                     fmt::printf("%s(%s): creating share '%s' of length %0*llX (%d) bytes\n",
-                        device.getDeviceName(), asInfo[space], entry->shareName,
+                        device.getDeviceName(), asInfo[space], fullName,
                         config.getAddrPrecision(), bytes, bytes);
 
-                    share = manager.allocateShare(device, space, entry->shareName,
+                    share = manager.allocateShare(device, space, fullName,
                         bytes, config.getDataWidth(), config.getEndianType());
                     entry->memData = (uint8_t *)share->getData();
                 }
@@ -82,19 +83,20 @@ namespace map
 
             if (entry->regionName != nullptr)
             {
-                MemoryRegion *region = manager.findRegion(entry->regionName);
+                cstag_t fullName = device.getFullDeviceName(entry->regionName);
+                MemoryRegion *region = manager.findRegion(fullName);
 
                 if (region != nullptr)
                 {
                     // Determine ending address for expandable memory space
                     if (region->getSize() < (entry->addrEnd - entry->addrStart + 1))
                     {
-                        fmt::printf("%s(%s): %0*llX-%0*llX - expandable range up to %0*llX\n",
+                        fmt::printf("%s(%s): %0*llX-%0*llX - expandable range up to %0*llX on region '%s'\n",
                             device.getDeviceName(), asInfo[space],
                             config.getAddrPrecision(), entry->addrStart,
                             config.getAddrPrecision(), (entry->addrStart + region->getSize()) - 1,
                             config.getAddrPrecision(), entry->addrEnd,
-                            entry->regionName);
+                            fullName);
 
                         // Adjust new ending address for desired memory length
                         entry->addrEnd = entry->addrStart + region->getSize() - 1;
@@ -109,7 +111,7 @@ namespace map
                         device.getDeviceName(), asInfo[space],
                         config.getAddrPrecision(), entry->addrStart,
                         config.getAddrPrecision(), entry->addrEnd,
-                        entry->regionName);
+                        fullName);
 
                     // Allocating anonymous memory space safely as default below...
                 }

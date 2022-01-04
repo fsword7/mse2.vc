@@ -31,6 +31,16 @@ Device *Device::findDevice(ctag_t *name)
     return nullptr;
 }
 
+std::string Device::getFullDeviceName(cstag_t tagName)
+{
+    std::string path;
+
+    path.assign(devName);
+    path += "." + tagName;
+
+    return path;
+}
+
 void Device::configure(SystemConfig &config)
 {
     assert (&config == &sysConfig);

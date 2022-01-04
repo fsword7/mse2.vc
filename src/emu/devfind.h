@@ -28,6 +28,7 @@ protected:
 
     Device &base;
     ctag_t *objName;
+    cstag_t fullObjectName; // path name
     bool isResolved = false;
 };
 

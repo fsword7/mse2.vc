@@ -198,6 +198,7 @@ public:
 
     Device *findDevice(ctag_t *name);
     cfwEntry_t *getFirmwareEntries();
+    std::string getFullDeviceName(cstag_t tagName);
 
     map::MemoryRegion *findMemoryRegion(ctag_t *name);
     map::MemoryBank *findMemoryBank(ctag_t *name);
