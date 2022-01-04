@@ -60,6 +60,40 @@ namespace emu::devices
 
         inline Device &getOwner() { return base; }
 
+        template <typename T, typename Impl>
+        class TransformBase
+        {
+        public:
+            Impl &setXOR(std::make_unsigned_t<T> val)
+            { 
+                xorValue ^= val;
+                return static_cast<Impl &>(*this); 
+            }
+            
+            Impl &setMask(std::make_unsigned_t<T> val)
+            { 
+                maskValue = flagMask ? val : (maskValue & val); 
+                flagMask = false; 
+                return static_cast<Impl &>(*this);
+            }
+
+            Impl &setInvert(std::make_unsigned_t<T> val)
+            { 
+                return setXOR(~std::make_unsigned_t<T>(0));
+            }
+        
+            constexpr std::make_unsigned_t<T> getMask() const { return maskValue; }
+            constexpr std::make_unsigned_t<T> getXOR() const { return xorValue & maskValue; }
+
+        protected:
+            TransformBase(std::make_unsigned_t<T> mask) : maskValue(mask) { }
+
+        private:
+            std::make_unsigned_t<T> maskValue;
+            std::make_unsigned_t<T> xorValue = std::make_unsigned_t<T>(0);
+            bool flagMask = true;
+        };
+
     private:
         Device &base;
     };
@@ -190,6 +224,195 @@ namespace emu::devices
     private:
         using func_t = std::function<Result (offs_t, std::make_unsigned_t<Result>) >;
 
+        class Creator
+        {
+        public:
+            using ptr = std::unique_ptr<Creator>;
+            
+            virtual ~Creator() = default;
+
+            virtual func_t create() = 0;
+
+            std::make_unsigned_t<Result> getMask() const { return mask; }
+
+        protected:
+            Creator(std::make_unsigned_t<Result> mask) : mask(mask) { }
+
+            std::make_unsigned_t<Result> mask;
+        };
+
+        template <typename T>
+        class CreatorBase : public Creator
+        {
+        public:
+            CreatorBase(T && builder) : Creator(builder.getMask()), builder(std::move(builder)) { }
+
+            virtual func_t create() override
+            {
+                func_t newFunc = nullptr;
+                builder.build(
+                    [&newFunc](auto &&f)
+                    {
+                        newFunc = [cb = std::move(f)](offs_t offset, typename T::input_mask_t memMask)
+                        {
+                            return cb(offset, memMask);
+                        };
+                    }
+                );
+                return newFunc;
+            }
+
+        private:
+            T builder;
+        };
+
+        class BuilderBase
+        {
+        protected:
+            BuilderBase(readcb_t &cb, bool append)
+            : target(cb), append(append)
+            { }
+            BuilderBase(BuilderBase &&) = default;
+            BuilderBase(BuilderBase const &) = delete;
+            ~BuilderBase() { assert(consumed); }
+
+            void consume() { consumed = true; }
+
+            template <typename T>
+            void registerCreator()
+            {
+                if (consumed == false)
+                {
+                    if (append == false)
+                        target.creators.clear();
+                    consumed = true;
+                    target.creators.emplace_back(std::make_unique<CreatorBase<T>>(std::move(static_cast<T &>(*this))));
+                }
+            }
+
+            readcb_t &target;
+            bool append;
+            bool consumed = false;
+        };
+
+        template <typename Delegate>
+        class DelegateBuilder
+        : public BuilderBase,
+          public TransformBase<mask_t<read_result_t<Result, Delegate>, Result>, DelegateBuilder<Delegate>>
+        {
+        public:
+            using output_t = mask_t<read_result_t<Result, Delegate>, Result>;
+            using input_mask_t = std::make_unsigned_t<Result>;
+
+            template <typename T>
+            DelegateBuilder(readcb_t &cb, bool append, Device &device, ctag_t *devName, T &&func, ctag_t *fncName)
+            : BuilderBase(cb, append),
+              TransformBase<output_t, DelegateBuilder<Delegate>>(defaultMask &delegate_traits<Delegate>::default_mask),
+              delegate(device, devName, std::forward<T>(func), fncName)
+            { }
+
+            DelegateBuilder(DelegateBuilder &&that)
+            : BuilderBase(std::move(that)),
+              TransformBase<output_t, DelegateBuilder>(std::move(that)),
+              delegate(std::move(that.delegate))
+            {
+                that.consume();
+            }
+
+            ~DelegateBuilder()
+            {
+                this->template registerCreator<DelegateBuilder>();
+            }
+
+            template <typename T>
+            void build(T &&chain)
+            {
+                assert(this->consumed);
+                delegate.resolve();
+                chain(
+                    [cb = std::move(this->delegate), exor = this->getXOR(), mask = this->getMask()](offs_t offset, input_mask_t memMask)
+                    {
+                        return (readcb_t::invokeRead<Result>(cb, offset, memMask & mask) ^ exor) & mask;
+                    }
+                );
+            }
+
+        private:
+            Delegate delegate;
+        };
+
+        class Binder
+        {
+        public:
+            Binder(readcb_t &cb) : target(cb) { }
+
+            template <typename T> void set(T &&func, ctag_t *name)
+            {
+                setUsed();
+
+                Device &dev = target.getOwner();
+                Device &cdev = *dev.getSystemConfig().getConfigDevice();
+                
+                DelegateBuilder<delegate_type_t<T>>(target, append, cdev, "", std::forward<T>(func), name);
+            }
+
+        private:
+            void setUsed() { assert(!used); used = true; }
+
+            readcb_t &target;
+
+            bool append = false;
+            bool used = false;
+        };
+
+    public:
+        readcb_t(Device &owner) : DeviceCallbackReadBase(owner) { }
+
+        inline Binder bind() { return Binder(*this); }
+        inline bool isNull() { return functions.empty(); }
+
+        void resolveSafe(Result defaultValue)
+        {
+            resolve();
+            if (!functions.empty())
+                return;
+            
+            functions.emplace_back(
+                [defaultValue](offs_t offset, std::make_unsigned_t<Result> memMask)
+                {
+                    return defaultValue;
+                }
+            );
+        }
+
+        void resolve()
+        {
+            assert(functions.empty());
+            functions.reserve(creators.size());
+            for (typename Creator::ptr const &creator : creators)
+                functions.emplace_back(creator->create());
+            creators.clear();
+        }
+
+        Result operator () (offs_t offset, std::make_unsigned_t<Result> memMask = defaultMask)
+        {
+            assert(creators.empty() && !functions.empty());
+
+            typename std::vector<func_t>::const_iterator it(functions.begin());
+            std::make_unsigned_t<Result> data((*it)(offset, memMask));
+            while (functions.end() != ++it)
+                data |= (*it)(offset, memMask);
+            return data;
+        }
+
+        Result operator () ()
+        {
+            return this->operator ()(0, defaultMask);
+        }
+
+    private:
+        std::vector<typename Creator::ptr> creators;
+        std::vector<func_t> functions;
     };
 
     // ********
@@ -317,6 +540,206 @@ namespace emu::devices
     {
     private:
         using func_t = std::function<void (offs_t, Input, std::make_unsigned_t<Input>) >;
+
+        class Creator
+        {
+        public:
+            using ptr = std::unique_ptr<Creator>;
+            
+            virtual ~Creator() = default;
+
+            virtual func_t create() = 0;
+
+            std::make_unsigned_t<Input> getMask() const { return mask; }
+
+        protected:
+            Creator(std::make_unsigned_t<Input> mask) : mask(mask) { }
+
+            std::make_unsigned_t<Input> mask;
+        };
+
+        template <typename T>
+        class CreatorBase : public Creator
+        {
+        public:
+            CreatorBase(T && builder) : Creator(builder.getMask()), builder(std::move(builder)) { }
+
+            virtual func_t create() override
+            {
+                func_t newFunc = nullptr;
+                builder.build(
+                    [&newFunc](auto &&f)
+                    {
+                        newFunc = [cb = std::move(f)](offs_t offset, Input data, std::make_unsigned_t<Input> memMask)
+                        {
+                            cb(offset, data, memMask);
+                        };
+                    }
+                );
+                return newFunc;
+            }
+
+        private:
+            T builder;
+        };
+
+        class BuilderBase
+        {
+        protected:
+            BuilderBase(writecb_t &cb, bool append)
+            : target(cb), append(append)
+            { }
+            BuilderBase(BuilderBase &&) = default;
+            BuilderBase(BuilderBase const &) = delete;
+            ~BuilderBase() { assert(consumed); }
+
+            void consume() { consumed = true; }
+
+            template <typename T>
+            void registerCreator()
+            {
+                if (consumed == false)
+                {
+                    if (append == false)
+                        target.creators.clear();
+                    consumed = true;
+                    target.creators.emplace_back(std::make_unique<CreatorBase<T>>(std::move(static_cast<T &>(*this))));
+                }
+            }
+
+            writecb_t &target;
+            bool append;
+            bool consumed = false;
+        };
+
+        template <typename Delegate>
+        class DelegateBuilder
+        : public BuilderBase,
+          public TransformBase<mask_t<Input, typename delegate_traits<Delegate>::input_t>, DelegateBuilder<Delegate>>
+        {
+        public:
+            using input_t = intermediate_t<Input, typename delegate_traits<Delegate>::input_t>;
+
+            template <typename T>
+            DelegateBuilder(writecb_t &cb, bool append, Device &device, ctag_t *devName, T &&func, ctag_t *fncName)
+            : BuilderBase(cb, append),
+              TransformBase<mask_t<Input, typename delegate_traits<Delegate>::input_t>,
+                DelegateBuilder>(defaultMask &delegate_traits<Delegate>::default_mask),
+              delegate(device, devName, std::forward<T>(func), fncName)
+            { }
+
+            DelegateBuilder(DelegateBuilder &&that)
+            : BuilderBase(std::move(that)),
+              TransformBase<mask_t<Input, typename delegate_traits<Delegate>::input_t>, DelegateBuilder>(std::move(that)),
+              delegate(std::move(that.delegate))
+            {
+                that.consume();
+            }
+
+            ~DelegateBuilder()
+            {
+                this->template registerCreator<DelegateBuilder>();
+            }
+
+            template <typename T>
+            void build(T &&chain)
+            {
+                assert(this->consumed);
+                delegate.resolve();
+                chain(
+                    [cb = std::move(this->delegate), exor = this->getXOR(), mask = this->getMask()]
+                        (offs_t offset, Input data, input_t memMask)
+                    {
+                        writecb_t::invokeWrite<Input>(cb, offset, (data ^ exor) & mask, memMask & mask);
+                    }
+                );
+            }
+
+        private:
+            Delegate delegate;
+        };
+
+        class Binder
+        {
+        public:
+            Binder(writecb_t &cb) : target(cb) { }
+
+            template <typename T> void set(T  &&func, ctag_t *name)
+            {
+                setUsed();
+
+                Device &dev = target.getOwner();
+                Device &cdev = *dev.getSystemConfig().getConfigDevice();
+
+                DelegateBuilder<delegate_type_t<T>>(target, append, cdev, "", std::forward<T>(func), name);
+            }
+
+        private:
+            void setUsed() { assert(!used); used = true; }
+
+            writecb_t &target;
+
+            bool append = false;
+            bool used = false;
+        };
+
+    public:
+        writecb_t(Device &owner) : DeviceCallbackWriteBase(owner) { }
+
+        inline Binder bind() { return Binder(*this); }
+        inline bool isNull() { return functions.empty(); }
+
+        void resolveSafe()
+        {
+            resolve();
+            if (!functions.empty())
+                return;
+            
+            functions.emplace_back(
+                [](offs_t offset, Input data, std::make_unsigned_t<Input> memMask)
+                { }
+            );
+        }
+
+        void resolve()
+        {
+            assert(functions.empty());
+            functions.reserve(creators.size());
+            for (typename Creator::ptr const &creator : creators)
+                functions.emplace_back(creator->create());
+            creators.clear();
+        }
+
+        void operator () (offs_t offset, Input data, std::make_unsigned_t<Input> memMask = defaultMask)
+        {
+            assert(creators.empty() && !functions.empty());
+
+            typename std::vector<func_t>::const_iterator it(functions.begin());
+            (*it)(offset, data, memMask);
+            while (functions.end() != ++it)
+                (*it)(offset, data, memMask);
+        }
+
+        void operator () (Input data)
+        {
+            this->operator ()(0, data, defaultMask);
+        }
+
+    private:
+        std::vector<typename Creator::ptr> creators;
+        std::vector<func_t> functions;
     };
    
 }
+
+using read8cb_t = emu::devices::readcb_t<uint8_t>;
+using read16cb_t = emu::devices::readcb_t<uint16_t>;
+using read32cb_t = emu::devices::readcb_t<uint32_t>;
+using read64cb_t = emu::devices::readcb_t<uint64_t>;
+using readlcb_t = emu::devices::readcb_t<uint8_t, 1u>;
+
+using write8cb_t = emu::devices::writecb_t<uint8_t>;
+using write16cb_t = emu::devices::writecb_t<uint16_t>;
+using write32cb_t = emu::devices::writecb_t<uint32_t>;
+using write64cb_t = emu::devices::writecb_t<uint64_t>;
+using writelcb_t = emu::devices::writecb_t<uint8_t, 1u>;

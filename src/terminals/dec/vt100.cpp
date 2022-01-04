@@ -8,6 +8,7 @@
 #include "emu/map/addrmap.h"
 #include "emu/devsys.h"
 #include "emu/devcpu.h"
+#include "emu/devcb.h"
 
 #include "dev/cpu/i8080/i8080.h"
 #include "dev/video/dec/vt100.h"
@@ -18,6 +19,11 @@ uint32_t vt100_Device::vt100_updateScreen(ScreenDevice &screen, bitmap16_t &bitm
 {
     crt->updateVideo(bitmap, clip);
     return 0;
+}
+
+uint8_t vt100_Device::readData(offs_t addr)
+{
+    return ramData[addr];
 }
 
 void vt100_Device::vt100(SystemConfig &config)
@@ -33,6 +39,7 @@ void vt100_Device::vt100(SystemConfig &config)
     screen->setScreenUpdate(FUNC(vt100_Device::vt100_updateScreen));
 
     VT100_VIDEO(config, crt, "crt", XTAL(24'073'400));
+    // crt->getReadRAMDataCallback().set(FUNC(vt100_Device::readData));
 }
 
 void vt100_Device::vt100_init()

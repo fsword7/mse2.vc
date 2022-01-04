@@ -189,6 +189,8 @@ public:
     inline ctag_t *getFullName() const  { return type.getFullName(); }
     inline ctag_t *getShortName() const { return type.getShortName(); }
 
+    inline const SystemConfig &getSystemConfig() const { return sysConfig; }
+
     inline void setMachine(Machine *owner) { ownMachine = owner; }
     
     void configure(SystemConfig &config);
