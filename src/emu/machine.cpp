@@ -13,7 +13,9 @@ Machine::Machine(const SystemConfig &config, cstag_t &sysName)
 : memoryManager(*this), config(config), sysName(sysName),
   sysDevice(config.getSystemDevice()), video(*this)
 {
-
+    // Assign this to all devices
+    for (Device &dev : DeviceIterator(*sysDevice))
+        dev.setMachine(this);
 }
 
 Machine::~Machine()
@@ -44,6 +46,10 @@ void Machine::start(UserConsole *user)
         
         // Initializing memory management system
         memoryManager.init(user);
+
+        // Finding required objects to being linked
+        for (Device &dev : DeviceIterator(*sysDevice))
+            dev.resolvePostMapping();
     // }
 
     // catch (...)

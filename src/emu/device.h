@@ -7,8 +7,18 @@
 
 #include "lib/util/list.h"
 
+class Machine;
 class Device;
 class DeviceInterface;
+class ObjectFinder;
+
+template <typename Exposed, bool Required> class DeviceFinder;
+
+namespace map {
+    class MemoryRegion;
+    class MemoryBank;
+    class MemoryShare;
+}
 
 template <typename T> struct isDevice
 {
@@ -179,12 +189,19 @@ public:
     inline ctag_t *getFullName() const  { return type.getFullName(); }
     inline ctag_t *getShortName() const { return type.getShortName(); }
 
+    inline void setMachine(Machine *owner) { ownMachine = owner; }
+    
     void configure(SystemConfig &config);
     void addInterface(DeviceInterface *iface);
     void finishConfig();
+    void resolvePostMapping();
 
     Device *findDevice(ctag_t *name);
     cfwEntry_t *getFirmwareEntries();
+
+    map::MemoryRegion *findMemoryRegion(ctag_t *name);
+    map::MemoryBank *findMemoryBank(ctag_t *name);
+    map::MemoryShare *findMemoryShare(ctag_t *name);
 
     void registerObject(ObjectFinder *object);
     bool findObjects();
@@ -192,6 +209,7 @@ public:
     // Virtual device function calls
     virtual void devConfigure(SystemConfig &config) {}
     virtual cfwEntry_t *devGetFirmwareEntries() { return nullptr; }
+    virtual void devResolveObjects() {}
     virtual void devStart() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
@@ -221,7 +239,8 @@ private:
     ifaceList_t ifaceList;
     std::vector<ObjectFinder *> objectList;
 
-    Device *owner = nullptr;
+    Machine *ownMachine = nullptr;
+    Device  *owner = nullptr;
 
     uint64_t clock = 0;
     cstag_t  devName;

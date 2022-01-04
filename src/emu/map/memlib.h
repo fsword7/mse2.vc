@@ -60,13 +60,17 @@ namespace map
     class MemoryShare
     {
     public:
-        MemoryShare(void *data, cstag_t &name, uint8_t width, size_t bytes, endian_t type)
+        MemoryShare(void *data, cstag_t &name, size_t bytes, uint8_t width, endian_t type)
         : data(data), size(bytes), name(name), eType(type), bitWidth(width),
           byteWidth(width <= 8 ? 1 : width <= 16 ? 2 : width <= 32 ? 4 : 8)
         {
         }
 
-        inline uint8_t *getData() const { return reinterpret_cast<uint8_t *>(data); }
+        inline cstag_t  getName() const         { return name; }
+        inline uint8_t *getData() const         { return reinterpret_cast<uint8_t *>(data); }
+        inline size_t   getBytes() const        { return size; }
+        inline int      getBitWidth() const     { return bitWidth; }
+        inline int      getByteWidth() const    { return byteWidth; }
         inline cstag_t &getErrorMessage() const { return errMessage; }
 
         bool compare(size_t bytes, int precision, int width, endian_t type)

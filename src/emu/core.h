@@ -69,6 +69,6 @@ namespace map
 #include "emu/map/fw.h"
 #include "emu/driver.h"
 #include "emu/sysconfig.h"
-#include "emu/devfind.h"
 #include "emu/device.h"
+#include "emu/devfind.h"
 #include "emu/templates.h"

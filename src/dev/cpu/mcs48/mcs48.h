@@ -79,8 +79,9 @@ protected:
 	void setData256(map::AddressList &map);
 
 	inline void eatCycles(int cycles) { cpuCycles -= cycles; }
-	inline void updateRegisters() { /* iRegs = &idata[pswReg & PSW_B ? 24 : 0]; */ }
-	// RequiredSharedPointer<uint8_t> idata;
+	inline void updateRegisters() { iRegs = &idata[pswReg & PSW_B ? 24 : 0]; }
+
+	RequiredSharedPointer<uint8_t> idata;
 
 	uint16_t iromSize; // Internal ROM size (1024, 2048 or 4096 bytes)
 	uint16_t iramSize; // Internal RAM size (64, 128 or 256 bytes)

@@ -14,8 +14,7 @@ mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &t
   mapProgramConfig("program", LittleEndian, 8, 16, 2, 8, paWidth, 16, 3, 0),
   mapDataConfig("data", LittleEndian, 8, 16, 2, 8, daWidth, 16, 2, 0),
   mapIOPortConfig("I/O port", LittleEndian, 8, 16, 2, 8, 8, 16, 2, 0),
-//   idata(*this, "data"),
-  iromSize(romSize), iramSize(1u << daWidth)
+  idata(*this, "data"), iromSize(romSize), iramSize(1u << daWidth)
 {
     assert(paWidth == 11 || paWidth == 12);
     assert(daWidth == 6 || daWidth == 7 || daWidth == 8);
@@ -54,23 +53,23 @@ mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &t
 
 map::AddressConfigList mcs48_cpuDevice::getAddressConfigList() const
 {
-    if (cpuFlags & CPUF_EXTERNAL_BUS)
-    {
+    // if (cpuFlags & CPUF_EXTERNAL_BUS)
+    // {
         return map::AddressConfigList
         {
             { map::asProgram, &mapProgramConfig },
             { map::asData,    &mapDataConfig    },
             { map::asIOPort,  &mapIOPortConfig  }
         };
-    }
-    else
-    {
-        return map::AddressConfigList
-        {
-            { map::asProgram, &mapProgramConfig },
-            { map::asData,    &mapDataConfig    }
-        };
-    }
+    // }
+    // else
+    // {
+    //     return map::AddressConfigList
+    //     {
+    //         { map::asProgram, &mapProgramConfig },
+    //         { map::asData,    &mapDataConfig    }
+    //     };
+    // }
 }
 
 void mcs48_cpuDevice::devStart()

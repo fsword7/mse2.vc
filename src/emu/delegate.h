@@ -1,7 +1,12 @@
 // delegate.h - delegate callback packages
 //
-// Author:  Tim Stark (fsword007@gmail.com)
+// Author:  Tim Stark
 // Date:    Dec 6, 2021
+
+#pragma once
+
+class Device;
+class DeviceInterface;
 
 class BindedObject
 {
@@ -139,7 +144,7 @@ public:
     }
 
     bool isMemberFunction() const { return !mfp.isNull(); }
-    bool isNull() const           { return (function != nullptr) && (stdfunc == nullptr) && mfp.isNull(); }
+    bool isNull() const           { return (function == nullptr) && (stdfunc == nullptr) && mfp.isNull(); }
     bool hasObject() const        { return object != nullptr; }
 
     void bindLate(BindedObject &obj)
@@ -150,6 +155,7 @@ public:
 
     Return operator ()(Args... args) const
     {
+        assert(stdfunc != nullptr || function != nullptr);
         if (stdfunc != nullptr)
             return stdfunc(std::forward<Args>(args)...);
         else // if (function != nullptr)
@@ -243,8 +249,6 @@ public:
 private:
     ctag_t *fncName = nullptr;
 };
-
-class Device;
 
 class DeviceDelegateHelper
 {
