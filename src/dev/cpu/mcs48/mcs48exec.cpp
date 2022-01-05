@@ -4,6 +4,7 @@
 // Date:    1/2/22
 
 #include "emu/core.h"
+#include "emu/devcb.h"
 #include "emu/map/map.h"
 #include "emu/map/addrmap.h"
 #include "dev/cpu/mcs48/mcs48.h"

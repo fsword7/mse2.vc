@@ -4,6 +4,7 @@
 // Date:    12/28/21
 
 #include "emu/core.h"
+#include "emu/devcb.h"
 #include "emu/map/map.h"
 #include "emu/map/addrmap.h"
 #include "dev/cpu/mcs48/mcs48.h"
@@ -14,7 +15,10 @@ mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &t
   mapProgramConfig("program", LittleEndian, 8, 16, 2, 8, paWidth, 16, 3, 0),
   mapDataConfig("data", LittleEndian, 8, 16, 2, 8, daWidth, 16, 2, 0),
   mapIOPortConfig("I/O port", LittleEndian, 8, 16, 2, 8, 8, 16, 2, 0),
-  idata(*this, "data"), iromSize(romSize), iramSize(1u << daWidth)
+  idata(*this, "data"), iromSize(romSize), iramSize(1u << daWidth),
+  inPort(*this), outPort(*this),
+  inBus(*this), outBus(*this),
+  inTest(*this), outProg(*this)
 {
     assert(paWidth == 11 || paWidth == 12);
     assert(daWidth == 6 || daWidth == 7 || daWidth == 8);
@@ -78,6 +82,14 @@ void mcs48_cpuDevice::devStart()
     getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
     getAddressSpace(map::asData)->setSpecificMemory(mapData);
     getAddressSpace(map::asIOPort)->setSpecificMemory(mapIOPort);
+
+    // resolve callbacks for I/O lines
+    inPort.resolveAllSafe(0xFF);
+    outPort.resolveAllSafe();
+    inBus.resolveSafe(0xFF);
+    outBus.resolveSafe();
+    inTest.resolveAllSafe(0);
+    outProg.resolveSafe();
 }
 
 void mcs48_cpuDevice::setProgram1024(map::AddressList &map)

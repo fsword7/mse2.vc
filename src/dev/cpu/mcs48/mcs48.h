@@ -6,6 +6,7 @@
 #pragma once
 
 #include "emu/devcpu.h"
+#include "emu/devcb.h"
 
 // PSW flag definitions
 //
@@ -81,6 +82,14 @@ protected:
 	inline void eatCycles(int cycles) { cpuCycles -= cycles; }
 	inline void updateRegisters() { iRegs = &idata[pswReg & PSW_B ? 24 : 0]; }
 
+	// Device callbacks 
+	read8cb_t::array<2>  inPort;	// 16 port lines (input)
+	write8cb_t::array<2> outPort;	// 16 port lines (output)
+	read8cb_t  inBus;				// 8 bus lines (input) 
+	write8cb_t outBus;				// 8 bus lines (output)
+	readlcb_t::array<2>  inTest;	// 2 test lines (input)
+	writelcb_t outProg;				// 1 prog line (output)
+
 	RequiredSharedPointer<uint8_t> idata;
 
 	uint16_t iromSize; // Internal ROM size (1024, 2048 or 4096 bytes)
@@ -140,12 +149,12 @@ protected:
 	void write8io(offs_t addr, uint8_t data)   { mapIOPort.write8(addr, data); }
 
 	// port/bus (callback) function calls
-	uint8_t read8port(offs_t addr)             { return 0; }
-	void write8port(offs_t addr, uint8_t data) { }
-	uint8_t read8bus()                         { return 0; }
-	void write8bus(uint8_t data)               { }
-	uint8_t read8test(offs_t addr)             { return 0; }
-	void write8prog(int v)                     { }
+	uint8_t read8port(offs_t port)             { return inPort[port](); }
+	void write8port(offs_t port, uint8_t data) { outPort[port](data); }
+	uint8_t read8bus()                         { return inBus(); }
+	void write8bus(uint8_t data)               { outBus(data); }
+	uint8_t read8test(offs_t line)             { return inTest[line](); }
+	void write8prog(int signal)                { outProg(signal); }
 
 	// Expansion operation (8243 expander chip)
 	void expand(uint8_t port, opExpander op);

@@ -94,6 +94,29 @@ namespace emu::devices
             bool flagMask = true;
         };
 
+        template <typename T, unsigned Count>
+        class array : public std::array<T, Count>
+        {
+        private:
+            template <unsigned... V>
+            array(Device &owner, std::integer_sequence<unsigned, V...> const &)
+            : std::array<T, Count>{{ { make_one<V>(owner) }... }}
+            { }
+
+            template <unsigned N> Device &make_one(Device &owner) { return owner; }
+
+        public:
+            using std::array<T, Count>::array;
+
+            array(Device &owner) : array(owner, std::make_integer_sequence<unsigned, Count>()) { }
+
+            void resolveAll()
+            {
+                for (T &elem : *this)
+                    elem.resolve();
+            }
+        };
+
     private:
         Device &base;
     };
@@ -366,6 +389,19 @@ namespace emu::devices
         };
 
     public:
+        template <unsigned Count>
+        class array : public DeviceCallbackReadBase::array<readcb_t<Result, defaultMask>, Count>
+        {
+        public:
+            using DeviceCallbackReadBase::array<readcb_t<Result, defaultMask>, Count>::array;
+
+            void resolveAllSafe(Result defaultValue)
+            {
+                for (readcb_t<Result, defaultMask> &elem : *this)
+                    elem.resolveSafe(defaultValue);
+            }
+        };
+
         readcb_t(Device &owner) : DeviceCallbackReadBase(owner) { }
 
         inline Binder bind() { return Binder(*this); }
@@ -684,6 +720,19 @@ namespace emu::devices
         };
 
     public:
+        template <unsigned Count>
+        class array : public DeviceCallbackWriteBase::array<writecb_t<Input, defaultMask>, Count>
+        {
+        public:
+            using DeviceCallbackWriteBase::array<writecb_t<Input, defaultMask>, Count>::array;
+
+            void resolveAllSafe()
+            {
+                for (writecb_t<Input, defaultMask> &elem : *this)
+                    elem.resolveSafe();
+            }
+        };
+
         writecb_t(Device &owner) : DeviceCallbackWriteBase(owner) { }
 
         inline Binder bind() { return Binder(*this); }
