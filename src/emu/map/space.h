@@ -25,7 +25,10 @@ namespace map
     //     asData,         // Data address space
     //     asIOPort        // I/O port address space
     // };
-    
+
+    extern ctag_t *asInfo[];
+    extern ctag_t *asDescrip[];
+
     class AddressConfig
     {
     public:

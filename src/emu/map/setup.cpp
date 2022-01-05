@@ -11,7 +11,7 @@
 
 namespace map
 {
-    static ctag_t *asInfo[] = { "program", "data", "io" };
+    ctag_t *asInfo[] = { "program", "data", "io" };
 
     AddressSpace::AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space)
     : AddressSpaceInstaller(), space(space), config(*bus.getAddressConfig(space)),

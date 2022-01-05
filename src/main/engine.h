@@ -78,11 +78,13 @@ private:
     // Command function calls
     cmdStatus cmdCreate(UserConsole *user, args_t &args);
     cmdStatus cmdDial(UserConsole *user, args_t &args);
-    cmdStatus cmdDump(UserConsole *user, args_t &args);
+    cmdStatus cmdDumpOld(UserConsole *user, args_t &args);
+    cmdStatus cmdDumpm(UserConsole *user, args_t &args);
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
     cmdStatus cmdStart(UserConsole *user, args_t &args);
 
-    template <map::AddressType type> cmdStatus tcmdDump(UserConsole *user, args_t &args);
+    template <map::AddressType type>
+    cmdStatus cmdDump(UserConsole *user, args_t &args);
 
 private:
     Machine *dialedMachine = nullptr;
