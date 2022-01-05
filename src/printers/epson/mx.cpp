@@ -10,6 +10,7 @@
 #include "emu/devcpu.h"
 
 #include "dev/cpu/mcs48/mcs48.h"
+#include "dev/chip/i8155.h"
 #include "printers/epson/mx.h"
 
 void mx80_Device::mx80(SystemConfig &config)

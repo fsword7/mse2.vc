@@ -1,4 +1,5 @@
 set (MSE_CPP_SRCS
+    dev/chip/i8155.cpp
     dev/cpu/i8080/execute.cpp
     dev/cpu/i8080/i8080.cpp
     dev/cpu/mcs48/mcs48.cpp
@@ -47,6 +48,7 @@ set (MSE_CPP_SRCS
 )
 
 set (MSE_H_SRCS
+    dev/chip/i8155.h
     dev/cpu/i8080/i8080.h
     dev/cpu/i8080/i8080dbg.h
     dev/cpu/i8080/i8080op.h
