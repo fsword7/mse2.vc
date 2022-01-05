@@ -22,13 +22,24 @@ AddressList::AddressList(Device &dev, AddressType space)
     config = bus->getAddressConfig(space);
     assert(config != nullptr);
 
+    // mapping space with system device
     Constructor map = bus->getAddressMap(space);
     if (!map.isNull())
+    {
+        // with system device
+        owner = device.getOwner();
         map(*this);
+    }
 
+    // mapping space with internal device
+    // That dhould be last so that it takes a priority
     map = config->getAddressMap();
     if (!map.isNull())
+    {
+        // with internal device
+        owner = &dev;
         map(*this);
+    }
 }
 
 AddressList::~AddressList()
@@ -40,7 +51,8 @@ AddressList::~AddressList()
 
 AddressEntry &AddressList::operator () (offs_t start, offs_t end)
 {
-    AddressEntry *entry = new AddressEntry(device, *this, start, end);
+    // Creating entry with current owning device
+    AddressEntry *entry = new AddressEntry(*owner, *this, start, end);
     list.push_back(entry);
 
     return *entry;

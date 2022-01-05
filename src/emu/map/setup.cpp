@@ -11,7 +11,7 @@
 
 namespace map
 {
-    static ctag_t *asInfo[] = { "program", "data", "I/O port" };
+    static ctag_t *asInfo[] = { "program", "data", "io" };
 
     AddressSpace::AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space)
     : AddressSpaceInstaller(), space(space), config(*bus.getAddressConfig(space)),
@@ -22,17 +22,17 @@ namespace map
 
     void AddressSpace::prepare(UserConsole *user)
     {
-        fmt::printf("%s: Preparing for %s address space\n",
-            device.getDeviceName(), asInfo[space]);
-
         assert(map == nullptr);
         map = new AddressList(device, space);
+
+        fmt::printf("%s: Preparing for %s address space\n",
+            device.getDeviceName(), asInfo[space]);
 
         unmapValue = map->unmapValue;
         if (map->gaddrMask != 0ull)
         {
             if (map->gaddrMask & ~addrMask)
-                fmt::printf("%s(%s): Can't set a global mask of %0*llX on a %d-bit address width (mask %0*llX)\n",
+                fmt::printf("%s.%s: Can't set a global mask of %0*llX on a %d-bit address width (mask %0*llX)\n",
                     device.getDeviceName(), asInfo[space], config.getAddrPrecision(), map->gaddrMask,
                     config.getAddrPrecision(), addrMask);
             addrMask = map->gaddrMask;
@@ -40,8 +40,8 @@ namespace map
 
         for (AddressEntry *entry : map->list)
         {
-            fmt::printf("%s(%s): Mapping %0*llX-%0*llX mask %0*llX mirror %0*llX\n",
-                device.getDeviceName(), asInfo[space],
+            fmt::printf("%s.%s: Mapping %0*llX-%0*llX mask %0*llX mirror %0*llX\n",
+                entry->device.getDeviceName(), asInfo[space],
                 config.getAddrPrecision(), entry->addrStart,
                 config.getAddrPrecision(), entry->addrEnd,
                 config.getAddrPrecision(), entry->addrMask,
@@ -49,7 +49,7 @@ namespace map
 
             if (entry->shareName != nullptr)
             {
-                cstag_t fullName = device.getFullDeviceName(entry->shareName);
+                cstag_t fullName = entry->device.getFullDeviceName(entry->shareName);
                 MemoryShare *share = manager.findShare(fullName);
 
                 if (share == nullptr)
@@ -57,11 +57,11 @@ namespace map
                     // Allocate new shared memory space
                     size_t bytes = config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart);
 
-                    fmt::printf("%s(%s): creating share '%s' of length %0*llX (%d) bytes\n",
-                        device.getDeviceName(), asInfo[space], fullName,
-                        config.getAddrPrecision(), bytes, bytes);
+                    fmt::printf("%s.%s: creating share '%s' of length %0*llX (%d) bytes\n",
+                        entry->device.getDeviceName(), asInfo[space],
+                        fullName, config.getAddrPrecision(), bytes, bytes);
 
-                    share = manager.allocateShare(device, space, fullName,
+                    share = manager.allocateShare(entry->device, space, fullName,
                         bytes, config.getDataWidth(), config.getEndianType());
                     entry->memData = (uint8_t *)share->getData();
                 }
@@ -74,8 +74,8 @@ namespace map
                         entry->memData = (uint8_t *)share->getData();
                     else
                     {
-                        fmt::printf("%s(%s): %s\n", device.getDeviceName(), asInfo[space],
-                            share->getErrorMessage());
+                        fmt::printf("%s.%s: %s\n", entry->device.getDeviceName(),
+                            asInfo[space], share->getErrorMessage());
                         // Allocating anonymous memory space safely as default below...
                     }
                 }
@@ -83,7 +83,7 @@ namespace map
 
             if (entry->regionName != nullptr)
             {
-                cstag_t fullName = device.getFullDeviceName(entry->regionName);
+                cstag_t fullName = entry->device.getFullDeviceName(entry->regionName);
                 MemoryRegion *region = manager.findRegion(fullName);
 
                 if (region != nullptr)
@@ -91,8 +91,8 @@ namespace map
                     // Determine ending address for expandable memory space
                     if (region->getSize() < (entry->addrEnd - entry->addrStart + 1))
                     {
-                        fmt::printf("%s(%s): %0*llX-%0*llX - expandable range up to %0*llX on region '%s'\n",
-                            device.getDeviceName(), asInfo[space],
+                        fmt::printf("%s.%s: %0*llX-%0*llX - expandable range up to %0*llX on region '%s'\n",
+                            entry->device.getDeviceName(), asInfo[space],
                             config.getAddrPrecision(), entry->addrStart,
                             config.getAddrPrecision(), (entry->addrStart + region->getSize()) - 1,
                             config.getAddrPrecision(), entry->addrEnd,
@@ -107,8 +107,8 @@ namespace map
                 }
                 else
                 {
-                    fmt::printf("%s(%s): %0*llX-%0*llX - non-existant region '%s'\n",
-                        device.getDeviceName(), asInfo[space],
+                    fmt::printf("%s.%s: %0*llX-%0*llX - non-existant region '%s'\n",
+                        entry->device.getDeviceName(), asInfo[space],
                         config.getAddrPrecision(), entry->addrStart,
                         config.getAddrPrecision(), entry->addrEnd,
                         fullName);
@@ -120,12 +120,12 @@ namespace map
             if (entry->memData == nullptr && (entry->read.type == mapROMSpace ||
                 entry->read.type == mapRAMSpace || entry->write.type == mapRAMSpace))
             {
-                fmt::printf("%s(%s): %0*llX-%0*llX - allocating anonymous memory space\n",
-                    device.getDeviceName(), asInfo[space],
+                fmt::printf("%s.%s: %0*llX-%0*llX - allocating anonymous memory space\n",
+                    entry->device.getDeviceName(), asInfo[space],
                     config.getAddrPrecision(), entry->addrStart,
                     config.getAddrPrecision(), entry->addrEnd);
 
-                entry->memData = manager.allocateMemory(device, space, "(anonymous)",
+                entry->memData = manager.allocateMemory(entry->device, space, "(anonymous)",
                     config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
                     config.getDataWidth(), config.getEndianType());
             }

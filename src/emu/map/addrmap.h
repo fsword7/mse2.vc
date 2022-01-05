@@ -281,6 +281,8 @@ namespace map
 
     private:
         Device &device;
+        // For mapping with owning device
+        Device *owner = nullptr;
         cAddressConfig *config = nullptr;
         int addrSpace = 0;
 
