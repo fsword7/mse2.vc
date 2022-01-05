@@ -47,6 +47,14 @@ void mx80_Device::mx80_setMemoryMap(map::AddressList &map)
 
 static const fwEntry_t FW_NAME(mx80)[] =
 {
+    FW_REGION("mx80fw", 0x1800, 0),
+    FW_LOAD("a1ha2.2b.bin", 0x0000, 0x0800, 0, nullptr),
+    FW_LOAD("a2ha1.1b.bin", 0x0800, 0x0800, 0, nullptr),
+    FW_LOAD("a2ha3.3b.bin", 0x1000, 0x0800, 0, nullptr),
+
+    FW_REGION("d8041cfw", 0x0400, 0),
+    FW_LOAD("d8041c.9b.bin", 0x0000, 0x0400, 0, nullptr),
+
     FW_END      
 };
 
