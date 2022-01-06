@@ -72,12 +72,12 @@ bool FirmwareLoader::loadImageData(cfwEntry_t *parent, cfwEntry_t *entry)
 {
     int offset = FW_GETOFFSET(entry);
     int length = FW_GETLENGTH(entry);
-    int skip = FWIMAGE_GETSKIP(entry);
-    int dShift = FWIMAGE_GETBITSHIFT(entry);
-    int dMask = ((1 << FWIMAGE_GETBITWIDTH(entry)));
-    int gSize = FWIMAGE_GETGROUPSIZE(entry);
-    int reversed = FWIMAGE_ISREVERSED(entry);
-    int nGroups = (length + gSize - 1) / gSize;
+    // int skip = FWIMAGE_GETSKIP(entry);
+    // int dShift = FWIMAGE_GETBITSHIFT(entry);
+    // int dMask = ((1 << FWIMAGE_GETBITWIDTH(entry)));
+    // int gSize = FWIMAGE_GETGROUPSIZE(entry);
+    // int reversed = FWIMAGE_ISREVERSED(entry);
+    // int nGroups = (length + gSize - 1) / gSize;
 
     uint8_t *base = region->getBase() + offset;
     int actual;

@@ -10,7 +10,7 @@ class mx80_Device : public SystemDevice
 public:
     mx80_Device(const SystemConfig &config, const DeviceType &type, cstag_t &devName, uint64_t clock)
     : SystemDevice(config, type, devName, clock),
-      pcpu(*this, "i8039"), scpu(*this, "i8041A")
+      pmcu(*this, "pmcu"), smcu(*this, "smcu")
     {
 
     }
@@ -26,6 +26,6 @@ public:
     // void mx80_setIOPort(map::AddressList &map);
 
 private:
-    RequiredDevice<i8039_cpuDevice> pcpu;  // primary microcontroller
-    RequiredDevice<i8041a_cpuDevice> scpu; // slave microcontroller
+    RequiredDevice<i8039_cpuDevice> pmcu;  // primary microcontroller
+    RequiredDevice<i8041a_cpuDevice> smcu; // slave microcontroller
 };

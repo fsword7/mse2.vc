@@ -43,6 +43,7 @@ namespace map
 
         inline uint8_t *getData() const { return data.data(); }
         inline size_t getSize() const   { return data.size(); }
+        inline size_t getBytes() const  { return data.size(); }
 
         uint8_t *getBase() { return data.size() > 0 ? data.data() : nullptr; }
         uint8_t *getEnd()  { return getBase() + data.size(); }

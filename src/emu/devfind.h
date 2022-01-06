@@ -83,7 +83,7 @@ private:
             this->object = dynamic_cast<DeviceClass *>(device);
             if (device != nullptr && this->object == nullptr)
                 fmt::printf("%s: Device '%s' found but is of incorrect type (actual type = %s)\n",
-                    this->base.getDeviceName(), device->getDeviceName(), device->getShortName());
+                    this->base.getsDeviceName(), device->getsDeviceName(), device->getShortName());
         }
 
         return this->validate("device");

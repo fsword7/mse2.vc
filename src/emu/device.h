@@ -7,6 +7,8 @@
 
 #include "lib/util/list.h"
 
+#define DEVICE_SELF "" // std::string()
+
 class Machine;
 class Device;
 class DeviceInterface;
@@ -183,9 +185,11 @@ public:
     inline const SystemConfig &getConfig() const    { return sysConfig; }
     inline Device *getOwner() const                 { return owner; }
     inline uint64_t getClock() const                { return clock; }
-    inline cstag_t &getDeviceName() const           { return devName; }
-    inline cstag_t &getTagName() const              { return tagName; }
-
+    inline cstag_t &getDeviceName() const           { return devName; } // old function call - to be removed later
+    inline std::string getsDeviceName() const       { return devName; }
+    inline cchar_t *getcDeviceName() const          { return devName.c_str(); }
+    inline std::string getsPathName() const         { return pathName; }
+    inline cchar_t *getcPathName() const            { return pathName.c_str(); }
     inline ctag_t *getFullName() const  { return type.getFullName(); }
     inline ctag_t *getShortName() const { return type.getShortName(); }
 
@@ -200,11 +204,13 @@ public:
 
     Device *findDevice(ctag_t *name);
     cfwEntry_t *getFirmwareEntries();
-    std::string getFullDeviceName(cstag_t tagName);
 
-    map::MemoryRegion *findMemoryRegion(ctag_t *name);
-    map::MemoryBank *findMemoryBank(ctag_t *name);
-    map::MemoryShare *findMemoryShare(ctag_t *name);
+    std::string getFullDeviceName(cstag_t tagName); // old function call
+    std::string expandPathName(cstag_t &pathName) const;
+
+    map::MemoryRegion *findMemoryRegion(cstag_t &name) const;
+    map::MemoryBank *findMemoryBank(cstag_t &name) const;
+    map::MemoryShare *findMemoryShare(cstag_t &name) const;
 
     void registerObject(ObjectFinder *object);
     bool findObjects();
@@ -246,8 +252,9 @@ private:
     Device  *owner = nullptr;
 
     uint64_t clock = 0;
-    cstag_t  devName;
-    cstag_t  tagName;
+
+    std::string devName;  // Base of device name
+    std::string pathName; // full path device name
 
     cfwEntry_t *fwEntries = nullptr;
 

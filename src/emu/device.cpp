@@ -10,6 +10,12 @@ Device::Device(const SystemConfig &config, const DeviceType &type, cstag_t &name
 : type(type), sysConfig(config), devName(name), owner(owner), clock(clock)
 {
     ifaceList.clear();
+
+    // Expand device name to path name
+    if (owner != nullptr)
+        pathName.assign(owner->getsPathName()).append(".").append(name);
+    else
+        pathName.assign(name);
 }
 
 void Device::addInterface(DeviceInterface *iface)
@@ -39,6 +45,16 @@ std::string Device::getFullDeviceName(cstag_t tagName)
     path += "." + tagName;
 
     return path;
+}
+
+std::string Device::expandPathName(cstag_t &pathName) const
+{
+    std::string newPathName(this->pathName);
+
+    if (!pathName.empty())
+        newPathName.append(".").append(pathName);
+
+    return newPathName;
 }
 
 void Device::configure(SystemConfig &config)
@@ -75,22 +91,22 @@ cfwEntry_t *Device::getFirmwareEntries()
     return fwEntries;
 }
 
-map::MemoryRegion *Device::findMemoryRegion(ctag_t *name)
+map::MemoryRegion *Device::findMemoryRegion(cstag_t &name) const
 {
     assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findRegion(name);
+    return ownMachine->getMemoryManager().findRegion(expandPathName(name));
 }
 
-map::MemoryBank *Device::findMemoryBank(ctag_t *name)
+map::MemoryBank *Device::findMemoryBank(cstag_t &name) const
 {
     assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findBank(name);
+    return ownMachine->getMemoryManager().findBank(expandPathName(name));
 }
 
-map::MemoryShare *Device::findMemoryShare(ctag_t *name)
+map::MemoryShare *Device::findMemoryShare(cstag_t &name) const
 {
     assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findShare(name);
+    return ownMachine->getMemoryManager().findShare(expandPathName(name));
 }
 
 void Device::registerObject(ObjectFinder *object)

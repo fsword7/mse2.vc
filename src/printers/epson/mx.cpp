@@ -15,8 +15,8 @@
 
 void mx80_Device::mx80(SystemConfig &config)
 {
-    I8039(config, pcpu, "pcpu", 0);
-    I8041A(config, scpu, "scpu", 0);
+    I8039(config, pmcu, "pmcu", 0);
+    I8041A(config, smcu, "smcu", 0);
 
     // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     // cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
@@ -24,8 +24,8 @@ void mx80_Device::mx80(SystemConfig &config)
 
 void mx80_Device::mx100(SystemConfig &config)
 {
-    I8039(config, pcpu, "pcpu", 0);
-    I8041A(config, scpu, "scpu", 0);
+    I8039(config, pmcu, "pmcu", 0);
+    I8041A(config, smcu, "smcu", 0);
 
     // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     // cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
@@ -52,7 +52,7 @@ static const fwEntry_t FW_NAME(mx80)[] =
     FW_LOAD("a2ha1.1b.bin", 0x0800, 0x0800, 0, nullptr),
     FW_LOAD("a2ha3.3b.bin", 0x1000, 0x0800, 0, nullptr),
 
-    FW_REGION("d8041cfw", 0x0400, 0),
+    FW_REGION("smcu", 0x0400, 0),
     FW_LOAD("d8041c.9b.bin", 0x0000, 0x0400, 0, nullptr),
 
     FW_END      
