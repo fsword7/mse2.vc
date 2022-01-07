@@ -40,13 +40,6 @@
 #define R6 iRegs[6]
 #define R7 iRegs[7]
 
-// MCS-48 feature defintions
-#define CPUF_EXTERNAL_BUS	0x80
-#define CPUF_MB				0x40
-#define CPUF_UPI41			0x04
-#define CPUF_802X			0x02
-#define CPUF_804X			0x01
-
 // MCS-48 architecture flags
 #define ARCH_MB			0x80
 #define ARCH_EXTBUS		0x40
@@ -131,7 +124,6 @@ protected:
 
 	const uint8_t archFlags;
 
-	uint8_t  cpuFlags;
 	uint8_t  *iRegs;
 	uint8_t	 aReg;
 	uint8_t  pswReg;

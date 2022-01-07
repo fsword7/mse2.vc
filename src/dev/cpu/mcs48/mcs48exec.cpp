@@ -19,7 +19,7 @@ uint8_t mcs48_cpuDevice::read8i()
 uint8_t mcs48_cpuDevice::getP2Mask()
 {
     uint8_t mask = 0xFF;
-    if (cpuFlags & CPUF_UPI41)
+    if (archFlags & ARCH_UPI41)
     {
         if (flagsEnable)
             mask &= ~(P2_OBF|P2_NIBF);
