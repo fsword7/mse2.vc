@@ -21,9 +21,8 @@ public:
     void mx100(SystemConfig &config);
     void mx100_init();
 
-    void mx80_setMemoryMap(map::AddressList &map);
-    // void mx80_setDataMap(map::AddressList &map);
-    // void mx80_setIOPort(map::AddressList &map);
+    void mx80_setProgram(map::AddressList &map);
+    void mx80_setIOPort(map::AddressList &map);
 
 private:
     RequiredDevice<i8039_cpuDevice> pmcu;  // primary microcontroller

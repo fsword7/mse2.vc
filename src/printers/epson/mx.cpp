@@ -16,6 +16,9 @@
 void mx80_Device::mx80(SystemConfig &config)
 {
     I8039(config, pmcu, "pmcu", 0);
+    pmcu->setAddressMap(map::asProgram, &mx80_Device::mx80_setProgram);
+    pmcu->setAddressMap(map::asIOPort, &mx80_Device::mx80_setIOPort);
+
     I8041A(config, smcu, "smcu", 0);
 
     // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
@@ -41,8 +44,15 @@ void mx80_Device::mx100_init()
 
 }
 
-void mx80_Device::mx80_setMemoryMap(map::AddressList &map)
+void mx80_Device::mx80_setProgram(map::AddressList &map)
 {
+    map(0x000, 0x7FF).rom().region("mx80fw", 0x800);
+    map(0x800, 0xFFF).rom().region("mx80fw");
+}
+
+void mx80_Device::mx80_setIOPort(map::AddressList &map)
+{
+    map.setUnmappedHigh();
 }
 
 static const fwEntry_t FW_NAME(mx80)[] =
