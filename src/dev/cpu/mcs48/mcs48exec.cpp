@@ -9,6 +9,90 @@
 #include "emu/map/addrmap.h"
 #include "dev/cpu/mcs48/mcs48.h"
 
+void mcs48_cpuDevice::eatCycles(int cycles)
+{
+    // if (timecountEnable)
+    // {
+    //     bool timerover = false;
+
+    //     if (timecounEnable & TIMER_ENABLED)
+    //     {
+    //         uint8_t oldTimer = timer;
+    //         prescaler += cycles;
+    //         timer += prescalar >> 5;
+    //         prescalar &= 0x1F;
+    //         timerover = (oldTimer != 0) && timer == 0);
+    //     }
+    //     else if (timecountEnable & COUNTER_ENABLED)
+    //     {
+    //         for (; cycles > 0; cycles--, cpuCycles--)
+    //         {
+    //             t1History = (t1History << 1) | readTest(1) & 1);
+    //             if ((t1History & 1) == 2)
+    //             {
+    //                 if (++timer == 0)
+    //                     timerover = true;
+    //             }
+    //         }
+    //     }
+
+    //     if (timerover)
+    //     {
+    //         timerFlag = true;
+    //         if (tirqEnable)
+    //             timerOverflow = true;
+    //     }
+    // }
+
+    cpuCycles -= cycles;
+}
+
+void mcs48_cpuDevice::checkInterrupts()
+{
+    // Check external interrupts that take priorty first.
+    if (xirqEnable && (irqState || (stsReg & STS_IBF)))
+    {
+        eatCycles(2);
+        irqInProgress = true;
+
+        // Transfer to location 003
+        exCALL(0x003);
+
+        // setIRQCallback(0);
+    }
+
+    // Check timer interrupts
+    else if (tirqEnable && timerOverflow)
+    {
+        eatCycles(2);
+        irqInProgress = true;
+
+        // Transfer to location 007
+        exCALL(0x007);
+        timerOverflow = false;
+    }
+}
+
+void mcs48_cpuDevice::executeRun()
+{
+    updateRegisters();
+
+    do
+    {
+        // Update any interrupts
+        if (!irqInProgress)
+            checkInterrupts();
+        irqPolled = false;
+
+        // Execute least one opcode until
+        // cycle countdown reach zero.
+        fpcBase = pcReg;
+        uint8_t opCode = read8i();
+        (this->*opExecute[opCode])();
+    }
+    while (cpuCycles > 0);
+}
+
 uint8_t mcs48_cpuDevice::read8i()
 {
     uint16_t addr = pcReg;

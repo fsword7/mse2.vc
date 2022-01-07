@@ -77,6 +77,9 @@ public:
 	// Virtual device function calls
 	void devStart() override;
 
+	// Virtual execution function calls
+	void executeRun();
+
 protected:
 	struct mcs48op_t
 	{
@@ -98,8 +101,10 @@ protected:
 	void setData128(map::AddressList &map);
 	void setData256(map::AddressList &map);
 
-	inline void eatCycles(int cycles) { cpuCycles -= cycles; }
 	inline void updateRegisters() { iRegs = &idata[pswReg & PSW_B ? 24 : 0]; }
+	
+	void eatCycles(int cycles);
+	void checkInterrupts();
 
 	// Device callbacks 
 	read8cb_t::array<2>  inPort;	// 16 port lines (input)
