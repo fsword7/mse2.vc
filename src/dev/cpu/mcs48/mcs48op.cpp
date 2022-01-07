@@ -11,7 +11,7 @@
 
 #define OP(name) &mcs48_cpuDevice::op##name
 
-const mcs48_cpuDevice::opExecute mcs48_cpuDevice::mcs48_Opcodes[256] =
+const mcs48_cpuDevice::opExecute_t mcs48_cpuDevice::mcs48_Opcodes[256] =
 {
     OP(NOP),        OP(Illegal),    OP(OUTL_BUS_A), OP(ADD_A_N),    OP(JMP_0),      OP(EN_I),       OP(Illegal),   OP(DEC_A),       // 00-07
     OP(INS_A_BUS),  OP(IN_A_P1),    OP(IN_A_P2),    OP(Illegal),    OP(MOVD_A_P4),  OP(MOVD_A_P5),  OP(MOVD_A_P6), OP(MOVD_A_P7),   // 08-0F
@@ -47,7 +47,7 @@ const mcs48_cpuDevice::opExecute mcs48_cpuDevice::mcs48_Opcodes[256] =
     OP(MOV_A_R0),   OP(MOV_A_R1),   OP(MOV_A_R2),   OP(MOV_A_R3),   OP(MOV_A_R4),   OP(MOV_A_R5),   OP(MOV_A_R6),  OP(MOV_A_R7)     // F8-FF
 };
 
-const mcs48_cpuDevice::opExecute mcs48_cpuDevice::i8021_Opcodes[256] =
+const mcs48_cpuDevice::opExecute_t mcs48_cpuDevice::i8021_Opcodes[256] =
 {
     OP(NOP),        OP(Illegal),    OP(Illegal),    OP(ADD_A_N),    OP(JMP_0),      OP(Illegal),    OP(Illegal),   OP(DEC_A),       // 00-07
     OP(IN_A_P0),    OP(IN_A_P1),    OP(IN_A_P2),    OP(Illegal),    OP(MOVD_A_P4),  OP(MOVD_A_P5),  OP(MOVD_A_P6), OP(MOVD_A_P7),   // 08-0F
@@ -83,7 +83,7 @@ const mcs48_cpuDevice::opExecute mcs48_cpuDevice::i8021_Opcodes[256] =
     OP(MOV_A_R0),   OP(MOV_A_R1),   OP(MOV_A_R2),   OP(MOV_A_R3),   OP(MOV_A_R4),   OP(MOV_A_R5),   OP(MOV_A_R6),  OP(MOV_A_R7)     // F8-FF
 };
 
-const mcs48_cpuDevice::opExecute mcs48_cpuDevice::i8022_Opcodes[256] =
+const mcs48_cpuDevice::opExecute_t mcs48_cpuDevice::i8022_Opcodes[256] =
 {
     OP(NOP),        OP(Illegal),    OP(Illegal),    OP(ADD_A_N),    OP(JMP_0),      OP(EN_I),       OP(Illegal),   OP(DEC_A),       // 00-07
     OP(IN_A_P0),    OP(IN_A_P1),    OP(IN_A_P2),    OP(Illegal),    OP(MOVD_A_P4),  OP(MOVD_A_P5),  OP(MOVD_A_P6), OP(MOVD_A_P7),   // 08-0F
@@ -119,7 +119,7 @@ const mcs48_cpuDevice::opExecute mcs48_cpuDevice::i8022_Opcodes[256] =
     OP(MOV_A_R0),   OP(MOV_A_R1),   OP(MOV_A_R2),   OP(MOV_A_R3),   OP(MOV_A_R4),   OP(MOV_A_R5),   OP(MOV_A_R6),  OP(MOV_A_R7)     // F8-FF
 };
 
-const mcs48_cpuDevice::opExecute mcs48_cpuDevice::upi41_Opcodes[256] =
+const mcs48_cpuDevice::opExecute_t mcs48_cpuDevice::upi41_Opcodes[256] =
 {
     OP(NOP),        OP(Illegal),    OP(OUT_DBB_A),  OP(ADD_A_N),    OP(JMP_0),      OP(EN_I),       OP(Illegal),   OP(DEC_A),       // 00-07
     OP(Illegal),    OP(IN_A_P1),    OP(IN_A_P2),    OP(Illegal),    OP(MOVD_A_P4),  OP(MOVD_A_P5),  OP(MOVD_A_P6), OP(MOVD_A_P7),   // 08-0F

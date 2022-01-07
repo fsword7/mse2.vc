@@ -65,6 +65,8 @@
 class mcs48_cpuDevice : public ProcessorDevice
 {
 public:
+	typedef void (mcs48_cpuDevice::*opExecute_t)();
+
 	// 8243 expander operations
 	enum opExpander
 	{
@@ -75,15 +77,14 @@ public:
 	};
 
     mcs48_cpuDevice(const SystemConfig &config, const DeviceType &type,
-        cstag_t &devName, Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize);
+        cstag_t &devName, Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize,
+		uint8_t flags, const opExecute_t *opTable);
     virtual ~mcs48_cpuDevice() = default;
 
 	// Virtual device function calls
 	void devStart() override;
 
 protected:
-	typedef void (mcs48_cpuDevice::*opExecute)();
-
 	struct mcs48op_t
 	{
 		cchar_t	  *opName;
@@ -127,6 +128,8 @@ protected:
     map::MemoryAccess<12, 0, 0, LittleEndian>::specific mapProgram;
     map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapData;
     map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapIOPort;
+
+	const uint8_t archFlags;
 
 	uint8_t  cpuFlags;
 	uint8_t  *iRegs;
@@ -185,12 +188,14 @@ protected:
 	void expand(uint8_t port, opExpander op);
 
 	// Opcode tables for MCS48 processor series
-	static const opExecute mcs48_Opcodes[];
-	static const opExecute i8021_Opcodes[];
-	static const opExecute i8022_Opcodes[];
-	static const opExecute upi41_Opcodes[];
+	static const opExecute_t mcs48_Opcodes[];
+	static const opExecute_t i8021_Opcodes[];
+	static const opExecute_t i8022_Opcodes[];
+	static const opExecute_t upi41_Opcodes[];
 
 	static const mcs48op_t opTable[];
+
+	const opExecute_t *opExecute;
 
 	// Excute function calls
 	void exADD(uint8_t val);
@@ -570,8 +575,9 @@ class upi41_cpuDevice : public mcs48_cpuDevice
 {
 protected:
 	upi41_cpuDevice(const SystemConfig &config, const DeviceType &type, cstag_t &devName,
-		Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize)
-	: mcs48_cpuDevice(config, type, devName, owner, clock, paWidth, daWidth, romSize)
+		Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize,
+		uint8_t flags, const opExecute_t *opTable)
+	: mcs48_cpuDevice(config, type, devName, owner, clock, paWidth, daWidth, romSize, flags, opTable)
 	{ }
 };
 

@@ -10,12 +10,14 @@
 #include "dev/cpu/mcs48/mcs48.h"
 
 mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &type,
-    cstag_t &devName, Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize)
+    cstag_t &devName, Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize,
+    uint8_t flags, const opExecute_t *opTable)
 : ProcessorDevice(config, type, devName, owner, clock),
   mapProgramConfig("program", LittleEndian, 8, 16, 2, 8, paWidth, 16, 3, 0),
   mapDataConfig("data", LittleEndian, 8, 16, 2, 8, daWidth, 16, 2, 0),
   mapIOPortConfig("I/O port", LittleEndian, 8, 16, 2, 8, 8, 16, 2, 0),
   idata(*this, "data"), iromSize(romSize), iramSize(1u << daWidth),
+  archFlags(flags), opExecute(opTable),
   inPort(*this), outPort(*this),
   inBus(*this), outBus(*this),
   inTest(*this), outProg(*this)
@@ -145,84 +147,84 @@ DEFINE_DEVICE_TYPE(I8042AH, i8042ah_cpuDevice, "i8042AH", "Intel 8042AH")
 DEFINE_DEVICE_TYPE(I8742AH, i8742ah_cpuDevice, "i8742AH", "Intel 8742AH")
 
 i8021_cpuDevice::i8021_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8035, devName, owner, clock, 12, 6, 1024)
+: mcs48_cpuDevice(config, I8035, devName, owner, clock, 12, 6, 1024, ARCH_I802X, i8021_Opcodes)
 { }
 
 i8022_cpuDevice::i8022_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8035, devName, owner, clock, 12, 7, 2048)
+: mcs48_cpuDevice(config, I8035, devName, owner, clock, 12, 7, 2048, ARCH_I802X, i8022_Opcodes)
 { }
 
 i8035_cpuDevice::i8035_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8035, devName, owner, clock, 12, 6, 0)
+: mcs48_cpuDevice(config, I8035, devName, owner, clock, 12, 6, 0, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8039_cpuDevice::i8039_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8039, devName, owner, clock, 12, 7, 0)
+: mcs48_cpuDevice(config, I8039, devName, owner, clock, 12, 7, 0, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8040_cpuDevice::i8040_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8040, devName, owner, clock, 12, 8, 0)
+: mcs48_cpuDevice(config, I8040, devName, owner, clock, 12, 8, 0, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8048_cpuDevice::i8048_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8048, devName, owner, clock, 12, 6, 1024)
+: mcs48_cpuDevice(config, I8048, devName, owner, clock, 12, 6, 1024, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8648_cpuDevice::i8648_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8648, devName, owner, clock, 12, 6, 1024)
+: mcs48_cpuDevice(config, I8648, devName, owner, clock, 12, 6, 1024, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8748_cpuDevice::i8748_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8748, devName, owner, clock, 12, 6, 1024)
+: mcs48_cpuDevice(config, I8748, devName, owner, clock, 12, 6, 1024, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8049_cpuDevice::i8049_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8049, devName, owner, clock, 12, 7, 2048)
+: mcs48_cpuDevice(config, I8049, devName, owner, clock, 12, 7, 2048, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8749_cpuDevice::i8749_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8749, devName, owner, clock, 12, 7, 2048)
+: mcs48_cpuDevice(config, I8749, devName, owner, clock, 12, 7, 2048, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8050_cpuDevice::i8050_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8050, devName, owner, clock, 12, 8, 4096)
+: mcs48_cpuDevice(config, I8050, devName, owner, clock, 12, 8, 4096, ARCH_I8048, mcs48_Opcodes)
 { }
 
 i8750_cpuDevice::i8750_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: mcs48_cpuDevice(config, I8750, devName, owner, clock, 12, 8, 4096)
+: mcs48_cpuDevice(config, I8750, devName, owner, clock, 12, 8, 4096, ARCH_I8048, mcs48_Opcodes)
 { }
 
 
 // Intel UPI-41 microcontroller series
 
 i8041a_cpuDevice::i8041a_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8041A, devName, owner, clock, 11, 6, 1024)
+: upi41_cpuDevice(config, I8041A, devName, owner, clock, 11, 6, 1024, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8741a_cpuDevice::i8741a_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8741A, devName, owner, clock, 11, 6, 1024)
+: upi41_cpuDevice(config, I8741A, devName, owner, clock, 11, 6, 1024, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8041ah_cpuDevice::i8041ah_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8041AH, devName, owner, clock, 11, 7, 1024)
+: upi41_cpuDevice(config, I8041AH, devName, owner, clock, 11, 7, 1024, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8741ah_cpuDevice::i8741ah_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8741AH, devName, owner, clock, 11, 7, 1024)
+: upi41_cpuDevice(config, I8741AH, devName, owner, clock, 11, 7, 1024, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8042_cpuDevice::i8042_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8042, devName, owner, clock, 11, 7, 2048)
+: upi41_cpuDevice(config, I8042, devName, owner, clock, 11, 7, 2048, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8742_cpuDevice::i8742_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8742, devName, owner, clock, 11, 7, 2048)
+: upi41_cpuDevice(config, I8742, devName, owner, clock, 11, 7, 2048, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8042ah_cpuDevice::i8042ah_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8042AH, devName, owner, clock, 11, 8, 2048)
+: upi41_cpuDevice(config, I8042AH, devName, owner, clock, 11, 8, 2048, ARCH_UPI41, upi41_Opcodes)
 { }
 
 i8742ah_cpuDevice::i8742ah_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock)
-: upi41_cpuDevice(config, I8742AH, devName, owner, clock, 11, 8, 2048)
+: upi41_cpuDevice(config, I8742AH, devName, owner, clock, 11, 8, 2048, ARCH_UPI41, upi41_Opcodes)
 { }
