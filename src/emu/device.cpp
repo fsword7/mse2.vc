@@ -65,6 +65,25 @@ void Device::configure(SystemConfig &config)
     devConfigure(config);
 }
 
+void Device::start()
+{
+    devStart();
+    // updateClock();
+
+    flagStarted = true;
+}
+
+void Device::stop()
+{
+    devStop();
+    flagStarted = false;
+}
+
+void Device::reset()
+{
+    devReset();
+}
+
 void Device::finishConfig()
 {
     for (auto *iface : ifaceList)

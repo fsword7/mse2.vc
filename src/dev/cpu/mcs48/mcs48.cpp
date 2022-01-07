@@ -55,6 +55,9 @@ mcs48_cpuDevice::mcs48_cpuDevice(const SystemConfig &config, const DeviceType &t
             mapDataConfig.setAddressMap(map::Constructor(FUNC(mcs48_cpuDevice::setData256), this));
             break;
     }
+
+    // Initialable opcode table for disassembler
+    initOpcodeTable();
 }
 
 map::AddressConfigList mcs48_cpuDevice::getAddressConfigList() const

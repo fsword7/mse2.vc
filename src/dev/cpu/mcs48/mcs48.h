@@ -80,6 +80,9 @@ public:
 	// Virtual execution function calls
 	void executeRun();
 
+	// Virtual debug function calls
+	int list(offs_t vAddr) override;
+
 protected:
 	struct mcs48op_t
 	{
@@ -100,6 +103,8 @@ protected:
 	void setData64(map::AddressList &map);
 	void setData128(map::AddressList &map);
 	void setData256(map::AddressList &map);
+
+	void initOpcodeTable();
 
 	inline void updateRegisters() { iRegs = &idata[pswReg & PSW_B ? 24 : 0]; }
 	
@@ -190,9 +195,11 @@ protected:
 	static const opExecute_t i8022_Opcodes[];
 	static const opExecute_t upi41_Opcodes[];
 
+	const opExecute_t *opExecute;
+
 	static const mcs48op_t opTable[];
 
-	const opExecute_t *opExecute;
+	const mcs48op_t *opCodes[256];
 
 	// Excute function calls
 	void exADD(uint8_t val);

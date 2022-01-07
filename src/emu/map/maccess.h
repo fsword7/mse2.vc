@@ -42,6 +42,8 @@ namespace map
 
         void set(AddressSpace *space, offs_t mask, const void *read, const void *write)
         {
+            assert (read != nullptr && write != nullptr);
+            
             this->space = space;
             addrMask = mask;
             readDispatch = (const HandlerRead<dWidth, aShift> *const *)(read);

@@ -7,11 +7,13 @@
 
 #include "emu/diexec.h"
 #include "emu/dimem.h"
+#include "emu/didebug.h"
 
 class ProcessorDevice
 : public Device,
   public diMemory,
-  public diExecute
+  public diExecute,
+  public diDebug
 {
 public:
     ProcessorDevice(const SystemConfig &config, const DeviceType &type,

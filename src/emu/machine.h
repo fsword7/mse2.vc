@@ -25,6 +25,8 @@ public:
     void start(UserConsole *user);
     void setConsole(UserConsole *user);
     
+    void startAllDevices(UserConsole *user);
+
 private:
     const SystemConfig &config;
     cstag_t sysName;

@@ -36,6 +36,16 @@ void Machine::setConsole(UserConsole *user)
 
 }
 
+void Machine::startAllDevices(UserConsole *user)
+{
+    for (Device &dev : DeviceIterator(*sysDevice))
+    {
+        fmt::printf("%s: starting %s device...\n",
+            dev.getsDeviceName(), dev.getShortName());
+        dev.start();
+    }
+}
+
 void Machine::start(UserConsole *user)
 {
     assert(sysDevice != nullptr);
@@ -50,6 +60,9 @@ void Machine::start(UserConsole *user)
         // Finding required objects to being linked
         for (Device &dev : DeviceIterator(*sysDevice))
             dev.resolvePostMapping();
+
+        // Now start all devices.
+        startAllDevices(user);
     // }
 
     // catch (...)

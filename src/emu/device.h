@@ -197,7 +197,12 @@ public:
 
     inline void setMachine(Machine *owner) { ownMachine = owner; }
     
+    // Machine function calls
     void configure(SystemConfig &config);
+    void start();
+    void stop();
+    void reset();
+
     void addInterface(DeviceInterface *iface);
     void finishConfig();
     void resolvePostMapping();
@@ -220,6 +225,8 @@ public:
     virtual cfwEntry_t *devGetFirmwareEntries() { return nullptr; }
     virtual void devResolveObjects() {}
     virtual void devStart() {}
+    virtual void devStop() {}
+    virtual void devReset() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
 	// If cast fails, return null pointer. For more information, check
@@ -250,6 +257,7 @@ private:
 
     Machine *ownMachine = nullptr;
     Device  *owner = nullptr;
+    bool flagStarted = false;
 
     uint64_t clock = 0;
 

@@ -10,6 +10,7 @@
 
 #include "emu/map/map.h"
 #include "emu/dimem.h"
+#include "emu/didebug.h"
 
 SystemEngine::cmdStatus SystemEngine::cmdCreate(UserConsole *user, args_t &args)
 {
@@ -326,6 +327,70 @@ SystemEngine::cmdStatus SystemEngine::cmdDump(UserConsole *user, args_t &args)
     return cmdOk;
 }
 
+SystemEngine::cmdStatus SystemEngine::cmdList(UserConsole *user, args_t &args)
+{
+	Device *dev = nullptr;
+	offs_t sAddr, eAddr = -1ull;
+	int    count = 20;
+
+	// if (!args.empty())
+	{
+		char *strAddr;
+
+		dev = findDevice(user, args.getArgument());
+		if (dev == nullptr) {
+			fmt::printf("%s: unknown device\n", args.getArgument());
+			return cmdOk;
+		}
+
+		args.getNext();
+		sscanf(args.getArgument().c_str(), "%llx", &sAddr);
+		if ((strAddr = strchr(args.getArgument().c_str(), '-')) != nullptr)
+		{
+			sscanf(strAddr+1, "%llx", &eAddr);
+			count = (eAddr - sAddr) / 4;
+		}
+		else if (args.getSize() > 3)
+		{
+			args.getNext();
+			sscanf(args.getArgument().c_str(), "%d", &count);
+		}
+	} 
+    // else
+    //     sAddr = user->getLastAddress(dev);
+
+	diMemory *bus;
+	diDebug *debug;
+	if (!dev->hasInterface(bus))
+	{
+		fmt::printf("%s: do not have external bus interface\n", dev->getsDeviceName());
+		return cmdOk;
+	}
+	map::AddressSpace *space = bus->getAddressSpace();
+
+	if (!dev->hasInterface(debug))
+	{
+		fmt::printf("%s: do not have debug tools\n", dev->getsDeviceName());
+		return cmdOk;
+	}
+
+	uint64_t addr = sAddr;
+	uint32_t opCode;
+	for (int idx = 0; idx < count; idx++)
+	{
+//		opCode = space->read32(addr);
+//		fmt::printf("%llX  %08X\n", addr, opCode);
+//
+//		// next PC addrees
+//		addr += 4;
+		addr += debug->list(addr);
+	}
+
+	// Save device and current address for more output
+	// user->setLastAddress(dev, addr);
+	return cmdOk;
+}
+
 SystemEngine::cmdStatus SystemEngine::cmdStart(UserConsole *user, args_t &args)
 {
     std::string devName = args.getNext();
@@ -356,6 +421,7 @@ SystemEngine::command_t SystemEngine::mseCommands[] =
     { "dumpd",    &SystemEngine::cmdDump<map::asData>,      nullptr },
     { "dumpio",   &SystemEngine::cmdDump<map::asIOPort>,    nullptr },
     { "dumpm",    &SystemEngine::cmdDumpm,                  nullptr },
+    { "list",     &SystemEngine::cmdList,                   nullptr },
     { "exit",     &SystemEngine::cmdQuit,                   nullptr },
     { "start",    &SystemEngine::cmdStart,                  nullptr },
     { "quit",     &SystemEngine::cmdQuit,                   nullptr },
