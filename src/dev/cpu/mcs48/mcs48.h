@@ -47,6 +47,21 @@
 #define CPUF_802X			0x02
 #define CPUF_804X			0x01
 
+// MCS-48 architecture flags
+#define ARCH_MB			0x80
+#define ARCH_EXTBUS		0x40
+#define ARCH_UPI41		0x04
+#define ARCH_I802X		0x02
+#define ARCH_I804X		0x01
+#define ARCH_I8048		(ARCH_I804X|ARCH_MB|ARCH_EXTBUS)
+
+// Operand type definitions
+#define OPR_NOPE		0x00 // Implied
+#define OPR_REG			0x01 // Register
+#define OPR_LIT			0x02 // Literate
+#define OPR_ADDR2		0x04 // Address (2 precision)
+#define OPR_ADDR3		0x08 // Address (3 precision)
+
 class mcs48_cpuDevice : public ProcessorDevice
 {
 public:
@@ -68,6 +83,16 @@ public:
 
 protected:
 	typedef void (mcs48_cpuDevice::*opExecute)();
+
+	struct mcs48op_t
+	{
+		cchar_t	  *opName;
+		cchar_t	  *opReg;
+		uint8_t    opType;
+		uint8_t    opCode;
+		uint8_t    opMask;
+		const int  cycle;
+	};
 
     map::AddressConfigList getAddressConfigList() const override;
 	
@@ -164,6 +189,8 @@ protected:
 	static const opExecute i8021_Opcodes[];
 	static const opExecute i8022_Opcodes[];
 	static const opExecute upi41_Opcodes[];
+
+	static const mcs48op_t opTable[];
 
 	// Excute function calls
 	void exADD(uint8_t val);
