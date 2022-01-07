@@ -46,8 +46,9 @@ void mx80_Device::mx100_init()
 
 void mx80_Device::mx80_setProgram(map::AddressList &map)
 {
-    map(0x000, 0x7FF).rom().region("mx80fw", 0x800);
-    map(0x800, 0xFFF).rom().region("mx80fw");
+    // map(0x800, 0x7FF).bankr("mx80fw");
+    map(0x000, 0x7FF).rom().region("mx80fw");
+    map(0x800, 0xFFF).rom().region("mx80fw", 0x1000);
 }
 
 void mx80_Device::mx80_setIOPort(map::AddressList &map)
@@ -58,9 +59,9 @@ void mx80_Device::mx80_setIOPort(map::AddressList &map)
 static const fwEntry_t FW_NAME(mx80)[] =
 {
     FW_REGION("mx80fw", 0x1800, 0),
-    FW_LOAD("a1ha2.2b.bin", 0x0000, 0x0800, 0, nullptr),
-    FW_LOAD("a2ha1.1b.bin", 0x0800, 0x0800, 0, nullptr),
-    FW_LOAD("a2ha3.3b.bin", 0x1000, 0x0800, 0, nullptr),
+    FW_LOAD("a2ha3.1b.bin", 0x0000, 0x0800, 0, nullptr),
+    FW_LOAD("a1ha2.2b.bin", 0x0800, 0x0800, 0, nullptr),
+    FW_LOAD("a2ha1.3b.bin", 0x1000, 0x0800, 0, nullptr),
 
     FW_REGION("smcu", 0x0400, 0),
     FW_LOAD("d8041c.9b.bin", 0x0000, 0x0400, 0, nullptr),
