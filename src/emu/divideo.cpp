@@ -1,7 +1,7 @@
-// divideo.cpp - Device Interface - Video
+// divideo.cpp - Video Device Interface package
 //
 // Author:  Tim Stark
-// Date:    12/17/2021
+// Date:    Dec 17, 2021
 
 #include "emu/core.h"
 #include "emu/divideo.h"

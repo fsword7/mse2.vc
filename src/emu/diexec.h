@@ -1,15 +1,15 @@
-// diexec.h - Device Interface - Execution
+// diexec.h - Execution Device Interface package
 //
 // Author:  Tim Stark
-// Date:    12/10/2021
+// Date:    Dec 10, 2021
 
 #pragma once
 
 class diExecute : public DeviceInterface
 {
-    public:
-        diExecute(Device *owner);
-        virtual ~diExecute() = default;
+public:
+    diExecute(Device *owner);
+    virtual ~diExecute() = default;
 
-     private:
+private:
 };

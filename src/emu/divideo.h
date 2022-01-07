@@ -1,7 +1,7 @@
-// divideo.h - Device Interface - Video
+// divideo.h - Video Device Interface package
 //
 // Author:  Tim Stark
-// Date:    12/17/2021
+// Date:    Dec 17, 2021
 
 #pragma once
 
