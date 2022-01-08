@@ -10,6 +10,7 @@
 
 #include "emu/map/map.h"
 #include "emu/dimem.h"
+#include "emu/diexec.h"
 #include "emu/didebug.h"
 
 SystemEngine::cmdStatus SystemEngine::cmdCreate(UserConsole *user, args_t &args)
@@ -408,6 +409,31 @@ SystemEngine::cmdStatus SystemEngine::cmdStart(UserConsole *user, args_t &args)
     return cmdOk;
 }
 
+SystemEngine::cmdStatus SystemEngine::cmdStep(UserConsole *user, args_t &args)
+{
+    Device *dev = nullptr;
+
+    {
+		dev = findDevice(user, args.getArgument());
+		if (dev == nullptr) {
+			fmt::printf("%s: unknown device\n", args.getArgument());
+			return cmdOk;
+		}
+    }
+
+    diExecute *exec;
+    if (!dev->hasInterface(exec))
+    {
+        fmt::sprintf("%s: do not have execution interface - aborted.\n",
+            dev->getsDeviceName());
+            return cmdOk;
+    }
+
+    exec->step();
+
+    return cmdOk;
+}
+
 SystemEngine::cmdStatus SystemEngine::cmdQuit(UserConsole *user, args_t &args)
 {
     return cmdShutdown;
@@ -424,6 +450,7 @@ SystemEngine::command_t SystemEngine::mseCommands[] =
     { "list",     &SystemEngine::cmdList,                   nullptr },
     { "exit",     &SystemEngine::cmdQuit,                   nullptr },
     { "start",    &SystemEngine::cmdStart,                  nullptr },
+    { "step",     &SystemEngine::cmdStep,                   nullptr },
     { "quit",     &SystemEngine::cmdQuit,                   nullptr },
 
     // Terminator

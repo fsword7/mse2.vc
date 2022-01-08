@@ -73,6 +73,16 @@ void mcs48_cpuDevice::checkInterrupts()
     }
 }
 
+void mcs48_cpuDevice::step()
+{
+    // Display dissasembly line
+    list(pcReg);
+
+    // Exceute one instruction
+    cpuCycles = 0;
+    executeRun();
+}
+
 void mcs48_cpuDevice::executeRun()
 {
     updateRegisters();
@@ -312,14 +322,14 @@ DO_OPC(DEC_R7)        { eatCycles(1); R7--; }
 DO_OPC(DIS_I)         { eatCycles(1); xirqEnable = false; }
 DO_OPC(DIS_TCNTI)     { eatCycles(1); tirqEnable = false; timerOverflow = false; }
 
-DO_OPC(DJNZ_R0)       { eatCycles(2); exJUMP(--R0 != 0); }
-DO_OPC(DJNZ_R1)       { eatCycles(2); exJUMP(--R1 != 0); }
-DO_OPC(DJNZ_R2)       { eatCycles(2); exJUMP(--R2 != 0); }
-DO_OPC(DJNZ_R3)       { eatCycles(2); exJUMP(--R3 != 0); }
-DO_OPC(DJNZ_R4)       { eatCycles(2); exJUMP(--R4 != 0); }
-DO_OPC(DJNZ_R5)       { eatCycles(2); exJUMP(--R5 != 0); }
-DO_OPC(DJNZ_R6)       { eatCycles(2); exJUMP(--R6 != 0); }
-DO_OPC(DJNZ_R7)       { eatCycles(2); exJUMP(--R7 != 0); }
+DO_OPC(DJNZ_R0)       { eatCycles(2); exJCC(--R0 != 0); }
+DO_OPC(DJNZ_R1)       { eatCycles(2); exJCC(--R1 != 0); }
+DO_OPC(DJNZ_R2)       { eatCycles(2); exJCC(--R2 != 0); }
+DO_OPC(DJNZ_R3)       { eatCycles(2); exJCC(--R3 != 0); }
+DO_OPC(DJNZ_R4)       { eatCycles(2); exJCC(--R4 != 0); }
+DO_OPC(DJNZ_R5)       { eatCycles(2); exJCC(--R5 != 0); }
+DO_OPC(DJNZ_R6)       { eatCycles(2); exJCC(--R6 != 0); }
+DO_OPC(DJNZ_R7)       { eatCycles(2); exJCC(--R7 != 0); }
 
 DO_OPC(EN_I)          { eatCycles(1); xirqEnable = true; }
 DO_OPC(EN_TCNTI)      { eatCycles(1); tirqEnable = true; }

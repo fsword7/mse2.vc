@@ -11,5 +11,8 @@ public:
     diExecute(Device *owner);
     virtual ~diExecute() = default;
 
+    virtual void step() { }
+    virtual void executeRun() { }
+    
 private:
 };

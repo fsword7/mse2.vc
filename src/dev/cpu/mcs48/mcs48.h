@@ -78,7 +78,8 @@ public:
 	void devStart() override;
 
 	// Virtual execution function calls
-	void executeRun();
+	void step() override;
+	void executeRun() override;
 
 	// Virtual debug function calls
 	int list(offs_t vAddr) override;
@@ -134,35 +135,35 @@ protected:
 
 	const uint8_t archFlags;
 
-	uint8_t  *iRegs;
-	uint8_t	 aReg;
-	uint8_t  pswReg;
-	uint16_t pcReg;
-	uint16_t a11Reg;
-	uint16_t fpcBase; // faulting PC address
+	uint8_t  *iRegs = nullptr;
+	uint8_t	 aReg = 0;
+	uint8_t  pswReg = 0;
+	uint16_t pcReg = 0;
+	uint16_t a11Reg = 0;
+	uint16_t fpcBase = 0; // faulting PC address
 
-	uint8_t  p1Reg;
-	uint8_t  p2Reg;
-	bool     f1Reg;
+	uint8_t  p1Reg = 0;
+	uint8_t  p2Reg = 0;
+	bool     f1Reg = false;
 
-	uint8_t  dbbiReg;
-	uint8_t  dbboReg;
-	uint8_t  stsReg;
+	uint8_t  dbbiReg = 0;
+	uint8_t  dbboReg = 0;
+	uint8_t  stsReg = 0;
 
-	bool irqState;
-	bool irqPolled;
+	bool irqState = false;
+	bool irqPolled = false;
 	bool irqInProgress = false;
-	bool xirqEnable;
+	bool xirqEnable = false;
 	
-	bool tirqEnable;
-	bool timerOverflow;
-	bool timerFlag;
-	uint8_t timerReg;
+	bool tirqEnable = false;
+	bool timerOverflow = false;
+	bool timerFlag = false;
+	uint8_t timerReg = 0;
 
-	bool dmaEnable;
-	bool flagsEnable;
+	bool dmaEnable = false;
+	bool flagsEnable = false;
 
-	uint64_t cpuCycles;
+	int64_t cpuCycles = 0ull;
 
 	uint8_t read8i();
 	uint8_t getP2Mask();
