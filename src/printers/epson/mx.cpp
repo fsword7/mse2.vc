@@ -29,11 +29,11 @@
 
 uint8_t mx80_Device::read8io(offs_t offset)
 {
-    // if ((p2Flags & P2_8155) == 0)
-    // {
-    //     i8155.select(p2Flags & P2_IOM);
-    //     return i8155.read8(offset);
-    // }
+    if ((p2Flags & P2_8155) == 0)
+    {
+        i8155->select(p2Flags & P2_IOM);
+        return i8155->read8(offset);
+    }
     if ((p2Flags & P2_DIP1) == 0)
         return sw1Flags;
     if ((p2Flags & P2_DIP2) == 0)
@@ -43,11 +43,11 @@ uint8_t mx80_Device::read8io(offs_t offset)
 
 void mx80_Device::write8io(offs_t offset, uint8_t data)
 {
-    // if ((p2Flags & P2_8155) == 0)
-    // {
-    //     i8155.select(p2Flags & P2_IOM);
-    //     i8155.write8(offset, data);
-    // }
+    if ((p2Flags & P2_8155) == 0)
+    {
+        i8155->select(p2Flags & P2_IOM);
+        i8155->write8(offset, data);
+    }
 }
 
 void mx80_Device::mx80(SystemConfig &config)
@@ -63,6 +63,8 @@ void mx80_Device::mx80(SystemConfig &config)
     // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     // cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
 
+    p1Flags  = 0xFF;
+    p2Flags  = 0xFF;
     sw1Flags = 0;
     sw2Flags = 0;
 }
@@ -76,6 +78,8 @@ void mx80_Device::mx100(SystemConfig &config)
     // cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     // cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
 
+    p1Flags  = 0xFF;
+    p2Flags  = 0xFF;
     sw1Flags = 0;
     sw2Flags = 0;
 }

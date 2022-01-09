@@ -26,3 +26,46 @@ i8156_Device::i8156_Device(const SystemConfig &config, cstag_t &devName, Device 
 
 // ********
 
+void i8155_Device::select(bool iomToggle)
+{
+    iomSwitch = iomToggle;
+}
+
+// I/O read/write accesses
+uint8_t i8155_Device::read8io(offs_t offset)
+{
+    return 0;
+}
+
+void i8155_Device::write8io(offs_t offset, uint8_t data)
+{
+
+}
+
+// RAM read/write accsses
+uint8_t i8155_Device::read8m(offs_t offset)
+{
+    return idata[offset & 0x0FF];
+}
+
+void i8155_Device::write8m(offs_t offset, uint8_t data)
+{
+    idata[offset & 0xFF] = data;
+}
+
+// read/wite acceses
+uint8_t i8155_Device::read8(offs_t offset)
+{
+    if (iomSwitch)
+        return read8io(offset);
+    else
+        return read8m(offset);
+}
+
+void i8155_Device::write8(offs_t offset, uint8_t data)
+{
+    if (iomSwitch)
+        write8io(offset, data);
+    else
+        write8m(offset, data);    
+}
