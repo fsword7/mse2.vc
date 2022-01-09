@@ -413,6 +413,7 @@ SystemEngine::cmdStatus SystemEngine::cmdStep(UserConsole *user, args_t &args)
 {
     Device *dev = nullptr;
 
+    if (!args.isEmpty())
     {
 		dev = findDevice(user, args.getArgument());
 		if (dev == nullptr) {
@@ -420,6 +421,8 @@ SystemEngine::cmdStatus SystemEngine::cmdStep(UserConsole *user, args_t &args)
 			return cmdOk;
 		}
     }
+    else
+        dev = lastDevice;
 
     diExecute *exec;
     if (!dev->hasInterface(exec))
@@ -431,6 +434,8 @@ SystemEngine::cmdStatus SystemEngine::cmdStep(UserConsole *user, args_t &args)
 
     exec->step();
 
+    lastCommand = &SystemEngine::cmdStep;
+    lastDevice = dev;
     return cmdOk;
 }
 

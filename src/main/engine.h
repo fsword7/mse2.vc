@@ -92,6 +92,10 @@ private:
     Machine *dialedMachine = nullptr;
     Device *dialedSystem = nullptr;
 
+    // For repeating commands
+    cmdFunc_t lastCommand = nullptr;
+    Device   *lastDevice = nullptr;
+
     static command_t mseCommands[];
 
     static const SystemDriver *sysList[];

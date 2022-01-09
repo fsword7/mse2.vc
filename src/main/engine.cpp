@@ -92,8 +92,13 @@ int SystemEngine::execute(UserConsole *user, std::string cmdLine)
     split(cmdLine, args);
 
     if (args.isEmpty())
+    {
+        if (lastCommand != nullptr)
+            (this->*lastCommand)(user, args);
         return 0;
-
+    }
+    lastCommand = nullptr;
+    
     command_t *cmdList = mseCommands;
     cmdStatus status = cmdNotFound; // default resulting status
 
