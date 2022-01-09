@@ -1,7 +1,7 @@
 // mcs48.cpp - MCS 48 Processor series package
 //
 // Author:  Tim Stark
-// Date:    12/28/21
+// Date:    Dec 28, 2021
 
 #include "emu/core.h"
 #include "emu/devcb.h"

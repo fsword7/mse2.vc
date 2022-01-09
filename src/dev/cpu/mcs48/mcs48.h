@@ -1,7 +1,7 @@
 // mcs48.h - MCS 48 processor series package
 //
 // Author:  Tim Stark
-// Date:    12/28/21
+// Date:    Dec 28, 2021
 
 #pragma once
 
@@ -83,6 +83,20 @@ public:
 
 	// Virtual debug function calls
 	int list(offs_t vAddr) override;
+
+	// Configuration function calls
+	auto setP1InCallback()    { return inPort[0].bind(); }
+	auto setP2InCallback()    { return inPort[1].bind(); }
+	auto setP1OutCallback()   { return outPort[0].bind(); }
+	auto setP2OutCallback()   { return outPort[1].bind(); }
+	auto setBusInCallback()   { return inBus.bind(); }
+	auto setBusOutCallback()  { return outBus.bind(); }
+	auto setT0OutCallback()   { return inTest[0].bind(); }
+	auto setT1OutCallback()   { return inTest[1].bind(); }
+	auto setProgOutCallback() { return outProg.bind(); }
+
+	uint8_t readPort1() { return p1Reg; }
+	uint8_t readPort2() { return p2Reg; }
 
 protected:
 	struct mcs48op_t
@@ -495,6 +509,10 @@ class i8021_cpuDevice : public mcs48_cpuDevice
 public:
 	i8021_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);
 	virtual ~i8021_cpuDevice() = default;
+
+	// Configuration function calls for i8021 microcontroller
+	auto setP0InCallback()    { return setBusInCallback(); }
+	auto setP0OutCallback()   { return setBusOutCallback(); }
 };
 
 class i8022_cpuDevice : public mcs48_cpuDevice
@@ -579,6 +597,10 @@ public:
 
 class upi41_cpuDevice : public mcs48_cpuDevice
 {
+public:
+	uint8_t read8dbb(offs_t offset);
+	void write8dbb(offs_t offset, uint8_t data);
+
 protected:
 	upi41_cpuDevice(const SystemConfig &config, const DeviceType &type, cstag_t &devName,
 		Device *owner, uint64_t clock, int paWidth, int daWidth, int romSize,

@@ -1,7 +1,7 @@
 // mcs48exec.cpp - MCS 48 Processor series package - Execute routines
 //
 // Author:  Tim Stark
-// Date:    1/2/22
+// Date:    Jan 2, 2022
 
 #include "emu/core.h"
 #include "emu/devcb.h"

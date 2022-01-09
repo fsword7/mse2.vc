@@ -1,7 +1,7 @@
 // mcs48op.cpp - MCS 48 Processor series package - Opcode table
 //
 // Author:  Tim Stark
-// Date:    1/3/22
+// Date:    Jan 3, 2022
 
 #include "emu/core.h"
 #include "emu/devcb.h"
