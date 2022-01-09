@@ -6,6 +6,7 @@ set (MSE_CPP_SRCS
     dev/cpu/mcs48/mcs48dbg.cpp
     dev/cpu/mcs48/mcs48exec.cpp
     dev/cpu/mcs48/mcs48op.cpp
+    dev/cpu/upd7810/upd7810.cpp
     dev/video/dec/vt100.cpp
     emu/device.cpp
     emu/devcb.cpp
@@ -55,6 +56,7 @@ set (MSE_H_SRCS
     dev/cpu/i8080/i8080dbg.h
     dev/cpu/i8080/i8080op.h
     dev/cpu/mcs48/mcs48.h
+    dev/cpu/upd7810/upd7810.h
     dev/video/dec/vt100.h
     emu/core.h
     emu/delegate.h
