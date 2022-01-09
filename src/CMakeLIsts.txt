@@ -46,7 +46,8 @@ set (MSE_CPP_SRCS
     main/main.cpp
     main/systems.cpp
     main/user.cpp
-    printers/epson/mx.cpp
+    printers/epson/ap2000.cpp
+    printers/epson/mx80.cpp
     terminals/dec/vt100.cpp
 )
 
@@ -100,9 +101,7 @@ set (MSE_H_SRCS
     main/engine.h
     main/user.h
     printers/epson/externs.h
-    printers/epson/mx.h
     terminals/dec/externs.h
-    terminals/dec/vt100.h
 )
 
 add_definitions(-pthread -DENABLE_DEBUG)

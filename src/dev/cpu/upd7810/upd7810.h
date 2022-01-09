@@ -29,4 +29,4 @@ protected:
 
 };
 
-DECLARE_DEVICE_TYPE(upd7810, upd7810_cpuDevice);
+DECLARE_DEVICE_TYPE(UPD7810, upd7810_cpuDevice);

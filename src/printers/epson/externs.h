@@ -5,5 +5,6 @@
 
 #pragma once
 
+SYSTEM_EXTERN(ap2000);
 SYSTEM_EXTERN(mx80);
 SYSTEM_EXTERN(mx100);

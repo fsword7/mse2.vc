@@ -8,6 +8,7 @@
 const SystemDriver *SystemEngine::sysList[] =
 {
     // Printer series
+    &SYSTEM_NAME(ap2000),
     &SYSTEM_NAME(mx80),
     &SYSTEM_NAME(mx100),
 
