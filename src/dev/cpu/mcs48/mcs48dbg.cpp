@@ -89,6 +89,9 @@ void mcs48_cpuDevice::initOpcodeTable()
 
 	for (int idx = 0; opTable[idx].opName != nullptr; idx++)
 	{
+		if ((opTable[idx].opFlags & archFlags) == 0)
+			continue;
+
 		uint8_t opCode = opTable[idx].opCode;
 		uint8_t opMask = opTable[idx].opMask;
 

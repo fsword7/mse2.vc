@@ -92,6 +92,7 @@ protected:
 		uint8_t    opType;
 		uint8_t    opCode;
 		uint8_t    opMask;
+		uint8_t    opFlags;
 		const int  cycle;
 	};
 
