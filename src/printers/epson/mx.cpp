@@ -101,7 +101,7 @@ void mx80_Device::mx80_setProgram(map::AddressList &map)
 void mx80_Device::mx80_setExtData(map::AddressList &map)
 {
     map.setUnmappedHigh();
-    // map(0x00, 0xFF).rw(FUNC(mx80_Device::read8io), FUNC(mx80_Device::write8io));
+    map(0x00, 0xFF).rw(FUNC(mx80_Device::read8io), FUNC(mx80_Device::write8io));
 }
 
 

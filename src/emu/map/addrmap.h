@@ -191,28 +191,29 @@ namespace map
         }
 
  
+        // Implicit device - delegate calls
         template <typename T, typename rRet, typename... rArgs>
         AddressEntry &r(rRet (T::*read)(rArgs...), ctag_t *readName)
         {
-            return r(makeDelegate(read, makePointer<T>(device), readName, device.getDeviceName()));
+            return r(makeDelegate(*makePointer<T>(device), read, readName));
         }
 
         template <typename T, typename wRet, typename... wArgs>
         AddressEntry &w(wRet (T::*write)(wArgs...), ctag_t *writeName)
         {
-            return w(makeDelegate(write, makePointer<T>(device), writeName, device.getDeviceName()));
+            return w(makeDelegate(*makePointer<T>(device), write, writeName));
         }
 
         template <typename T, typename rRet, typename... rArgs, typename U, typename wRet, typename... wArgs>
         AddressEntry &rw(rRet (T::*read)(rArgs...), ctag_t *readName,
                          wRet (U::*write)(wArgs...), ctag_t *writeName)
         {
-            r(makeDelegate(read, makePointer<T>(device), readName, device.getDeviceName()));
-            w(makeDelegate(write, makePointer<U>(device), writeName, device.getDeviceName()));
+            r(makeDelegate(*makePointer<T>(device), read, readName));
+            w(makeDelegate(*makePointer<U>(device), write, writeName));
             return *this;
         }
 
-
+        // Device reference - delegate calls
         template <typename T, typename U, typename rRet, typename... rArgs>
         AddressEntry &r(T &obj, rRet (U::*read)(rArgs...), ctag_t *readName)
         {
@@ -233,18 +234,19 @@ namespace map
                   .w(makeDelegate(*makePointer<V>(obj), write, writeName));
         }
 
+        // Device finder - delegate calls
         template <typename T, bool Required, typename U, typename rRet, typename... rArgs>
         AddressEntry &r(DeviceFinder<T, Required> &finder, rRet (U::*read)(rArgs...), ctag_t *readName)
         {
             Device &device(findDevice(finder));
-            return r(makeDelegate(device, "", read, readName));
+            return r(makeDelegate(device, DEVICE_SELF, read, readName));
         }
 
         template <typename T, bool Required, typename U, typename wRet, typename... wArgs>
         AddressEntry &w(DeviceFinder<T, Required> &finder, wRet (U::*write)(wArgs...), ctag_t *writeName)
         {
             Device &device(findDevice(finder));
-            return w(makeDelegate(device, "", write, writeName));
+            return w(makeDelegate(device, DEVICE_SELF, write, writeName));
         }
 
         template <typename T, bool Required, typename U, typename rRet, typename... rArgs, typename V, typename wRet, typename... wArgs>
@@ -253,8 +255,8 @@ namespace map
             wRet (V::*write)(wArgs...), ctag_t *writeName)
         {
             Device &device(findDevice(finder));
-            return r(makeDelegate(device, "", read, readName))
-                  .w(makeDelegate(device, "", write, writeName));
+            return r(makeDelegate(device, DEVICE_SELF, read, readName))
+                  .w(makeDelegate(device, DEVICE_SELF, write, writeName));
         }
 
     };
