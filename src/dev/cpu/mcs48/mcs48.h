@@ -55,6 +55,25 @@
 #define OPR_ADDR2		0x10 // Address (2 precision)
 #define OPR_ADDR3		0x20 // Address (3 precision)
 
+// Register state access indexes
+enum 
+{
+	MCS48_PC,   MCS48_PSW,  MCS48_SP,   MCS48_A,
+	MCS48_R0,   MCS48_R1,   MCS48_R2,   MCS48_R3,
+	MCS48_R4,   MCS48_R5,   MCS48_R6,   MCS48_R7,
+	MCS48_P0,   MCS48_P1,   MCS48_P2,
+	MCS48_EA,   MCS48_TC,   MCS48_TPRE, 
+	MCS48_STS,  MCS48_DBBO, MCS48_DBBI 
+};
+
+// I/O port access indexes
+enum
+{
+	MCS48_INPUT_IRQ,
+	UPI41_INPUT_IBF,
+	MCS48_INPUT_EA
+};
+
 class mcs48_cpuDevice : public ProcessorDevice
 {
 public:
