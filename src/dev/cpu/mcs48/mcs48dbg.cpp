@@ -32,12 +32,7 @@ int mcs48_cpuDevice::list(offs_t vAddr)
 			break;
 
 		case OPR_REG:
-			reg = opCode & opCodes[opCode]->opMask;
-			oprLine = fmt::sprintf(opCodes[opCode]->opReg, reg);
-			break;
-
-		case OPR_PORT:
-			reg = opCode & 0x07; // opCodes[opCode]->opMask;
+			reg = opCode & 0x07;
 			oprLine = fmt::sprintf(opCodes[opCode]->opReg, reg);
 			break;
 
@@ -49,7 +44,7 @@ int mcs48_cpuDevice::list(offs_t vAddr)
 			break;
 
 		case OPR_REG|OPR_LIT:
-			reg = opCode & opCodes[opCode]->opMask;
+			reg = opCode & 0x07;
 			addr = mapProgram.read8(vAddr);
 			vAddr = (vAddr + 1) & 0x7FF;
 			line += fmt::sprintf("%02X", addr & 0xFF);
@@ -64,7 +59,7 @@ int mcs48_cpuDevice::list(offs_t vAddr)
 			break;
 
 		case OPR_REG|OPR_ADDR2:
-			reg = opCode & opCodes[opCode]->opMask;
+			reg = opCode & 0x07;
 			addr = mapProgram.read8(vAddr) | (vAddr & 0xF00);
 			vAddr = (vAddr + 1) & 0x7FF;
 			line += fmt::sprintf("%02X", addr & 0xFF);

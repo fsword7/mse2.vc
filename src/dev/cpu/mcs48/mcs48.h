@@ -51,8 +51,7 @@
 // Operand type definitions
 #define OPR_NOPE		0x00 // Implied
 #define OPR_REG			0x01 // Register
-#define OPR_PORT		0x02 // Port
-#define OPR_LIT			0x04 // Literate
+#define OPR_LIT			0x02 // Literate
 #define OPR_ADDR2		0x10 // Address (2 precision)
 #define OPR_ADDR3		0x20 // Address (3 precision)
 
