@@ -9,6 +9,41 @@
 #include "emu/map/addrmap.h"
 #include "dev/cpu/mcs48/mcs48.h"
 
+void mcs48_cpuDevice::step()
+{
+    // Display dissasembly line
+    list(pcReg);
+
+    // Exceute one instruction
+    cpuCycles = 0;
+    executeRun();
+
+    // Display updated registers
+    fmt::printf("A=%02X R0=%02X R1=%02X R2=%02X R3=%02X R4=%02X R5=%02X R6=%02X R7=%02X\n",
+        aReg, R0, R1, R2, R3, R4, R5, R6, R7);
+    fmt::printf("PC=%03X P=%02X P1=%02X P2=%02X\n", fpcBase, pswReg, p1Reg, p2Reg);
+}
+
+void mcs48_cpuDevice::executeRun()
+{
+    updateRegisters();
+
+    do
+    {
+        // Update any interrupts
+        if (!irqInProgress)
+            checkInterrupts();
+        irqPolled = false;
+
+        // Execute least one opcode until
+        // cycle countdown reach zero.
+        fpcBase = pcReg;
+        uint8_t opCode = read8i();
+        (this->*opExecute[opCode])();
+    }
+    while (cpuCycles > 0);
+}
+
 void mcs48_cpuDevice::eatCycles(int cycles)
 {
     // if (timecountEnable)
@@ -71,36 +106,6 @@ void mcs48_cpuDevice::checkInterrupts()
         exCALL(0x007);
         timerOverflow = false;
     }
-}
-
-void mcs48_cpuDevice::step()
-{
-    // Display dissasembly line
-    list(pcReg);
-
-    // Exceute one instruction
-    cpuCycles = 0;
-    executeRun();
-}
-
-void mcs48_cpuDevice::executeRun()
-{
-    updateRegisters();
-
-    do
-    {
-        // Update any interrupts
-        if (!irqInProgress)
-            checkInterrupts();
-        irqPolled = false;
-
-        // Execute least one opcode until
-        // cycle countdown reach zero.
-        fpcBase = pcReg;
-        uint8_t opCode = read8i();
-        (this->*opExecute[opCode])();
-    }
-    while (cpuCycles > 0);
 }
 
 uint8_t mcs48_cpuDevice::read8i()

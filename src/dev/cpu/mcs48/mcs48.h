@@ -51,9 +51,10 @@
 // Operand type definitions
 #define OPR_NOPE		0x00 // Implied
 #define OPR_REG			0x01 // Register
-#define OPR_LIT			0x02 // Literate
-#define OPR_ADDR2		0x04 // Address (2 precision)
-#define OPR_ADDR3		0x08 // Address (3 precision)
+#define OPR_PORT		0x02 // Port
+#define OPR_LIT			0x04 // Literate
+#define OPR_ADDR2		0x10 // Address (2 precision)
+#define OPR_ADDR3		0x20 // Address (3 precision)
 
 class mcs48_cpuDevice : public ProcessorDevice
 {
@@ -181,8 +182,8 @@ protected:
 	void write8io(offs_t addr, uint8_t data)   { mapIOPort.write8(addr, data); }
 
 	// port/bus (callback) function calls
-	uint8_t read8port(offs_t port)             { return inPort[port](); }
-	void write8port(offs_t port, uint8_t data) { outPort[port](data); }
+	uint8_t read8port(offs_t port)             { return inPort[port-1](); }
+	void write8port(offs_t port, uint8_t data) { outPort[port-1](data); }
 	uint8_t read8bus()                         { return inBus(); }
 	void write8bus(uint8_t data)               { outBus(data); }
 	uint8_t read8test(offs_t line)             { return inTest[line](); }

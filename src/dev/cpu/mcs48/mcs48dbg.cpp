@@ -36,6 +36,11 @@ int mcs48_cpuDevice::list(offs_t vAddr)
 			oprLine = fmt::sprintf(opCodes[opCode]->opReg, reg);
 			break;
 
+		case OPR_PORT:
+			reg = opCode & 0x07; // opCodes[opCode]->opMask;
+			oprLine = fmt::sprintf(opCodes[opCode]->opReg, reg);
+			break;
+
 		case OPR_LIT:
 			addr = mapProgram.read8(vAddr);
 			vAddr = (vAddr + 1) & 0x7FF;
