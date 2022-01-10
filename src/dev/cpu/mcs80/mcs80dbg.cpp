@@ -59,16 +59,16 @@ int mcs80_cpuDevice::list(offs_t vAddr)
 			rd = (opCode >> 3) & 0x07;
 			val = mapProgram.read8(vAddr);
 			vAddr = (vAddr + 1) & 0xFFFF;
-			line += fmt::sprintf("%02X", addr & 0xFF);
-			oprLine = fmt::sprintf("%s,#%02X", regList8[rd], addr);
+			line += fmt::sprintf("%02X", val & 0xFF);
+			oprLine = fmt::sprintf("%s,#%02X", regList8[rd], val);
 			break;
 
 		case OPR_REGI16:
 			rs = (opCode >> 4) & 0x03;
 			val = mapProgram.read8(vAddr) | (mapProgram.read8(vAddr+1) << 8);
 			vAddr = (vAddr + 2) & 0xFFFF;
-			line += fmt::sprintf("%02X %02X", addr & 0xFF, (addr >> 8) & 0xFF);
-			oprLine = fmt::sprintf("%s,#%04X", regList16s[rs], addr);
+			line += fmt::sprintf("%02X %02X", val & 0xFF, (val >> 8) & 0xFF);
+			oprLine = fmt::sprintf("%s,#%04X", regList16s[rs], val);
 			break;
 
 		case OPR_IMM8:

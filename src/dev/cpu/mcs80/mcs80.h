@@ -71,12 +71,18 @@
 #define REGBn(opCode)   ((opCode >> 3) & 0x07)
 #define REGWn(opCode)   ((opCode >> 4) & 0x03)
 
-#define REGA(opCode)    state.bRegs[REGAn(opCode)+2]
-#define REGB(opCode)    state.bRegs[REGBn(opCode)+2]
+#define REGA(opCode)    state.bRegs[REGAn(opCode) < 7 ? REGAn(opCode)+2 : 0]
+#define REGB(opCode)    state.bRegs[REGBn(opCode) < 7 ? REGBn(opCode)+2 : 0]
 #define REGW(opCode)    state.wRegs[REGWn(opCode)+1]
 
 #define REG_A           state.bRegs[REGn_A]
 #define REG_F           state.bRegs[REGn_F]
+#define REG_B           state.bRegs[REGn_B]
+#define REG_C           state.bRegs[REGn_C]
+#define REG_D           state.bRegs[REGn_D]
+#define REG_E           state.bRegs[REGn_E]
+#define REG_H           state.bRegs[REGn_H]
+#define REG_L           state.bRegs[REGn_L]
 
 #define REG_AF          state.wRegs[REGn_AF]
 #define REG_BC          state.wRegs[REGn_BC]
@@ -132,6 +138,9 @@ public:
 
     // Virtual device function calls
     void devStart() override;
+
+    void step() override;
+    void executeRun() override;
 
     int list(offs_t vAddr) override;
 

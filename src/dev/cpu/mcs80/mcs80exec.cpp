@@ -223,6 +223,32 @@ void i8080_cpuDevice::opRST(uint8_t val)
     REG_PC = val * 8;
 }
 
+void mcs80_cpuDevice::step()
+{
+    // Display disassembly line
+    list(REG_PC);
+
+    // Execute one instruction.
+    opCount = 0;
+    executeRun();
+
+    // Display results
+    fmt::printf("A=%02X F=%02X B=%02X C=%02X D=%02X E=%02X H=%02X L=%02X\n",
+        REG_A, REG_F, REG_B, REG_C, REG_D, REG_E, REG_H, REG_L);
+    fmt::printf("AF=%04X BC=%04X DE=%04X HL=%04X SP=%04X PC=%04X\n",
+        REG_AF, REG_BC, REG_DE, REG_HL, REG_SP, REG_PC);
+}
+
+void mcs80_cpuDevice::executeRun()
+{
+
+    do
+    {
+        execute();
+    }
+    while (opCount > 0);
+}
+
 void i8080_cpuDevice::execute()
 {
     uint8_t opCode;
