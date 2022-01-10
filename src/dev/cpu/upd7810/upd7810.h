@@ -22,6 +22,9 @@ public:
     void devStart() override;
     
 protected:
+    void setData128(map::AddressList &map);
+    void setData256(map::AddressList &map);
+    // void setROM4096(map::AddressList &map);
 
     map::AddressConfig mapProgramConfig;
 

@@ -21,9 +21,7 @@ map::AddressConfigList upd7810_cpuDevice::getAddressConfigList() const
 {
     return map::AddressConfigList
     {
-        { map::asProgram, &mapProgramConfig },
-        // { map::asData,    &mapDataConfig    },
-        // { map::asIOPort,  &mapIOPortConfig  }
+        { map::asProgram, &mapProgramConfig }
     };
 }
 
@@ -32,6 +30,16 @@ void upd7810_cpuDevice::devStart()
     // Assign memory spaces
     getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
 
+}
+
+void upd7810_cpuDevice::setData128(map::AddressList &map)
+{
+    map(0xFF80, 0xFFFF).ram();
+}
+
+void upd7810_cpuDevice::setData256(map::AddressList &map)
+{
+    map(0xFF00, 0xFFFF).ram();
 }
 
 // ********
