@@ -95,6 +95,7 @@ private:
     // For repeating commands
     cmdFunc_t lastCommand = nullptr;
     Device   *lastDevice = nullptr;
+    offs_t    lastAddress = 0;
 
     static command_t mseCommands[];
 

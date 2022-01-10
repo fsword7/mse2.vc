@@ -334,7 +334,7 @@ SystemEngine::cmdStatus SystemEngine::cmdList(UserConsole *user, args_t &args)
 	offs_t sAddr, eAddr = -1ull;
 	int    count = 20;
 
-	// if (!args.empty())
+	if (!args.isEmpty())
 	{
 		char *strAddr;
 
@@ -357,8 +357,11 @@ SystemEngine::cmdStatus SystemEngine::cmdList(UserConsole *user, args_t &args)
 			sscanf(args.getArgument().c_str(), "%d", &count);
 		}
 	} 
-    // else
-    //     sAddr = user->getLastAddress(dev);
+    else
+    {
+        dev = lastDevice; 
+        sAddr = lastAddress;
+    }
 
 	diMemory *bus;
 	diDebug *debug;
@@ -388,7 +391,9 @@ SystemEngine::cmdStatus SystemEngine::cmdList(UserConsole *user, args_t &args)
 	}
 
 	// Save device and current address for more output
-	// user->setLastAddress(dev, addr);
+    lastCommand = &SystemEngine::cmdList;
+	lastDevice  = dev;
+    lastAddress = addr;
 	return cmdOk;
 }
 

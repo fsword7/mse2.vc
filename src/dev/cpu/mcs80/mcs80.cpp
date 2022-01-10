@@ -1,11 +1,11 @@
-// i8080.cpp - Intel 8080/8085 Processor package
+// mcs80.cpp - Intel 8080/8085 Processor package
 //
 // Author:  Tim Stark
-// Date:    12/10/2021
+// Date:    Dec 10, 2021
 
 #include "emu/core.h"
 #include "emu/map/map.h"
-#include "dev/cpu/i8080/i8080.h"
+#include "dev/cpu/mcs80/mcs80.h"
 
 i8080_cpuDevice::i8080_cpuDevice(const SystemConfig &config, const DeviceType &type,
     cstag_t &devName, Device *owner, uint64_t clock, cpuType idType)
@@ -30,6 +30,12 @@ void i8080_cpuDevice::devStart()
     // Assign memory spaces
     getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
     getAddressSpace(map::asIOPort)->setSpecificMemory(mapIOPort);
+
+    initOpcodeTable();
+
+    // Initializing MCS80/MCS95 processor
+    init();
+    reset();
 }
 
 DEFINE_DEVICE_TYPE(i8080, i8080_cpuDevice, "i8080", "Intel 8080")

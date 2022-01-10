@@ -1,7 +1,7 @@
-// i8080.h - Intel 8080/8085 Processor package
+// mcs80.h - Intel 8080/8085 Processor package
 //
 // Author:  Tim Stark
-// Date:    12/10/2021
+// Date:    Dec 10, 2021
 
 #pragma once
 
@@ -85,6 +85,27 @@
 #define REG_SP          state.wRegs[REGn_SP]
 #define REG_PC          state.wRegs[REGn_PC]
 
+#define OPR_IMPLIED     0
+#define OPR_RS8         1
+#define OPR_RD8         2
+#define OPR_RSD8        3
+#define OPR_REG16S      4
+#define OPR_REG16P      5
+#define OPR_REGI8       6
+#define OPR_REGI16      7
+#define OPR_IMM8        8
+#define OPR_ADDR        9
+#define OPR_VECTOR      10
+#define OPR_PORT        11
+
+struct mcs80_opCode_t
+{
+    cchar_t     *opName;
+    uint8_t     opCode;
+    uint8_t     opMask;
+    uint8_t     opType;
+};
+
 class i8080_cpuDevice : public ProcessorDevice
 {
 public:
@@ -112,10 +133,15 @@ public:
     // Virtual device function calls
     void devStart() override;
 
+    int list(offs_t vAddr) override;
+
 protected:
     map::AddressConfigList getAddressConfigList() const override;
 
     void init();
+    void reset();
+
+    void initOpcodeTable();
 
     inline bool is8080() { return idType == cpuid_8080 || idType == cpuid_8080A; }
     inline bool is8085() { return idType == cpuid_8085; }
@@ -171,6 +197,10 @@ protected:
 
     map::MemoryAccess<16, 0, 0, LittleEndian>::specific mapProgram;
     map::MemoryAccess<8, 0, 0, LittleEndian>::specific mapIOPort;
+
+    static const mcs80_opCode_t opTable[];
+
+    const mcs80_opCode_t *opCodes[256];
 };
 
 class i8080a_cpuDevice : public i8080_cpuDevice
@@ -192,3 +222,5 @@ public:
 DECLARE_DEVICE_TYPE(i8080, i8080_cpuDevice);
 DECLARE_DEVICE_TYPE(i8080a, i8080a_cpuDevice);
 DECLARE_DEVICE_TYPE(i8085, i8085_cpuDevice);
+
+using mcs80_cpuDevice = i8080_cpuDevice;

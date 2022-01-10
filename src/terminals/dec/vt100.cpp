@@ -10,7 +10,7 @@
 #include "emu/devcpu.h"
 #include "emu/devcb.h"
 
-#include "dev/cpu/i8080/i8080.h"
+#include "dev/cpu/mcs80/mcs80.h"
 #include "dev/video/dec/vt100.h"
 // #include "terminals/dec/vt100.h"
 #include "lib/util/xtal.h"

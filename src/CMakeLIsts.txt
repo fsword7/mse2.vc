@@ -1,12 +1,14 @@
 set (MSE_CPP_SRCS
     dev/chip/i8155.cpp
-    dev/cpu/i8080/execute.cpp
-    dev/cpu/i8080/i8080.cpp
     dev/cpu/mcs48/mcs48.cpp
     dev/cpu/mcs48/mcs48dbg.cpp
     dev/cpu/mcs48/mcs48exec.cpp
     dev/cpu/mcs48/mcs48op.cpp
     dev/cpu/mcs48/upi41.cpp
+    dev/cpu/mcs80/mcs80exec.cpp
+    dev/cpu/mcs80/mcs80.cpp
+    dev/cpu/mcs80/mcs80dbg.cpp
+    dev/cpu/mcs80/mcs80op.cpp
     dev/cpu/upd7810/upd7810.cpp
     dev/video/dec/vt100.cpp
     emu/device.cpp
@@ -54,9 +56,9 @@ set (MSE_CPP_SRCS
 
 set (MSE_H_SRCS
     dev/chip/i8155.h
-    dev/cpu/i8080/i8080.h
-    dev/cpu/i8080/i8080dbg.h
-    dev/cpu/i8080/i8080op.h
+    dev/cpu/mcs80/mcs80.h
+    dev/cpu/mcs80/mcs80dbg.h
+    dev/cpu/mcs80/mcs80op.h
     dev/cpu/mcs48/mcs48.h
     dev/cpu/upd7810/upd7810.h
     dev/video/dec/vt100.h

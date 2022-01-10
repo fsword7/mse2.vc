@@ -1,13 +1,13 @@
-// execute.cpp - 8080/8080A/8085 processor - execute routines
+// mcs80exec.cpp - 8080/8080A/8085 processor - execute routines
 //
 // Author:  Tim Stark
-// Date:    12/23/21
+// Date:    Dec 23, 2021
 
 #include "emu/core.h"
 #include "emu/map/map.h"
-#include "dev/cpu/i8080/i8080.h"
-#include "dev/cpu/i8080/i8080op.h"
-#include "dev/cpu/i8080/i8080dbg.h"
+#include "dev/cpu/mcs80/mcs80.h"
+#include "dev/cpu/mcs80/mcs80op.h"
+#include "dev/cpu/mcs80/mcs80dbg.h"
 
 const uint8_t i8080_cpuCycles[256] =
 {
@@ -68,6 +68,11 @@ void i8080_cpuDevice::init()
     }
 
     opCycleTable = is8080() ? i8080_cpuCycles : i8085_cpuCycles;
+}
+
+void mcs80_cpuDevice::reset()
+{
+    REG_PC = 0;
 }
 
 uint8_t i8080_cpuDevice::readi8()

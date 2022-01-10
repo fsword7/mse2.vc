@@ -1,7 +1,7 @@
-// i8080.h - Intel 8080/8085 Processor package - opcodes
+// mcs80.h - Intel 8080/8085 Processor package - opcodes
 //
 // Author:  Tim Stark
-// Date:    12/27/2021
+// Date:    Dec 27, 2021
 
 #define DO_NOP      // Do nothing
 
