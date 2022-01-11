@@ -185,7 +185,6 @@ public:
     inline const SystemConfig &getConfig() const    { return sysConfig; }
     inline Device *getOwner() const                 { return owner; }
     inline uint64_t getClock() const                { return clock; }
-    inline cstag_t &getDeviceName() const           { return devName; } // old function call - to be removed later
     inline std::string getsDeviceName() const       { return devName; }
     inline cchar_t *getcDeviceName() const          { return devName.c_str(); }
     inline std::string getsPathName() const         { return pathName; }
@@ -210,7 +209,6 @@ public:
     Device *findDevice(ctag_t *name);
     cfwEntry_t *getFirmwareEntries();
 
-    std::string getFullDeviceName(cstag_t tagName); // old function call
     std::string expandPathName(cstag_t &pathName) const;
 
     map::MemoryRegion *findMemoryRegion(cstag_t &name) const;

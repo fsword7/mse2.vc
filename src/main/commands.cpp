@@ -105,7 +105,7 @@ SystemEngine::cmdStatus SystemEngine::cmdDumpOld(UserConsole *user, args_t &args
     if (!dev->hasInterface(bus))
     {
         fmt::printf("%s: do not have bus interface - aborted\n",
-            dev->getDeviceName());
+            dev->getsDeviceName());
         return cmdOk;
     }
     AddressSpace  *space = bus->getAddressSpace();
@@ -289,7 +289,7 @@ SystemEngine::cmdStatus SystemEngine::cmdDump(UserConsole *user, args_t &args)
     if (!dev->hasInterface(bus))
     {
         fmt::printf("%s: do not have bus interface - aborted\n",
-            dev->getDeviceName());
+            dev->getsDeviceName());
         return cmdOk;
     }
 
@@ -298,7 +298,7 @@ SystemEngine::cmdStatus SystemEngine::cmdDump(UserConsole *user, args_t &args)
     if (space == nullptr)
     {
         fmt::printf("%s: %s address space is not available\n",
-            dev->getDeviceName(), map::asInfo[type]);
+            dev->getsDeviceName(), map::asInfo[type]);
         return cmdOk;
     }
 

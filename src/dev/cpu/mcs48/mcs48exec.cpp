@@ -230,7 +230,7 @@ DO_OPC(Illegal)
 {
     eatCycles(1);
     fmt::printf("%s(MCS48): Illegal instruction (%02X) at PC %03X\n",
-        getDeviceName(), read8p(fpcBase), fpcBase);
+        getsDeviceName(), read8p(fpcBase), fpcBase);
 }
 
 DO_OPC(ADD_A_R0)      { eatCycles(1); exADD(R0); }

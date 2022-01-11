@@ -92,7 +92,7 @@ namespace map
             HandlerEntry::range r = { 0, static_cast<offs_t>(~0ull >> ((sizeof(offs_t) * 8) - addrWidth)) };
 
             fmt::printf("%s: Assigning dispatch calls at %d-bit addressing (data %d shift %d)\n",
-                device.getDeviceName(), addrWidth, dWidth, aShift);
+                device.getsDeviceName(), addrWidth, dWidth, aShift);
 
             switch (addrWidth)
             {
@@ -247,10 +247,10 @@ namespace map
             dispatchWrite = rootWrite->getDispatch();
             
             fmt::printf("%s: Global address range %0*llX - %0*llX (%d-bit addressing)\n",
-                dev.getDeviceName(), config.getAddrPrecision(), r.start,
+                dev.getsDeviceName(), config.getAddrPrecision(), r.start,
                 config.getAddrPrecision(), r.end, addrWidth);
             fmt::printf("%s: Global address mask: %0*llX Unmapped value: %02X\n",
-                dev.getDeviceName(), config.getAddrPrecision(), addrMask, unmapValue);
+                dev.getsDeviceName(), config.getAddrPrecision(), addrMask, unmapValue);
         }
 
         std::pair<const void *, const void *> getSpecificDispatches() override
@@ -594,12 +594,12 @@ namespace map
             if constexpr(dWidth < accWidth)
             {
                 fmt::printf("%s: (R) Can't set a %d-bit handler in %d-bit bus\n",
-                    device.getDeviceName(), 8 << accWidth, 8 << dWidth);
+                    device.getsDeviceName(), 8 << accWidth, 8 << dWidth);
                 return;
             }
 
             fmt::printf("%s: %0*llX-%0*llX Mask %0*llX Mirror %0*llX - %d-bit read delegate %s on %d-bit bus\n",
-                device.getDeviceName(),
+                device.getsDeviceName(),
                 config.getAddrPrecision(), addrStart,
                 config.getAddrPrecision(), addrEnd,
                 config.getAddrPrecision(), addrMask,
@@ -627,12 +627,12 @@ namespace map
             if constexpr(dWidth < accWidth)
             {
                 fmt::printf("%s: (W) Can't set a %d-bit handler in %d-bit bus\n",
-                    device.getDeviceName(), 8 << accWidth, 8 << dWidth);
+                    device.getsDeviceName(), 8 << accWidth, 8 << dWidth);
                 return;
             }
 
             fmt::printf("%s: %0*llX-%0*llX Mask %0*llX Mirror %0*llX - %d-bit write delegate %s on %d-bit bus\n",
-                device.getDeviceName(),
+                device.getsDeviceName(),
                 config.getAddrPrecision(), addrStart,
                 config.getAddrPrecision(), addrEnd,
                 config.getAddrPrecision(), addrMask,
@@ -673,7 +673,7 @@ namespace map
                 continue;
 
             fmt::printf("%s: Allocating %s address space...\n",
-                dev.getDeviceName(), asDescrip[space]);
+                dev.getsDeviceName(), asDescrip[space]);
 
             int level = determineDispatchLevel(config->getAddrWidth());
             int eType = config->getEndianType() == BigEndian ? 0x0400 : 0x0000;
@@ -739,7 +739,7 @@ namespace map
 
             default:
                 fmt::printf("%s: Invalid address configuration - address %d width %d shift\n",
-                    dev.getDeviceName(), config->getAddrWidth(), config->getAddrShift());
+                    dev.getsDeviceName(), config->getAddrWidth(), config->getAddrShift());
                 break;
             }
         }

@@ -72,10 +72,10 @@ public:
     setAddressMap(map::AddressType space, Return (T::*func)(Args...))
     {
         const SystemConfig &config = getOwningDevice().getConfig();
-        Device *dev = config.getConfigDevice();
-
-        fmt::printf("%s: (related device) set address list map\n", dev->getDeviceName());
-        setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), &dynamic_cast<T &>(*dev)));
+        Device *dev = config.getCurrentDevice();
+        
+        fmt::printf("%s: (related device) set address list map\n", dev->getsDeviceName());
+        setAddressMap(space, map::Constructor(func, dev->getcDeviceName(), &dynamic_cast<T &>(*dev)));
     }
 
     template <typename T, typename Return, typename... Args>
@@ -83,10 +83,10 @@ public:
     setAddressMap(map::AddressType space, Return (T::*func)(Args...))
     {
         const SystemConfig &config = getOwningDevice().getConfig();
-        Device *dev = config.getConfigDevice();
+        Device *dev = config.getCurrentDevice();
 
-        fmt::printf("%s: (unrelated device) set address list map\n", dev->getDeviceName());
-        setAddressMap(space, map::Constructor(func, dev->getDeviceName().c_str(), &dynamic_cast<T &>(*dev)));
+        fmt::printf("%s: (unrelated device) set address list map\n", dev->getsDeviceName());
+        setAddressMap(space, map::Constructor(func, dev->getcDeviceName(), &mse_static_cast<T &>(*dev)));
     }
 
     void setAddressMap(map::AddressType space, map::Constructor map);

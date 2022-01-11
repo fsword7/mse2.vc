@@ -105,7 +105,7 @@ void FirmwareLoader::processImageEntries(ctag_t *pkgName, cfwEntry_t *&entry, co
             int imageLength = 0;
 
             fmt::printf("%s: Loading image file '%s'...\n",
-                dev.getDeviceName(), FW_GETNAME(entry));
+                dev.getsDeviceName(), FW_GETNAME(entry));
             openImageFile(pkgName, entry);
 
             if (imageFile != nullptr)
@@ -134,24 +134,24 @@ void FirmwareLoader::processRegionList()
         pkgName = dev.getShortName();
 
         fmt::printf("%s: Initializing firmware entries for %s...\n",
-            dev.getDeviceName(), pkgName);
+            dev.getsDeviceName(), pkgName);
         for (entry = first(dev); entry != nullptr; entry = next(entry))
         {
             if (FWENTRY_ISCONTAINER(entry))
             {
                 pkgName = FW_GETNAME(entry);
                 fmt::printf("%s: Package '%s' container\n",
-                    dev.getDeviceName(), pkgName);
+                    dev.getsDeviceName(), pkgName);
                 continue;
             }
 
             rgnName = FWREGION_GETNAME(*entry);
             rgnLength = FWREGION_GETLENGTH(*entry);
 
-            cstag_t fullName = dev.getFullDeviceName(std::string(rgnName));
+            cstag_t fullName = dev.expandPathName(std::string(rgnName));
 
-            fmt::printf("%s: Processing firmwarw region '%s' length %d (%X) bytes\n",
-                dev.getDeviceName(), rgnName, rgnLength, rgnLength);
+            fmt::printf("%s: Processing firmware region '%s' length %d (%X) bytes\n",
+                dev.getsDeviceName(), fullName, rgnLength, rgnLength);
 
             if (FWREGION_ISROMDATA(*entry))
             {
@@ -168,6 +168,6 @@ void FirmwareLoader::processRegionList()
                 processImageEntries(pkgName, entry, dev);
             }
         }
-        fmt::printf("%s: End of firmware entries\n", dev.getDeviceName());
+        fmt::printf("%s: End of firmware entries\n", dev.getsDeviceName());
     }
 }

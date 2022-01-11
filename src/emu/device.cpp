@@ -31,20 +31,10 @@ Device *Device::findDevice(ctag_t *name)
 
     // Find child device under this
     for (auto &dev : DeviceIterator(*this))
-        if (name == dev.getDeviceName())
+        if (name == dev.getcDeviceName())
             return &dev;
 
     return nullptr;
-}
-
-std::string Device::getFullDeviceName(cstag_t tagName)
-{
-    std::string path;
-
-    path.assign(devName);
-    path += "." + tagName;
-
-    return path;
 }
 
 std::string Device::expandPathName(cstag_t &pathName) const
@@ -52,8 +42,15 @@ std::string Device::expandPathName(cstag_t &pathName) const
     std::string newPathName(this->pathName);
 
     if (!pathName.empty())
-        newPathName.append(".").append(pathName);
+    {
+        if (pathName.find('.') != std::string::npos)
+            newPathName.assign(pathName);
+        else
+            newPathName.append(".").append(pathName);
+    }
 
+    fmt::printf("Expend pathname: %s + %s -> %s\n",
+        this->pathName, pathName.empty() ? "(self)" : pathName, newPathName);
     return newPathName;
 }
 

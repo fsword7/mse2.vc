@@ -86,19 +86,21 @@ namespace map
             if (space == map::asProgram && entry->read.type == mapROMSpace &&
                 entry->regionName == nullptr && entry->shareName == nullptr)
             {
-                MemoryRegion *region = entry->device.findMemoryRegion(DEVICE_SELF);
+                MemoryRegion *region = device.findMemoryRegion(DEVICE_SELF);
 
                 if (region != nullptr && entry->addrEnd < region->getBytes())
                 {
-                    entry->regionName = DEVICE_SELF;
+                    entry->regionName = device.getcDeviceName();
+                    // entry->regionName = device.getcPathName();
                     entry->regionOffset = config.convertAddressToByte(entry->addrStart);
                 }
                 else if (region == nullptr)
                 {
-                    fmt::printf("%s.%s: %0*llX-%0*llX - not attached with required region space\n",
+                    fmt::printf("%s.%s: %0*llX-%0*llX - not attached with required region '%s' space\n",
                         entry->device.getsDeviceName(), asInfo[space],
                         config.getAddrPrecision(), entry->addrStart,
-                        config.getAddrPrecision(), entry->addrEnd);
+                        config.getAddrPrecision(), entry->addrEnd,
+                        device.getsPathName());
                 }
                 else
                 {
@@ -106,7 +108,7 @@ namespace map
                         entry->device.getsDeviceName(), asInfo[space],
                         config.getAddrPrecision(), entry->addrStart,
                         config.getAddrPrecision(), entry->addrEnd,
-                        entry->device.getsPathName());
+                        device.getsPathName());
                 }
             }
 

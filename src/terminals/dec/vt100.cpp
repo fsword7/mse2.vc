@@ -79,7 +79,7 @@ void vt100_Device::vt100_setMemoryMap(map::AddressList &map)
 {
     map.setUnmappedHigh();
 
-    map(0x0000, 0x1FFF).rom().region("vt100fw");
+    map(0x0000, 0x1FFF).rom();
     map(0x2000, 0x3FFF).ram().share("ram");
     map(0x8000, 0x9FFF).rom();
     map(0xA000, 0xBFFF).rom();
@@ -97,7 +97,7 @@ void vt100_Device::vt100_setIOPort(map::AddressList &map)
 
 static const fwEntry_t FW_NAME(vt100)[] =
 {      
-    FW_REGION("vt100fw", 0x2000, 0),
+    FW_REGION("cpu", 0x10000, FW_ERASEFF),
     FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
     FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
     FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),

@@ -59,6 +59,22 @@ namespace map
     };
 }
 
+template <typename Dest, typename Source>
+inline Dest mse_static_cast(Source *src)
+{
+#ifdef ENABLE_DEBUG
+#endif /* ENABLE_DEBUG */
+	return static_cast<Dest>(src);
+}
+
+template <class Dest, class Source>
+inline Dest mse_static_cast(Source &src)
+{
+#ifdef ENABLE_DEBUG
+#endif /* ENABLE_DEBUG */
+	return static_cast<Dest>(src);
+}
+
 // OSD core package
 #include "lib/util/osdcore.h"
 #include "lib/util/pair.h"

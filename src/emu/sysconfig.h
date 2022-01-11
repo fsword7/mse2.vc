@@ -25,8 +25,9 @@ public:
     }
 
     // Getter function calls
-    inline Device *getSystemDevice() const { return sysDevice; }
-    inline Device *getConfigDevice() const { return !cfgDevice.empty() ? cfgDevice.top() : nullptr; }
+    inline Device *getSystemDevice() const  { return sysDevice; }
+    inline Device *getCurrentDevice() const { return curDevice; }
+    inline Device *getConfigDevice() const  { return !cfgDevice.empty() ? cfgDevice.top() : nullptr; }
     
     inline const SystemDriver &getSystemDriver() const { return driver; }
 
@@ -34,5 +35,6 @@ private:
     const SystemDriver &driver;
 
     Device *sysDevice = nullptr;
+    Device *curDevice = nullptr;
     std::stack<Device *> cfgDevice;
 };

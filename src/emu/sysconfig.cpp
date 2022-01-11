@@ -13,7 +13,7 @@ SystemConfig::SystemConfig(const SystemDriver &driver, cstag_t &name)
     // Complete final configuration
     for (auto &dev : DeviceIterator(*sysDevice))
     {
-        fmt::printf("%s: completing final configuration\n", dev.getDeviceName());
+        fmt::printf("%s: completing final configuration\n", dev.getsDeviceName());
         dev.finishConfig();
     }
 }
@@ -35,8 +35,8 @@ Device *SystemConfig::addDevice(Device *dev, Device *owner)
     if (owner != nullptr)
     {
         // Adding device under owning device
-        fmt::printf("%s: Adding %s(%s) device\n", owner->getDeviceName(),
-            dev->getDeviceName(), dev->getShortName());
+        fmt::printf("%s: Adding %s(%s) device\n", owner->getsDeviceName(),
+            dev->getsDeviceName(), dev->getShortName());
         owner->addNode(dev);
     }
     else
@@ -47,8 +47,10 @@ Device *SystemConfig::addDevice(Device *dev, Device *owner)
     }
 
     // Initialize configuring device
-    fmt::printf("%s: Start device configuration...\n", dev->getDeviceName());
+    fmt::printf("%s: Start device configuration...\n", dev->getsDeviceName());
     cfgDevice.push(dev);
+    curDevice = dev;
+
     dev->configure(*this);
 
     cfgDevice.pop();

@@ -47,7 +47,7 @@ Device *SystemEngine::findDevice(cstag_t &name)
         return nullptr;
     
     for (Device &dev : DeviceIterator(*dialedSystem))
-        if (dev.getDeviceName() == name)
+        if (dev.getsDeviceName() == name)
             return &dev;
 
     return nullptr;
@@ -63,7 +63,7 @@ Device *SystemEngine::findDevice(UserConsole *user, cstag_t &name)
     }
     
     for (Device &dev : DeviceIterator(*dialedSystem))
-        if (dev.getDeviceName() == name)
+        if (dev.getsDeviceName() == name)
             return &dev;
 
     return nullptr;

@@ -14,7 +14,7 @@ public:
     Machine(const SystemConfig &config, cstag_t &sysName);
     ~Machine();
 
-    inline cstag_t getDeviceName() const { return std::string(sysDevice->getDeviceName()); }
+    inline cstag_t getDeviceName() const { return sysDevice->getsDeviceName(); }
     inline Device *getSystemDevice() const { return sysDevice; }
 
     inline map::MemoryManager &getMemoryManager() { return memoryManager; }
