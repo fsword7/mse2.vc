@@ -49,7 +49,7 @@ set (MSE_CPP_SRCS
     main/main.cpp
     main/systems.cpp
     main/user.cpp
-    printers/epson/ap2000.cpp
+    printers/epson/lx810.cpp
     printers/epson/mx80.cpp
     terminals/dec/vt100.cpp
 )

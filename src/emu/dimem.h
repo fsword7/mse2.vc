@@ -48,14 +48,16 @@ public:
     
     inline map::cAddressConfig *getAddressConfig(map::AddressType space = map::asProgram)
     {
-        assert(space < mapAddressConfigList.size());
-        return mapAddressConfigList[space];
+        if (space >= 0 && space < mapAddressConfigList.size())
+            return mapAddressConfigList[space];
+        return nullptr;
     }
 
     inline map::AddressSpace *getAddressSpace(map::AddressType space = map::asProgram)
     {
-        assert(space < mapAddressSpaceList.size());
-        return mapAddressSpaceList[space];
+       if (space >= 0 && space < mapAddressSpaceList.size())
+            return mapAddressSpaceList[space];
+        return nullptr;
     }
 
     // template <typename T, typename U, typename Return, typename... Args>

@@ -49,4 +49,6 @@ DEFINE_DEVICE_TYPE(UPD7810, upd7810_cpuDevice, "uPD7810", "NEC uPD7810")
 upd7810_cpuDevice::upd7810_cpuDevice(const SystemConfig &config,
     cstag_t &devName, Device *owner, uint64_t clock)
 : upd7810_cpuDevice(config, UPD7810, devName, owner, clock)
-{ }
+{ 
+    mapProgramConfig.setAddressMap(map::Constructor(FUNC(upd7810_cpuDevice::setData256), this));
+}
