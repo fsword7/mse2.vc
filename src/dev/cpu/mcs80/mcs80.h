@@ -36,17 +36,6 @@
 // 8-bit registers
 #if LSB_FIRST
 // for little-endian host systems
-#define REGn_A  0
-#define REGn_F  1
-#define REGn_B  2
-#define REGn_C  3
-#define REGn_D  4
-#define REGn_E  5
-#define REGn_H  6
-#define REGn_L  7
-#define REGn_M  REGn_F // M - indirect HL register
-#else
-// for big-endian host systems
 #define REGn_A  1
 #define REGn_F  0
 #define REGn_B  3
@@ -55,7 +44,18 @@
 #define REGn_E  4
 #define REGn_H  7
 #define REGn_L  6
-#define REGn_M  REGn_F // M - indirect HL register
+// #define REGn_M  REGn_F // M - indirect HL register
+#else
+// for big-endian host systems
+#define REGn_A  0
+#define REGn_F  1
+#define REGn_B  2
+#define REGn_C  3
+#define REGn_D  4
+#define REGn_E  5
+#define REGn_H  6
+#define REGn_L  7
+// #define REGn_M  REGn_F // M - indirect HL register
 #endif
 
 // 16-bit registers
@@ -67,12 +67,12 @@
 #define REGn_PC 5
 
 // Opcode field macro definitions
-#define REGAn(opCode)   (opCode & 0x07)
-#define REGBn(opCode)   ((opCode >> 3) & 0x07)
+#define REGAn(opCode)   ((opCode & 0x07) ^ 1)
+#define REGBn(opCode)   (((opCode >> 3) & 0x07) ^ 1)
 #define REGWn(opCode)   ((opCode >> 4) & 0x03)
 
-#define REGA(opCode)    state.bRegs[REGAn(opCode) < 7 ? REGAn(opCode)+2 : 0]
-#define REGB(opCode)    state.bRegs[REGBn(opCode) < 7 ? REGBn(opCode)+2 : 0]
+#define REGA(opCode)    state.bRegs[REGAn(opCode) < 6 ? REGAn(opCode)+2 : 1]
+#define REGB(opCode)    state.bRegs[REGBn(opCode) < 6 ? REGBn(opCode)+2 : 1]
 #define REGW(opCode)    state.wRegs[REGWn(opCode)+1]
 
 #define REG_A           state.bRegs[REGn_A]
