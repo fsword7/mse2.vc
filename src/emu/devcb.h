@@ -786,9 +786,11 @@ using read16cb_t = emu::devices::readcb_t<uint16_t>;
 using read32cb_t = emu::devices::readcb_t<uint32_t>;
 using read64cb_t = emu::devices::readcb_t<uint64_t>;
 using readlcb_t = emu::devices::readcb_t<uint8_t, 1u>;
+using read1cb_t = emu::devices::readcb_t<uint8_t, 1u>;
 
 using write8cb_t = emu::devices::writecb_t<uint8_t>;
 using write16cb_t = emu::devices::writecb_t<uint16_t>;
 using write32cb_t = emu::devices::writecb_t<uint32_t>;
 using write64cb_t = emu::devices::writecb_t<uint64_t>;
 using writelcb_t = emu::devices::writecb_t<uint8_t, 1u>;
+using write1cb_t = emu::devices::writecb_t<uint8_t, 1u>;

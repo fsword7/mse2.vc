@@ -1,4 +1,5 @@
 set (MSE_CPP_SRCS
+    dev/bus/rs232/rs232.cpp
     dev/chip/i8155.cpp
     dev/cpu/mcs48/mcs48.cpp
     dev/cpu/mcs48/mcs48dbg.cpp
@@ -55,6 +56,7 @@ set (MSE_CPP_SRCS
 )
 
 set (MSE_H_SRCS
+    dev/bus/rs232/rs232.h
     dev/chip/i8155.h
     dev/cpu/mcs80/mcs80.h
     dev/cpu/mcs80/mcs80dbg.h
