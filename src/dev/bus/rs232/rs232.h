@@ -20,20 +20,36 @@ public:
         cstag_t &devName, Device *owner, uint64_t clock);
     virtual ~rs232_portDevice() = default;
 
-    void write1txd(int state)   { };    // DB25 pin 2
-    void write1rts(int state)   { };    // DB25 pin 4
-    void write1dtr(int state)   { };    // DB25 pin 20
-    void writw1spds(int state)  { };    // DB25 pin 23
-    void write1etc(int state)   { };    // DB25 pin 24
+    virtual void devResolveObjects() override;
+    virtual void devStart() override;
+    virtual void devReset() override;
 
-    int read1rxd() { return rxd; }  // DB25 pin 3
-    int read1dcd() { return dcd; }  // DB25 pin 8
-    int read1dsr() { return dsr; }  // DB25 pin 6
-    int read1ri()  { return ri; }   // DB25 pin 22
-    int read1si()  { return si; }
-    int read1cts() { return cts; }  // DB25 pin 5
-    int read1rxc() { return rxc; }  // DB25 pin 17
-    int read1txc() { return txc; }  // DB25 pin 15
+    // Device callback function configuration calls
+    auto bindRXDHandler() { return rxdHandler.bind(); }
+    auto bindDCDHandler() { return dcdHandler.bind(); }
+    auto bindDSRHandler() { return dsrHandler.bind(); }
+    auto bindRIHandler()  { return riHandler.bind(); }
+    auto bindSIHandler()  { return siHandler.bind(); }
+    auto bindCTSHandler() { return ctsHandler.bind(); }
+    auto bindRXCHandler() { return rxcHandler.bind(); }
+    auto bindTXCHandler() { return txcHandler.bind(); }
+
+    // Line out function calls
+    void write1txd(int state)   { };    // DB25 pin 2  transmitted data
+    void write1rts(int state)   { };    // DB25 pin 4  request to send  
+    void write1dtr(int state)   { };    // DB25 pin 20 data terminal ready
+    void writw1spds(int state)  { };    // DB25 pin 23 data signal rate selector (DTE)
+    void write1etc(int state)   { };    // DB25 pin 24 Transmitter signal element timing (DTE)
+
+    // Line in function calls
+    int read1rxd() { return rxd; }  // DB25 pin 3  Received data
+    int read1dcd() { return dcd; }  // DB25 pin 8  Data channel received line signal detector
+    int read1dsr() { return dsr; }  // DB25 pin 6  Data set ready
+    int read1ri()  { return ri; }   // DB25 pin 22 Calling indicator
+    int read1si()  { return si; }   //             Data signal rate selector (DCE)
+    int read1cts() { return cts; }  // DB25 pin 5  Ready for sending
+    int read1rxc() { return rxc; }  // DB25 pin 17 Receiver signal timing (DCE)
+    int read1txc() { return txc; }  // DB25 pin 15 Transmitter signal timing (DCE)
 
 protected:
     // DB25 signals list

@@ -16,7 +16,7 @@ namespace emu::video
 
         void updateVideo(bitmap16_t &bitmap, const rect_t &clip);
         
-        auto getReadRAMDataCallback() { return readRAMData.bind(); }
+        auto bindReadRAMDataCallback() { return readRAMData.bind(); }
 
         void devResolveObjects() override;
         
