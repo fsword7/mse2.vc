@@ -175,10 +175,9 @@ namespace map
         template <typename T, bool Required>
         static Device &findDevice(const DeviceFinder<T, Required> &finder)
         {
-            Device *device = &finder.getOwningDevice();
-
-            assert(device != nullptr);
-            return *device;
+            Device *owner = &finder.getOwningDevice();
+            assert(owner != nullptr);
+            return *owner;
         }
         
         template <typename T, typename U>

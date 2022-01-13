@@ -13,6 +13,7 @@
 #include "dev/cpu/mcs80/mcs80.h"
 #include "dev/bus/rs232/rs232.h"
 #include "dev/chip/i8251.h"
+#include "dev/chip/com8116.h"
 #include "dev/video/dec/vt100.h"
 #include "lib/util/xtal.h"
 
@@ -24,6 +25,7 @@ public:
       cpu(*this, "i8080"),
       crt(*this, "VT100_Video"),
       usart(*this, "usart"),
+      dbrg(*this, "dbrg"),
       rs232(*this, "rs232"),
       ramData(*this, "ram")
     {
@@ -47,6 +49,7 @@ private:
     RequiredDevice<i8080_cpuDevice> cpu;
     RequiredDevice<vt100video_t> crt;
     RequiredDevice<i8251_Device> usart;
+    RequiredDevice<com5016_013_Device> dbrg;
     RequiredDevice<rs232_portDevice> rs232;
 
     RequiredSharedPointer<uint8_t> ramData;
@@ -104,11 +107,19 @@ void vt100_Device::vt100(SystemConfig &config)
     screen->setScreenUpdate(FUNC(vt100_Device::vt100_updateScreen));
 
     VT100_VIDEO(config, crt, "crt", XTAL(24'073'400));
-    // crt->bindReadRAMDataCallback().set(FUNC(vt100_Device::readData));
+    crt->bindReadRAMDataCallback().set(FUNC(vt100_Device::readData));
 
+    // RS232 communitcation port device configuration
     I8251(config, usart, "usart", XTAL(24'883'200) / 9);
-    RS232_PORT(config, rs232, "rs232", 0);
+    usart->bindTXDHandler().set(rs232, FUNC(rs232_portDevice::write1txd));
+    usart->bindDTRHandler().set(rs232, FUNC(rs232_portDevice::write1dtr));
+    usart->bindRTSHandler().set(rs232, FUNC(rs232_portDevice::write1rts));
 
+    COM5016_013(config, dbrg, "dbrg", XTAL(24'883'200) / 9);
+
+    RS232_PORT(config, rs232, "rs232", 0);
+    // rs232->bindRXDHandler().set(usart, FUNC(i8251_Device::write1rxd));
+    // rs232->bindDSRHandler().set(usart, FUNC(i8251_Device::write1dsr));
 }
 
 void vt100_Device::vt100_init()
@@ -130,6 +141,7 @@ void vt100_Device::vt100_setIOPort(map::AddressList &map)
     map.setUnmappedHigh();
 
     map(0x00, 0x01).rw(usart, FUNC(i8251_Device::read8io), FUNC(i8251_Device::write8io));
+    map(0x02, 0x02).w(dbrg, FUNC(com8116_Device::write8tr));
     map(0x22, 0x22).r(FUNC(vt100_Device::read8modem));
     map(0x42, 0x42).r(FUNC(vt100_Device::read8flags));
     map(0x42, 0x42).w(crt, FUNC(vt100video_t::write8_brightness));

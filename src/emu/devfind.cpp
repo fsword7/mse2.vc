@@ -11,6 +11,7 @@ ObjectFinder::ObjectFinder(Device &owner, ctag_t *name)
 : base(owner), objName(name),
   fullObjectName(base.expandPathName(std::string(name)))
 {
+    fmt::printf("%s: Set device finder name: %s\n", owner.getsDeviceName(), objName);
     owner.registerObject(this);
 }
 

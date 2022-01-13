@@ -68,25 +68,22 @@ public:
     // }
 
     template <typename T, typename Return, typename... Args>
-    std::enable_if_t<isRelatedDevice<Device, T>::value>
-    setAddressMap(map::AddressType space, Return (T::*func)(Args...))
+    void setAddressMap(map::AddressType space, Return (T::*func)(Args... args))
     {
-        const SystemConfig &config = getOwningDevice().getConfig();
-        Device *dev = config.getCurrentDevice();
-        
-        fmt::printf("%s: (related device) set address list map\n", dev->getsDeviceName());
-        setAddressMap(space, map::Constructor(func, dev->getcDeviceName(), &dynamic_cast<T &>(*dev)));
-    }
+        Device &cdev = *getOwningDevice().getConfig().getConfigDevice();
 
-    template <typename T, typename Return, typename... Args>
-    std::enable_if_t<isUnrelatedDevice<Device, T>::value>
-    setAddressMap(map::AddressType space, Return (T::*func)(Args...))
-    {
-        const SystemConfig &config = getOwningDevice().getConfig();
-        Device *dev = config.getCurrentDevice();
-
-        fmt::printf("%s: (unrelated device) set address list map\n", dev->getsDeviceName());
-        setAddressMap(space, map::Constructor(func, dev->getcDeviceName(), &mse_static_cast<T &>(*dev)));
+        if constexpr(isRelatedClass<Device, T>::value)
+        {
+            fmt::printf("%s: (%s - related device) set address list map\n",
+                cdev.getsDeviceName(), typeid(T).name());
+            setAddressMap(space, map::Constructor(func, cdev.getcDeviceName(), &mse_static_cast<T &>(cdev)));
+        }
+        else
+        {
+            fmt::printf("%s: (%s - unrelated device) set address list map\n",
+                cdev.getsDeviceName(), typeid(T).name());         
+            setAddressMap(space, map::Constructor(func, cdev.getcDeviceName(), &dynamic_cast<T &>(cdev)));
+        }    
     }
 
     void setAddressMap(map::AddressType space, map::Constructor map);
