@@ -19,7 +19,7 @@ namespace emu::devices
         template <typename T, typename U> struct intermediate<T, U, std::enable_if_t<sizeof(T) >= sizeof(U)>> { using type = T; };
         template <typename T, typename U> struct intermediate<T, U, std::enable_if_t<sizeof(T) < sizeof(U)>> { using type = U; };
         template <typename T, typename U> using intermediate_t = typename intermediate<T, U>::type;
-        template <typename T, typename U> using mask_t = std::make_unsigned_t<intermediate<T, U>>;
+        template <typename T, typename U> using mask_t = std::make_unsigned_t<intermediate_t<T, U>>;
 
         template <typename Input, typename Result, typename Func, typename Enable = void>
             struct is_transform_form1 : public std::false_type { };
@@ -57,6 +57,15 @@ namespace emu::devices
         
         template <typename T> using delegate_type_t = delegate_rw_t<T>;
         template <typename T> using delegate_device_class_t = delegate_rw_device_class_t<T>;
+
+        template <typename T, typename U>
+        static T &cast_reference(T &object)
+        {
+            if constexpr(std::is_convertible_v<std::add_pointer<U>, std::add_pointer<T>>)
+                return mse_static_cast<T &>(object);
+            else
+                return dynamic_cast<T &>(object);
+        }
 
         inline Device &getOwner() { return base; }
 
@@ -471,7 +480,7 @@ namespace emu::devices
         template <typename Input, typename Func>
             struct is_write_form2<Input, Func, std::void_t<std::invoke_result_t<Func, offs_t, Input> > > : public std::true_type { };
         template <typename Input, typename Func>
-            struct is_write_form3<Input, Func, std::void_t<std::invoke_result_t<Func> > > : public std::true_type { };
+            struct is_write_form3<Input, Func, std::void_t<std::invoke_result_t<Func, Input> > > : public std::true_type { };
 
         template <typename Input, typename Func>
             struct is_write : public std::bool_constant<
@@ -538,35 +547,41 @@ namespace emu::devices
         template <typename T> struct is_write_method<T, std::void_t<device_class_rw_t<write64dom_t, std::remove_reference_t<T> > > >
             : public std::true_type { };
 
+        template <typename T> struct is_write_method<T, std::void_t<device_class_rw_t<writel_t, std::remove_reference_t<T> > > >
+            : public std::true_type { };
+
         template <typename T, typename Dummy = void> struct delegate_traits;
 
         template <typename Dummy> struct delegate_traits<write8d_t, Dummy>
-            { static constexpr uint8_t default_mask = ~uint8_t(0); };
+            { using input_t = uint8_t; static constexpr uint8_t default_mask = ~uint8_t(0); };
         template <typename Dummy> struct delegate_traits<write8do_t, Dummy>
-            { static constexpr uint8_t default_mask = ~uint8_t(0); };
+            { using input_t = uint8_t; static constexpr uint8_t default_mask = ~uint8_t(0); };
         template <typename Dummy> struct delegate_traits<write8dom_t, Dummy>
-            { static constexpr uint8_t default_mask = ~uint8_t(0); };
+            { using input_t = uint8_t; static constexpr uint8_t default_mask = ~uint8_t(0); };
 
         template <typename Dummy> struct delegate_traits<write16d_t, Dummy>
-            { static constexpr uint16_t default_mask = ~uint16_t(0); };
+            { using input_t = uint16_t; static constexpr uint16_t default_mask = ~uint16_t(0); };
         template <typename Dummy> struct delegate_traits<write16do_t, Dummy>
-            { static constexpr uint16_t default_mask = ~uint16_t(0); };
+            { using input_t = uint16_t; static constexpr uint16_t default_mask = ~uint16_t(0); };
         template <typename Dummy> struct delegate_traits<write16dom_t, Dummy>
-            { static constexpr uint16_t default_mask = ~uint16_t(0); };
+            { using input_t = uint16_t; static constexpr uint16_t default_mask = ~uint16_t(0); };
 
         template <typename Dummy> struct delegate_traits<write32d_t, Dummy>
-            { static constexpr uint32_t default_mask = ~uint32_t(0); };
+            { using input_t = uint32_t; static constexpr uint32_t default_mask = ~uint32_t(0); };
         template <typename Dummy> struct delegate_traits<write32do_t, Dummy>
-            { static constexpr uint32_t default_mask = ~uint32_t(0); };
+            { using input_t = uint32_t; static constexpr uint32_t default_mask = ~uint32_t(0); };
         template <typename Dummy> struct delegate_traits<write32dom_t, Dummy>
-            { static constexpr uint32_t default_mask = ~uint32_t(0); };
+            { using input_t = uint32_t; static constexpr uint32_t default_mask = ~uint32_t(0); };
 
         template <typename Dummy> struct delegate_traits<write64d_t, Dummy>
-            { static constexpr uint64_t default_mask = ~uint64_t(0); };
+            { using input_t = uint64_t; static constexpr uint64_t default_mask = ~uint64_t(0); };
         template <typename Dummy> struct delegate_traits<write64do_t, Dummy>
-            { static constexpr uint64_t default_mask = ~uint64_t(0); };
+            { using input_t = uint64_t; static constexpr uint64_t default_mask = ~uint64_t(0); };
         template <typename Dummy> struct delegate_traits<write64dom_t, Dummy>
-            { static constexpr uint64_t default_mask = ~uint64_t(0); };
+            { using input_t = uint64_t; static constexpr uint64_t default_mask = ~uint64_t(0); };
+
+        template <typename Dummy> struct delegate_traits<writel_t, Dummy>
+            { using input_t = int; static constexpr unsigned default_mask = 1u; };
 
     };
 
@@ -661,7 +676,16 @@ namespace emu::devices
             : BuilderBase(cb, append),
               TransformBase<mask_t<Input, typename delegate_traits<Delegate>::input_t>,
                 DelegateBuilder>(defaultMask &delegate_traits<Delegate>::default_mask),
-              delegate(device, devName, std::forward<T>(func), fncName)
+               delegate(device, devName, std::forward<T>(func), fncName)
+            { }
+
+            template <typename T>
+            DelegateBuilder(writecb_t &cb, bool append, Device &device,
+                writecb_t::delegate_device_class_t<T> &object, T &&func, ctag_t *fncName)
+            : BuilderBase(cb, append),
+              TransformBase<mask_t<Input, typename delegate_traits<Delegate>::input_t>,
+                DelegateBuilder>(defaultMask &delegate_traits<Delegate>::default_mask),
+               delegate(object, std::forward<T>(func), fncName)
             { }
 
             DelegateBuilder(DelegateBuilder &&that)
@@ -700,14 +724,44 @@ namespace emu::devices
         public:
             Binder(writecb_t &cb) : target(cb) { }
 
-            template <typename T> void set(T  &&func, ctag_t *name)
+            template <typename T>
+            std::enable_if_t<is_write_method<T>::value, DelegateBuilder<delegate_type_t<T>>>
+                set(T &&func, ctag_t *name)
             {
                 setUsed();
 
                 Device &dev = target.getOwner();
-                Device &cdev = *dev.getSystemConfig().getConfigDevice();
+                Device &cdev = *dev.getSystemConfig().getCurrentDevice();
 
-                DelegateBuilder<delegate_type_t<T>>(target, append, cdev, "", std::forward<T>(func), name);
+                DelegateBuilder<delegate_type_t<T>>(target, append, cdev, DEVICE_SELF, std::forward<T>(func), name);
+            }
+
+            template <typename T, typename U>
+            std::enable_if_t<is_write_method<T>::value, DelegateBuilder<delegate_type_t<T>>>
+                set(U &object, T &&func, ctag_t *name)
+            {
+                setUsed();
+                return DelegateBuilder<delegate_type_t<T>>(target, append, target.getOwner(),
+                    DeviceCallbackWriteBase::cast_reference<delegate_type_t<T>>(object),
+                    std::forward<T>(func), name);
+            }
+
+            template <typename T, typename U, bool Required>
+            std::enable_if_t<is_write_method<T>::value, DelegateBuilder<delegate_type_t<T>>>
+                set(DeviceFinder<U, Required> &finder, T &&func, ctag_t *name)
+            {
+                setUsed();
+                return DelegateBuilder<delegate_type_t<T>>(target, append,
+                    *finder.getObject(), finder.getObjectName(), std::forward<T>(func), name);
+            }
+
+            template <typename T, typename U, bool Required>
+            std::enable_if_t<is_write_method<T>::value, DelegateBuilder<delegate_type_t<T>>>
+                set(DeviceFinder<U, Required> const &finder, T &&func, ctag_t *name)
+            {
+                setUsed();
+                return DelegateBuilder<delegate_type_t<T>>(target, append,
+                    *finder.getObject(), finder.getObjectName(), std::forward<T>(func), name);
             }
 
         private:
