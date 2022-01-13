@@ -7,7 +7,10 @@
 #include "dev/chip/i8251.h"
 
 i8251_Device::i8251_Device(const SystemConfig &config, const DeviceType &type, cstag_t &devName, Device *owner, uint64_t clock)
-: Device(config, type, devName, owner, clock), diSerial(*this)
+: Device(config, type, devName, owner, clock), diSerial(*this),
+  txdHandler(*this), dtrHandler(*this), rtsHandler(*this),
+  rxrHandler(*this), txrHandler(*this), txeHandler(*this),
+  sydHandler(*this)
 { }
 
 // ********

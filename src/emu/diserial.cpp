@@ -1,7 +1,7 @@
 // diserial.h - Serial Device Interface
 //
 // Author:  Tim Stark
-// Date:    Jan 13, 2022
+// Date:    Jan 12, 2022
 
 #include "emu/core.h"
 #include "emu/diserial.h"
