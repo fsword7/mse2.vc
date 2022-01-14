@@ -14,6 +14,7 @@
 #include "dev/bus/rs232/rs232.h"
 #include "dev/chip/i8251.h"
 #include "dev/chip/com8116.h"
+#include "dev/chip/er1400.h"
 #include "dev/video/dec/vt100.h"
 #include "lib/util/xtal.h"
 
@@ -27,6 +28,7 @@ public:
       usart(*this, "usart"),
       dbrg(*this, "dbrg"),
       rs232(*this, "rs232"),
+      nvr(*this, "nvr"),
       ramData(*this, "ram")
     {
 
@@ -51,6 +53,7 @@ private:
     RequiredDevice<i8251_Device> usart;
     RequiredDevice<com5016_013_Device> dbrg;
     RequiredDevice<rs232_portDevice> rs232;
+    RequiredDevice<er1400_Device> nvr;
 
     RequiredSharedPointer<uint8_t> ramData;
 };
@@ -68,7 +71,14 @@ uint8_t vt100_Device::readData(offs_t addr)
 
 uint8_t vt100_Device::read8flags()
 {
-    return 0;
+    uint8_t result = 0;
+
+    // result |= usart->read1txr();
+    result |= !nvr->read1d() << 5;
+    // result |= crt->read1lba7() << 6;
+    // result |= kbduart->read() << 7;
+
+    return result;
 }
 
 uint8_t vt100_Device::read8modem()
@@ -86,10 +96,10 @@ uint8_t vt100_Device::read8modem()
 
 void vt100_Device::write8nvr(uint8_t data)
 {
-    // nvr->write1c1(!(data >> 1) & 1);
-    // nvr->write1c2(!(data >> 2) & 1);
-    // nvr->write1c3(!(data >> 3) & 1);
-    // nvr->write(data & 2) ? 0 : !(data & 1));
+    nvr->write1c1(!(data >> 1) & 1);
+    nvr->write1c2(!(data >> 2) & 1);
+    nvr->write1c3(!(data >> 3) & 1);
+    nvr->write1d((data & 2) ? 0 : !(data & 1));
 
     rs232->writw1spds((data >> 5) & 1);
 }
