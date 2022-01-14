@@ -5,7 +5,9 @@
 
 #pragma once
 
-class er1400_Device : public Device
+#include "emu/dinvram.h"
+
+class er1400_Device : public Device, public diNonVolatileMemory
 {
 public:
     er1400_Device(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);

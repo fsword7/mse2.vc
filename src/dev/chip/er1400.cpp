@@ -7,7 +7,8 @@
 #include "dev/chip/er1400.h"
 
 er1400_Device::er1400_Device(const SystemConfig &config, const DeviceType &type, cstag_t &devName, Device *owner, uint64_t clock)
-: Device(config, type, devName, owner, clock)
+: Device(config, type, devName, owner, clock),
+  diNonVolatileMemory(*this)
 { }
 
 // ********

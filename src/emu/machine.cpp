@@ -4,7 +4,6 @@
 // Date:    12/7/2021
 
 #include "emu/core.h"
-#include "emu/video.h"
 #include "emu/machine.h"
 #include "main/user.h"
 #include "emu/fwloader.h"

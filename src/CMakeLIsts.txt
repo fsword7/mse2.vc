@@ -23,11 +23,13 @@ set (MSE_CPP_SRCS
     emu/didebug.cpp
     emu/diexec.cpp
     emu/dimem.cpp
+    emu/dinvram.cpp
     emu/diserial.cpp
     emu/divideo.cpp
     emu/fileio.cpp
     emu/fwloader.cpp
     emu/machine.cpp
+    emu/scheduler.cpp
     emu/screen.cpp
     emu/sysconfig.cpp
     emu/video.cpp
@@ -81,15 +83,17 @@ set (MSE_H_SRCS
     emu/didebug.h
     emu/diexec.h
     emu/dimem.h
+    emu/dinvram.h
     emu/diserial.h
     emu/divideo.h
     emu/driver.h
     emu/fileio.h
     emu/fwloader.h
     emu/machine.h
-    emu/templates.h
+    emu/scheduler.h
     emu/screen.h
     emu/sysconfig.h
+    emu/templates.h
     emu/video.h
     emu/map/addrmap.h
     emu/map/fw.h
