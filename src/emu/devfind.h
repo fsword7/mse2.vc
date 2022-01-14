@@ -37,6 +37,8 @@ class ObjectFinderCommon : public ObjectFinder
 {
 public:
     inline ObjectClass *getObject() const { return object; }
+    inline bool wasFound() const { return object != nullptr; }
+    operator bool() const { return object != nullptr; }
 
     // Operator function calls
     inline operator ObjectClass * () const { return object; }

@@ -25,6 +25,24 @@ public:
     auto bindTXEHandler() { return txeHandler.bind(); }
     auto bindSYDHandler() { return sydHandler.bind(); }
     
+    // register function calls
+    uint8_t read8d()           { return 0; }
+    void write8d(uint8_t data) {}
+    uint8_t read8s()           { return 0; }
+    void write8c(uint8_t data) {}
+
+    virtual uint8_t read8(offs_t offset) { return 0; };
+    virtual void write8(offs_t offset)   {}
+
+    // signal functon calls
+    void write1rxd(int state) {}
+    void write1cts(int state) {}
+    void write1dsr(int state) {}
+    void write1txc(int state) {}
+    void write1rxc(int state) {}
+    void write1syn(int state) {}
+    int read1txr() { return 0; }
+
 protected:
     i8251_Device(const SystemConfig &config, const DeviceType &type,
         cstag_t &devName, Device *owner, uint64_t clock);

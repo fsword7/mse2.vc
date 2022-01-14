@@ -163,7 +163,7 @@ void FirmwareLoader::processRegionList()
 
                 if (FWREGION_HASFILLVALUE(*entry))
                     fill = FWREGION_GETFILL(*entry);
-                memset(region->getBase(), fill, region->getSize());
+                std::fill_n(region->getBase(), region->getSize(), fill);
 
                 processImageEntries(pkgName, entry, dev);
             }

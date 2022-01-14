@@ -126,10 +126,12 @@ void vt100_Device::vt100(SystemConfig &config)
     usart->bindRTSHandler().set(rs232, FUNC(rs232_portDevice::write1rts));
 
     COM5016_013(config, dbrg, "dbrg", XTAL(24'883'200) / 9);
+    // dbrg.bindFRHandler().set(usart, FUNC(i8251_Device::write1rxc));
+    // dbrg.bindTRHandler().set(usart, FUNC(i8251_Device::write1txc));
 
     RS232_PORT(config, rs232, "rs232", 0);
-    // rs232->bindRXDHandler().set(usart, FUNC(i8251_Device::write1rxd));
-    // rs232->bindDSRHandler().set(usart, FUNC(i8251_Device::write1dsr));
+    rs232->bindRXDHandler().set(usart, FUNC(i8251_Device::write1rxd));
+    rs232->bindDSRHandler().set(usart, FUNC(i8251_Device::write1dsr));
 }
 
 void vt100_Device::vt100_init()

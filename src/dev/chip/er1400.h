@@ -20,6 +20,14 @@ public:
     void write1c3(int state);
     void write1clock(int state);
 
+    // Virtual device function calls
+    void devStart() override;
+
+    // Non-volatile memory function calls
+    void initnvr() override;
+    void readnvr(emu::ioFile &file) override;
+    void writenvr(emu::ioFile &file) override;
+
 protected:
     er1400_Device(const SystemConfig &config, const DeviceType &type,
         cstag_t &devName, Device *owner, uint64_t clock);
@@ -29,6 +37,9 @@ protected:
     void eraseData();
     
 private:
+    // serial memory space
+    OptionalRegionPointer<uint16_t> defaultData;
+    std::unique_ptr<uint16_t[]>     dataArray;
 
     bool dataInput;
     bool dataOutput;
