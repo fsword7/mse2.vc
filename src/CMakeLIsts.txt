@@ -4,6 +4,7 @@ set (MSE_CPP_SRCS
     dev/chip/er1400.cpp
     dev/chip/i8155.cpp
     dev/chip/i8251.cpp
+    dev/cpu/m6500/m6502.cpp
     dev/cpu/mcs48/mcs48.cpp
     dev/cpu/mcs48/mcs48dbg.cpp
     dev/cpu/mcs48/mcs48exec.cpp
@@ -67,6 +68,7 @@ set (MSE_H_SRCS
     dev/chip/er1400.h
     dev/chip/i8155.h
     dev/chip/i8251.h
+    dev/cpu/m6500/m6502.h
     dev/cpu/mcs80/mcs80.h
     dev/cpu/mcs80/mcs80dbg.h
     dev/cpu/mcs80/mcs80op.h
