@@ -33,6 +33,8 @@ void i8080_cpuDevice::devStart()
 
     initOpcodeTable();
 
+    setCycleCounter(&opCount);
+    
     // Initializing MCS80/MCS95 processor
     init();
     reset();

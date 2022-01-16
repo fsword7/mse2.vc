@@ -34,6 +34,8 @@ protected:
 
     virtual int executeGetInputLines() const { return 0; }
 
+    inline void setCycleCounter(int64_t *counter) { cycleCounter = counter; }
+
 private:
     // Scheduer parameters
     // Scheduler *schedular = nullptr;

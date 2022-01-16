@@ -88,6 +88,8 @@ void mcs48_cpuDevice::devStart()
     getAddressSpace(map::asData)->setSpecificMemory(mapData);
     getAddressSpace(map::asIOPort)->setSpecificMemory(mapIOPort);
 
+    setCycleCounter(&cpuCycles);
+    
     // resolve callbacks for I/O lines
     inPort.resolveAllSafe(0xFF);
     outPort.resolveAllSafe();

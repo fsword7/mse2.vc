@@ -30,6 +30,7 @@ void upd7810_cpuDevice::devStart()
     // Assign memory spaces
     getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
 
+    setCycleCounter(&cpuCycles);
 }
 
 void upd7810_cpuDevice::setData128(map::AddressList &map)

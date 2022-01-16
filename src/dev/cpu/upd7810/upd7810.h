@@ -36,6 +36,7 @@ protected:
 
     map::MemoryAccess<16, 0, 0, LittleEndian>::specific mapProgram;
 
+    int64_t cpuCycles = 0;
 };
 
 DECLARE_DEVICE_TYPE(UPD7810, upd7810_cpuDevice);
