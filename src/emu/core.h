@@ -79,6 +79,7 @@ inline Dest mse_static_cast(Source &src)
 #include "lib/util/osdcore.h"
 #include "lib/util/pair.h"
 #include "lib/util/color.h"
+#include "lib/util/time.h"
 
 // Common packages
 #include "emu/delegate.h"

@@ -22,6 +22,8 @@ namespace map {
     class MemoryShare;
 }
 
+typedef uint32_t TimerDeviceID_t;
+
 template <typename T> struct isDevice
 {
     static constexpr bool value = std::is_base_of<Device, T>::value;
@@ -204,6 +206,7 @@ public:
 
     void addInterface(DeviceInterface *iface);
     void finishConfig();
+    void updateClock();
     void resolvePostMapping();
 
     Device *findDevice(ctag_t *name);
@@ -222,6 +225,7 @@ public:
     virtual void devConfigure(SystemConfig &config) {}
     virtual cfwEntry_t *devGetFirmwareEntries() { return nullptr; }
     virtual void devResolveObjects() {}
+    virtual void devUpdateClock() {}
     virtual void devStart() {}
     virtual void devStop() {}
     virtual void devReset() {}
@@ -282,6 +286,7 @@ public:
 
     // Virtual device interface function calls
     virtual void diCompleteConfig() {}
+    virtual void diUpdateClock() {}
 
 private:
     Device *owner;

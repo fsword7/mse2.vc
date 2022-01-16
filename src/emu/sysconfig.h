@@ -31,10 +31,14 @@ public:
     
     inline const SystemDriver &getSystemDriver() const { return driver; }
 
+    void setPerfectQuantum(Device &device, cstag_t &devName);
+
 private:
     const SystemDriver &driver;
 
     Device *sysDevice = nullptr;
     Device *curDevice = nullptr;
     std::stack<Device *> cfgDevice;
+
+    std::pair<Device *, std::string> perfectQuantumDevice;
 };

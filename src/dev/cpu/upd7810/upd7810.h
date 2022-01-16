@@ -20,7 +20,13 @@ public:
     map::AddressConfigList getAddressConfigList() const;
 
     void devStart() override;
-    
+
+    uint64_t executeClockToCycle(uint64_t clocks) const override { return (clocks + 3 - 1) / 3; }
+    uint64_t executeCycleToClock(uint64_t cycles) const override { return (cycles * 3); }
+    uint64_t executeGetMinCycles() const override { return 1; }
+    uint64_t executeGetMaxCycles() const override { return 40; }
+    // int executeGetInputLines()     { return 2; }
+
 protected:
     void setData128(map::AddressList &map);
     void setData256(map::AddressList &map);

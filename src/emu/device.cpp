@@ -87,6 +87,13 @@ void Device::finishConfig()
         iface->diCompleteConfig();
 }
 
+void Device::updateClock()
+{
+    for (auto &iface : ifaceList)
+        iface->diUpdateClock();
+    devUpdateClock();
+}
+
 void Device::resolvePostMapping()
 {
     findObjects();

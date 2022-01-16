@@ -100,6 +100,12 @@ public:
 	void step() override;
 	void executeRun() override;
 
+    uint64_t executeClockToCycle(uint64_t clocks) const override { return (clocks + 15 - 1) / 15; }
+    uint64_t executeCycleToClock(uint64_t cycles) const override { return (cycles * 15); }
+    uint64_t executeGetMinCycles() const override { return 1; }
+    uint64_t executeGetMaxCycles() const override { return 2+2; }
+    // int executeGetInputLines()     { return 2; }
+
 	// Virtual debug function calls
 	int list(offs_t vAddr) override;
 

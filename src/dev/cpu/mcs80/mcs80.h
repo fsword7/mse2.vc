@@ -139,6 +139,12 @@ public:
     // Virtual device function calls
     void devStart() override;
 
+    uint64_t executeClockToCycle(uint64_t clocks) const override { return (clocks + 2 - 1) / 2; }
+    uint64_t executeCycleToClock(uint64_t cycles) const override { return (cycles * 2); }
+    uint64_t executeGetMinCycles() const override { return 4; }
+    uint64_t executeGetMaxCycles() const override { return 16; }
+    // int executeGetInputLines()     { return 4; }
+
     void step() override;
     void executeRun() override;
 

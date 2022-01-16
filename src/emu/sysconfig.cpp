@@ -56,3 +56,10 @@ Device *SystemConfig::addDevice(Device *dev, Device *owner)
     cfgDevice.pop();
     return dev;
 }
+
+void SystemConfig::setPerfectQuantum(Device &device, cstag_t &devName)
+{
+
+    perfectQuantumDevice.first = &device;
+    perfectQuantumDevice.second = std::move(devName);
+}
