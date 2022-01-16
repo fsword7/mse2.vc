@@ -229,7 +229,7 @@ void mcs80_cpuDevice::step()
     list(REG_PC);
 
     // Execute one instruction.
-    opCount = 0;
+    cpuCycles = 0;
     executeRun();
 
     // Display results
@@ -246,7 +246,7 @@ void mcs80_cpuDevice::executeRun()
     {
         execute();
     }
-    while (opCount > 0);
+    while (cpuCycles > 0);
 }
 
 void mcs80_cpuDevice::execute()
@@ -259,7 +259,7 @@ void mcs80_cpuDevice::execute()
     opCode = readi8();
 
     // Takes CPU cycles each instruction
-    opCount =- opCycleTable[opCode];
+    cpuCycles =- opCycleTable[opCode];
 
     switch (opCode)
     {

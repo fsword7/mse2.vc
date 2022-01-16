@@ -204,7 +204,7 @@ protected:
     uint16_t pcBase; // current base PC address
 
     const uint8_t *opCycleTable = nullptr;
-    int64_t opCount = 0;
+    int64_t cpuCycles = 0;
 
     uint8_t zspFlags[256]; // Z/P flag table
 

@@ -33,7 +33,7 @@ void mcs80_cpuDevice::devStart()
 
     initOpcodeTable();
 
-    setCycleCounter(&opCount);
+    setCycleCounter(&cpuCycles);
     
     // Initializing MCS80/MCS95 processor
     init();
