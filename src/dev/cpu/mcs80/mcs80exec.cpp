@@ -49,7 +49,7 @@ const uint8_t i8085_cpuCycles[256] =
     6, 10, 10,  4, 11, 12,  7, 12,  6,  6, 10,  4, 11, 10,  7, 12  // F0-FF
 };
 
-void i8080_cpuDevice::init()
+void mcs80_cpuDevice::init()
 {
 
     for (int val = 0; val < 256; val++)
@@ -75,66 +75,66 @@ void mcs80_cpuDevice::reset()
     REG_PC = 0;
 }
 
-uint8_t i8080_cpuDevice::readi8()
+uint8_t mcs80_cpuDevice::readi8()
 {
     return mapProgram.read8(REG_PC++);
 }
 
-uint16_t i8080_cpuDevice::readi16()
+uint16_t mcs80_cpuDevice::readi16()
 {
     return mapProgram.read8(REG_PC++) |
           (mapProgram.read8(REG_PC++) << 8);
 }
 
-void i8080_cpuDevice::enableInterrupts(bool enable)
+void mcs80_cpuDevice::enableInterrupts(bool enable)
 {
 
 }
 
-uint8_t i8080_cpuDevice::read8(offs_t addr)
+uint8_t mcs80_cpuDevice::read8(offs_t addr)
 {
     return mapProgram.read8(addr);
 }
 
-void i8080_cpuDevice::write8(offs_t addr, uint8_t data)
+void mcs80_cpuDevice::write8(offs_t addr, uint8_t data)
 {
     mapProgram.write8(addr, data);
 }
 
-void i8080_cpuDevice::opPUSH(uint16_t val)
+void mcs80_cpuDevice::opPUSH(uint16_t val)
 {
     mapProgram.write8(--REG_SP, val >> 8);
     mapProgram.write8(--REG_SP, val);
 }
 
-uint16_t i8080_cpuDevice::opPOP()
+uint16_t mcs80_cpuDevice::opPOP()
 {
     return mapProgram.read8(REG_SP++) |
           (mapProgram.read8(REG_SP++) << 8);
 }
 
-uint8_t i8080_cpuDevice::opINR(uint8_t val)
+uint8_t mcs80_cpuDevice::opINR(uint8_t val)
 {
     uint8_t hc = ((val & 0x0F) == 0x0F) ? PSW_HF : 0;
     REG_F = (REG_F & PSW_CF) | zspFlags[++val] | hc;
     return val;
 }
 
-uint8_t i8080_cpuDevice::opDCR(uint8_t val)
+uint8_t mcs80_cpuDevice::opDCR(uint8_t val)
 {
     uint8_t hc = ((val & 0x0F) == 0x0F) ? PSW_HF : 0;
     REG_F = (REG_F & PSW_CF) | zspFlags[--val] | hc | PSW_VF;
     return val;
 }
 
-void i8080_cpuDevice::opDAD(uint16_t val)
+void mcs80_cpuDevice::opDAD(uint16_t val)
 {
     int add = REG_HL + val;
     REG_F = (REG_F & ~PSW_CF) | ((add >> 16) & PSW_CF);
     REG_HL = add;
 }
 
-void i8080_cpuDevice::opADD(uint8_t val)
+void mcs80_cpuDevice::opADD(uint8_t val)
 {
     int add = REG_A + val;
     REG_F = zspFlags[add & 0xFF] | ((add >> 8) & PSW_CF) |
@@ -142,7 +142,7 @@ void i8080_cpuDevice::opADD(uint8_t val)
     REG_A = add;
 }
 
-void i8080_cpuDevice::opADC(uint8_t val)
+void mcs80_cpuDevice::opADC(uint8_t val)
 {
     int add = REG_A + val + (REG_F & PSW_CF);
     REG_F = zspFlags[add & 0xFF] | ((add >> 8) & PSW_CF) |
@@ -150,7 +150,7 @@ void i8080_cpuDevice::opADC(uint8_t val)
     REG_A = add;
 }
 
-void i8080_cpuDevice::opSUB(uint8_t val)
+void mcs80_cpuDevice::opSUB(uint8_t val)
 {
     int sub = REG_A - val;
     REG_F = zspFlags[sub & 0xFF] | ((sub >> 8) & PSW_CF) |
@@ -158,7 +158,7 @@ void i8080_cpuDevice::opSUB(uint8_t val)
     REG_A = sub;
 }
 
-void i8080_cpuDevice::opSBB(uint8_t val)
+void mcs80_cpuDevice::opSBB(uint8_t val)
 {
     int sub = REG_A - val - (REG_F & PSW_CF);
     REG_F = zspFlags[sub & 0xFF] | ((sub >> 8) & PSW_CF) |
@@ -166,14 +166,14 @@ void i8080_cpuDevice::opSBB(uint8_t val)
     REG_A = sub;
 }
 
-void i8080_cpuDevice::opCMP(uint8_t val)
+void mcs80_cpuDevice::opCMP(uint8_t val)
 {
     int diff = REG_A - val;
     REG_F = zspFlags[diff & 0xFF] | ((diff >> 8) & PSW_CF) |
         (~(REG_A ^ diff ^ val) & PSW_HF) | PSW_VF;
 }
 
-void i8080_cpuDevice::opANA(uint8_t val)
+void mcs80_cpuDevice::opANA(uint8_t val)
 {
     uint8_t hc = ((REG_A | val) << 1) & PSW_HF;
     REG_A &= val;
@@ -181,20 +181,20 @@ void i8080_cpuDevice::opANA(uint8_t val)
     REG_F |= is8085() ? PSW_HF : hc;
 }
 
-void i8080_cpuDevice::opORA(uint8_t val)
+void mcs80_cpuDevice::opORA(uint8_t val)
 {
     REG_A |= val;
     REG_F = zspFlags[REG_A];
 }
 
-void i8080_cpuDevice::opXRA(uint8_t val)
+void mcs80_cpuDevice::opXRA(uint8_t val)
 {
     REG_A ^= val;
     REG_F = zspFlags[REG_A];
 }
 
 
-void i8080_cpuDevice::opCALL(bool flag)
+void mcs80_cpuDevice::opCALL(bool flag)
 {
     uint16_t addr = readi16();
     if (flag == true)
@@ -204,20 +204,20 @@ void i8080_cpuDevice::opCALL(bool flag)
     }
 }
 
-void i8080_cpuDevice::opRET(bool flag)
+void mcs80_cpuDevice::opRET(bool flag)
 {
     if (flag == true)
         REG_PC = opPOP();
 }
 
-void i8080_cpuDevice::opJMP(bool flag)
+void mcs80_cpuDevice::opJMP(bool flag)
 {
     uint16_t addr = readi16();
     if (flag == true)
         REG_PC = addr;
 }
 
-void i8080_cpuDevice::opRST(uint8_t val)
+void mcs80_cpuDevice::opRST(uint8_t val)
 {
     opPUSH(REG_PC);
     REG_PC = val * 8;
@@ -249,7 +249,7 @@ void mcs80_cpuDevice::executeRun()
     while (opCount > 0);
 }
 
-void i8080_cpuDevice::execute()
+void mcs80_cpuDevice::execute()
 {
     uint8_t opCode;
     uint16_t tval;

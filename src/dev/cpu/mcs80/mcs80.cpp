@@ -7,7 +7,7 @@
 #include "emu/map/map.h"
 #include "dev/cpu/mcs80/mcs80.h"
 
-i8080_cpuDevice::i8080_cpuDevice(const SystemConfig &config, const DeviceType &type,
+mcs80_cpuDevice::mcs80_cpuDevice(const SystemConfig &config, const DeviceType &type,
     cstag_t &devName, Device *owner, uint64_t clock, cpuType idType)
 : ProcessorDevice(config, type, devName, owner, clock),
   mapProgramConfig("program", LittleEndian, 8, 16, 2, 8,  16, 16, 4, 0),
@@ -16,7 +16,7 @@ i8080_cpuDevice::i8080_cpuDevice(const SystemConfig &config, const DeviceType &t
 {
 }
 
-map::AddressConfigList i8080_cpuDevice::getAddressConfigList() const
+map::AddressConfigList mcs80_cpuDevice::getAddressConfigList() const
 {
     return map::AddressConfigList
     {
@@ -25,7 +25,7 @@ map::AddressConfigList i8080_cpuDevice::getAddressConfigList() const
     };
 }
 
-void i8080_cpuDevice::devStart()
+void mcs80_cpuDevice::devStart()
 {
     // Assign memory spaces
     getAddressSpace(map::asProgram)->setSpecificMemory(mapProgram);
@@ -40,28 +40,28 @@ void i8080_cpuDevice::devStart()
     reset();
 }
 
-DEFINE_DEVICE_TYPE(i8080, i8080_cpuDevice, "i8080", "Intel 8080")
-DEFINE_DEVICE_TYPE(i8080a, i8080a_cpuDevice, "i8080A", "Intel 8080A")
-DEFINE_DEVICE_TYPE(i8085, i8085_cpuDevice, "i8085", "Intel 8085")
+DEFINE_DEVICE_TYPE(I8080, mcs80_cpuDevice, "i8080", "Intel 8080")
+DEFINE_DEVICE_TYPE(I8080A, mcs80a_cpuDevice, "i8080A", "Intel 8080A")
+DEFINE_DEVICE_TYPE(I8085, mcs85_cpuDevice, "i8085", "Intel 8085")
 
 
 // Intel 8080 processor
-i8080_cpuDevice::i8080_cpuDevice(const SystemConfig &config,
+mcs80_cpuDevice::mcs80_cpuDevice(const SystemConfig &config,
     cstag_t &devName, Device *owner, uint64_t clock)
-: i8080_cpuDevice(config, i8080, devName, owner, clock, cpuid_8080)
+: mcs80_cpuDevice(config, I8080, devName, owner, clock, cpuid_8080)
 {
 }
 
 // Intel 8080A processor
-i8080a_cpuDevice::i8080a_cpuDevice(const SystemConfig &config,
+mcs80a_cpuDevice::mcs80a_cpuDevice(const SystemConfig &config,
     cstag_t &devName, Device *owner, uint64_t clock)
-: i8080_cpuDevice(config, i8080a, devName, owner, clock, cpuid_8080A)
+: mcs80_cpuDevice(config, I8080A, devName, owner, clock, cpuid_8080A)
 {
 }
 
 // Intel 8085 processor
-i8085_cpuDevice::i8085_cpuDevice(const SystemConfig &config,
+mcs85_cpuDevice::mcs85_cpuDevice(const SystemConfig &config,
     cstag_t &devName, Device *owner, uint64_t clock)
-: i8080_cpuDevice(config, i8085, devName, owner, clock, cpuid_8085)
+: mcs80_cpuDevice(config, I8085, devName, owner, clock, cpuid_8085)
 {
 }

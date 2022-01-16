@@ -48,7 +48,7 @@ public:
     void write8nvr(uint8_t data);
 
 private:
-    RequiredDevice<i8080_cpuDevice> cpu;
+    RequiredDevice<mcs80_cpuDevice> cpu;
     RequiredDevice<vt100video_t> crt;
     RequiredDevice<i8251_Device> usart;
     RequiredDevice<com5016_013_Device> dbrg;
@@ -108,7 +108,7 @@ void vt100_Device::vt100(SystemConfig &config)
 {
     // fmt::printf("VT100 device configuration here.\n");
 
-    i8080(config, cpu, "cpu", XTAL(24'883'200) / 9);
+    I8080(config, cpu, "cpu", XTAL(24'883'200) / 9);
     cpu->setAddressMap(map::asProgram, &vt100_Device::vt100_setMemoryMap);
     cpu->setAddressMap(map::asIOPort, &vt100_Device::vt100_setIOPort);
     

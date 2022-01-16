@@ -112,7 +112,7 @@ struct mcs80_opCode_t
     uint8_t     opType;
 };
 
-class i8080_cpuDevice : public ProcessorDevice
+class mcs80_cpuDevice : public ProcessorDevice
 {
 public:
     enum cpuType
@@ -130,11 +130,9 @@ public:
         i8080_SP, i8080_PC
     };
 
-    i8080_cpuDevice(const SystemConfig &config, const DeviceType &type,
-        cstag_t &devName, Device *owner, uint64_t clock, cpuType idType);
-    i8080_cpuDevice(const SystemConfig &config, cstag_t &devName,
+    mcs80_cpuDevice(const SystemConfig &config, cstag_t &devName,
         Device *owner, uint64_t clock);
-    virtual ~i8080_cpuDevice() = default;
+    virtual ~mcs80_cpuDevice() = default;
 
     // Virtual device function calls
     void devStart() override;
@@ -151,6 +149,9 @@ public:
     int list(offs_t vAddr) override;
 
 protected:
+    mcs80_cpuDevice(const SystemConfig &config, const DeviceType &type,
+        cstag_t &devName, Device *owner, uint64_t clock, cpuType idType);
+
     map::AddressConfigList getAddressConfigList() const override;
 
     void init();
@@ -218,24 +219,22 @@ protected:
     const mcs80_opCode_t *opCodes[256];
 };
 
-class i8080a_cpuDevice : public i8080_cpuDevice
+class mcs80a_cpuDevice : public mcs80_cpuDevice
 {
 public:
-	i8080a_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);
-	virtual ~i8080a_cpuDevice() = default;
+	mcs80a_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);
+	virtual ~mcs80a_cpuDevice() = default;
 
 };
 
-class i8085_cpuDevice : public i8080_cpuDevice
+class mcs85_cpuDevice : public mcs80_cpuDevice
 {
 public:
-	i8085_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);
-	virtual ~i8085_cpuDevice() = default;
+	mcs85_cpuDevice(const SystemConfig &config, cstag_t &devName, Device *owner, uint64_t clock);
+	virtual ~mcs85_cpuDevice() = default;
 
 };
 
-DECLARE_DEVICE_TYPE(i8080, i8080_cpuDevice);
-DECLARE_DEVICE_TYPE(i8080a, i8080a_cpuDevice);
-DECLARE_DEVICE_TYPE(i8085, i8085_cpuDevice);
-
-using mcs80_cpuDevice = i8080_cpuDevice;
+DECLARE_DEVICE_TYPE(I8080, mcs80_cpuDevice);
+DECLARE_DEVICE_TYPE(I8080A, mcs80a_cpuDevice);
+DECLARE_DEVICE_TYPE(I8085, mcs85_cpuDevice);
