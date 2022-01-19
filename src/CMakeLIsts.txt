@@ -15,6 +15,8 @@ set (MSE_CPP_SRCS
     dev/cpu/mcs80/mcs80dbg.cpp
     dev/cpu/mcs80/mcs80op.cpp
     dev/cpu/upd7810/upd7810.cpp
+    dev/cpu/upd7810/upd7810dbg.cpp
+    dev/cpu/upd7810/upd7810op.cpp
     dev/video/dec/vt100.cpp
     emu/device.cpp
     emu/devcb.cpp
