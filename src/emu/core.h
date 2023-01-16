@@ -9,6 +9,7 @@
 #include <vector>
 #include <stack>
 #include <map>
+#include <functional>
 
 #include <filesystem>
 #include <type_traits>
