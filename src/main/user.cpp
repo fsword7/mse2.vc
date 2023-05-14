@@ -1,7 +1,7 @@
-// user.h - user console handler package
+// user.cpp - user console package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/7/2021
+// Date:    May 2, 2023
+// Author:  Tim Stark
 
 #include "emu/core.h"
 #include "main/engine.h"
@@ -12,10 +12,6 @@ UserConsole::UserConsole(SystemEngine &engine)
 {
 }
 
-UserConsole::~UserConsole()
-{
-}
-
 void UserConsole::prompt()
 {
     std::string cmdLine;
@@ -23,7 +19,7 @@ void UserConsole::prompt()
 
     while (running)
     {
-        std::cout << "MSE> " /* fmt::sprintf("MSE> ") */ << std::flush; 
+        std::cout << fmt::format("MSE> ") << std::flush;
         getline(std::cin, cmdLine);
 
         if (engine.execute(this, cmdLine))

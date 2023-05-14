@@ -1,128 +1,36 @@
-set (MSE_CPP_SRCS
-    dev/bus/rs232/rs232.cpp
-    dev/chip/com8116.cpp
-    dev/chip/er1400.cpp
-    dev/chip/i8155.cpp
-    dev/chip/i8251.cpp
-    dev/cpu/m6500/m6502.cpp
-    dev/cpu/mcs48/mcs48.cpp
-    dev/cpu/mcs48/mcs48dbg.cpp
-    dev/cpu/mcs48/mcs48exec.cpp
-    dev/cpu/mcs48/mcs48op.cpp
-    dev/cpu/mcs48/upi41.cpp
-    dev/cpu/mcs80/mcs80exec.cpp
-    dev/cpu/mcs80/mcs80.cpp
-    dev/cpu/mcs80/mcs80dbg.cpp
-    dev/cpu/mcs80/mcs80op.cpp
-    dev/cpu/upd7810/upd7810.cpp
-    dev/cpu/upd7810/upd7810dbg.cpp
-    dev/cpu/upd7810/upd7810op.cpp
-    dev/video/dec/vt100.cpp
-    emu/device.cpp
-    emu/devcb.cpp
-    emu/devcpu.cpp
-    emu/devfind.cpp
-    emu/devsys.cpp
-    emu/didebug.cpp
-    emu/diexec.cpp
-    emu/dimem.cpp
-    emu/dinvram.cpp
-    emu/diserial.cpp
-    emu/divideo.cpp
-    emu/fileio.cpp
-    emu/fwloader.cpp
-    emu/machine.cpp
-    emu/scheduler.cpp
-    emu/screen.cpp
-    emu/sysconfig.cpp
-    emu/video.cpp
-    emu/map/addrmap.cpp
-    emu/map/hedp.cpp
-    emu/map/hedr0.cpp
-    emu/map/hedr1.cpp
-    emu/map/hedr2.cpp
-    emu/map/hedr3.cpp
-    emu/map/hedw0.cpp
-    emu/map/hedw1.cpp
-    emu/map/hedw2.cpp
-    emu/map/hedw3.cpp
-    emu/map/heun.cpp
-    emu/map/maccess.cpp
-    emu/map/mview.cpp
+set(MSE_CPP_SRCS
+    dev/cpu/alpha/axp.cpp
     emu/map/memmgr.cpp
-    emu/map/setup.cpp
-    emu/map/space.cpp
-    lib/util/bitmap.cpp
-    lib/util/time.cpp
+    emu/devcpu.cpp
+    emu/device.cpp
+    emu/devsys.cpp
+    emu/machine.cpp
+    emu/sysconfig.cpp
     main/commands.cpp
     main/engine.cpp
     main/main.cpp
     main/systems.cpp
     main/user.cpp
-    printers/epson/lx810.cpp
-    printers/epson/mx80.cpp
-    terminals/dec/vt100.cpp
+    systems/dec/as200.cpp
+    systems/dec/mv3900.cpp
 )
 
-set (MSE_H_SRCS
-    dev/bus/rs232/rs232.h
-    dev/chip/com8116.h
-    dev/chip/er1400.h
-    dev/chip/i8155.h
-    dev/chip/i8251.h
-    dev/cpu/m6500/m6502.h
-    dev/cpu/mcs80/mcs80.h
-    dev/cpu/mcs80/mcs80dbg.h
-    dev/cpu/mcs80/mcs80op.h
-    dev/cpu/mcs48/mcs48.h
-    dev/cpu/upd7810/upd7810.h
-    dev/video/dec/vt100.h
-    emu/core.h
-    emu/delegate.h
-    emu/device.h
-    emu/devcb.h
-    emu/devcpu.h
-    emu/devfind.h
-    emu/devsys.h
-    emu/didebug.h
-    emu/diexec.h
-    emu/dimem.h
-    emu/dinvram.h
-    emu/diserial.h
-    emu/divideo.h
-    emu/driver.h
-    emu/fileio.h
-    emu/fwloader.h
-    emu/machine.h
-    emu/scheduler.h
-    emu/screen.h
-    emu/sysconfig.h
-    emu/templates.h
-    emu/video.h
-    emu/map/addrmap.h
-    emu/map/fw.h
-    emu/map/he.h
-    emu/map/hea.h
-    emu/map/hedp.h
-    emu/map/hedr.h
-    emu/map/hedw.h
-    emu/map/hem.h
-    emu/map/heun.h
-    emu/map/map.h
+set(MSE_H_SRCS
+    dev/cpu/alpha/axp.h
     emu/map/memlib.h
     emu/map/memmgr.h
-    emu/map/maccess.h
-    emu/map/mview.h
-    emu/map/space.h
-    lib/util/bitmap.h
-    lib/util/color.h
-    lib/util/osdcore.h
-    lib/util/time.h
-    main/command.h
+    emu/core.h
+    emu/delegate.h
+    emu/devcpu.h
+    emu/device.h
+    emu/devsys.h
+    emu/driver.h
+    emu/forward.h
+    emu/machine.h
+    emu/sysconfig.h
+    lib/util/list.h
     main/engine.h
     main/user.h
-    printers/epson/externs.h
-    terminals/dec/externs.h
 )
 
 add_definitions(-pthread -DENABLE_DEBUG)

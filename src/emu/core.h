@@ -1,23 +1,22 @@
-// core.h - main core definitions package
+// core.h -  MSE core defintions
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    Dec 6, 2021
+// Date:    Apr 30, 2023
+// Author:  Tim Stark
 
 #include <iostream>
-#include <fstream>
+#include <sstream>
 
+#include <string>
 #include <vector>
 #include <stack>
-#include <map>
+
+#include <type_traits>
 #include <functional>
 
-#include <filesystem>
-#include <type_traits>
-
-#include <cstdio>
 #include <cassert>
 
-#include <fmt/printf.h>
+#include <fmt/core.h>
+
 
 #define LSB_FIRST 1
 
@@ -33,60 +32,16 @@ constexpr const endian_t endianNative = BigEndian;
 #define ENDIAN_VALUE(endian, leValue, beValue)  ((endian == LittleEndian) ? (leValue) : (beValue))
 #define NATIVE_ENDIAN(leValue, beValue)         ENDIAN_VALUE(endianNative, leValue, beValue)
 
-namespace fs = std::filesystem;
 
-// Using 64-bit addressing offset
+using cchar_t = const char;
+using str_t = std::string;
+using cstr_t = const std::string;
+
 using offs_t = uint64_t;
 
-template <typename T, typename U> constexpr T makeBitmask(U n)
-{
-    return T((n < (8 * sizeof(T)) ? (std::make_unsigned_t<T>(1) << n) : std::make_unsigned_t<T>(0)) - 1);
-}
-
-typedef char                tag_t;
-typedef const char          cchar_t;
-typedef const char          ctag_t;
-
-typedef std::string         stag_t;
-typedef const std::string   cstag_t;
-
-namespace map
-{
-    enum AddressType
-    {
-        asProgram = 0,  // Program address space
-        asData,         // Data address space
-        asIOPort        // I/O port address space
-    };
-}
-
-template <typename Dest, typename Source>
-inline Dest mse_static_cast(Source *src)
-{
-#ifdef ENABLE_DEBUG
-#endif /* ENABLE_DEBUG */
-	return static_cast<Dest>(src);
-}
-
-template <class Dest, class Source>
-inline Dest mse_static_cast(Source &src)
-{
-#ifdef ENABLE_DEBUG
-#endif /* ENABLE_DEBUG */
-	return static_cast<Dest>(src);
-}
-
-// OSD core package
-#include "lib/util/osdcore.h"
-#include "lib/util/pair.h"
-#include "lib/util/color.h"
-#include "lib/util/time.h"
-
-// Common packages
+#include "emu/forward.h"
+#include "lib/util/list.h"
 #include "emu/delegate.h"
-#include "emu/map/fw.h"
 #include "emu/driver.h"
 #include "emu/sysconfig.h"
 #include "emu/device.h"
-#include "emu/devfind.h"
-#include "emu/templates.h"

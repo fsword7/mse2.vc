@@ -1,15 +1,13 @@
-// devcpu.cpp - CPU processor device
+// devcpu.cpp - CPU Device Package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/7/2021
+// Date:    May 8, 2023
+// Author:  Tim Stark
 
 #include "emu/core.h"
 #include "emu/devcpu.h"
 
-ProcessorDevice::ProcessorDevice(const SystemConfig &config, const DeviceType &type,
-    cstag_t &devName, Device *owner, uint64_t clock)
-: Device(config, type, devName, owner, clock),
-  diMemory(this), diExecute(this), diDebug(this)
+CPUDevice::CPUDevice(const SystemConfig &config, cDeviceType &type,
+    cstr_t &devName, Device *owner, uint64_t clock)
+: Device(config, type, devName, owner, clock)
 {
-    
 }

@@ -1,12 +1,11 @@
-// engine.h - User engine package
+// engine.cpp - system engine package
 //
+// Date:    May 2, 2023
 // Author:  Tim Stark
-// Date:    12/7/2021
 
 #include "emu/core.h"
 #include "emu/machine.h"
 #include "main/engine.h"
-#include "main/user.h"
 
 std::vector<Machine *> SystemEngine::machines;
 
@@ -22,7 +21,7 @@ void SystemEngine::gexit()
     machines.clear();
 }
 
-const SystemDriver *SystemEngine::findSystemDriver(cstag_t &name)
+const SystemDriver *SystemEngine::findSystemDriver(cstr_t &name)
 {
     for (int idx = 0; sysList[idx]; idx++)
     {
@@ -33,7 +32,7 @@ const SystemDriver *SystemEngine::findSystemDriver(cstag_t &name)
     return nullptr;
 }
 
-Machine *SystemEngine::findSystem(cstag_t &name)
+Machine *SystemEngine::findSystem(cstr_t &name)
 {
     for (auto mach : machines)
         if (name == mach->getDeviceName())
@@ -41,7 +40,7 @@ Machine *SystemEngine::findSystem(cstag_t &name)
     return nullptr;
 }
 
-Device *SystemEngine::findDevice(cstag_t &name)
+Device *SystemEngine::findDevice(cstr_t &name)
 {
     if (dialedSystem == nullptr)
         return nullptr;
@@ -53,12 +52,12 @@ Device *SystemEngine::findDevice(cstag_t &name)
     return nullptr;
 }
 
-Device *SystemEngine::findDevice(UserConsole *user, cstag_t &name)
+Device *SystemEngine::findDevice(UserConsole *user, cstr_t &name)
 {
 
     if (dialedSystem == nullptr)
     {
-        fmt::printf("Please dial system first\n");
+        std::cout << fmt::format("Please dial system first\n");
         return nullptr;
     }
     
@@ -69,7 +68,7 @@ Device *SystemEngine::findDevice(UserConsole *user, cstag_t &name)
     return nullptr;
 }
 
-int SystemEngine::split(cstag_t &cmdLine, args_t &args)
+int SystemEngine::split(const std::string &cmdLine, args_t &args)
 {
     std::istringstream line(cmdLine);
 
@@ -84,7 +83,7 @@ int SystemEngine::split(cstag_t &cmdLine, args_t &args)
     return args.getSize();
 }
 
-int SystemEngine::execute(UserConsole *user, std::string cmdLine)
+int SystemEngine::execute(UserConsole *user, const std::string &cmdLine)
 {
     args_t args;
 
@@ -116,20 +115,20 @@ int SystemEngine::execute(UserConsole *user, std::string cmdLine)
     }
 
     if (status == cmdNotFound)
-        fmt::printf("*** Unknown '%s' command\n", args.getArgument());
+        std::cout << fmt::format("*** Unknown '{}' command\n", args.getArgument());
     return 0;
 }
 
-Machine *SystemEngine::createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName)
+Machine *SystemEngine::createMachine(UserConsole *user, cstr_t &devName, cstr_t &sysName)
 {
-    const SystemDriver *driver = findSystemDriver(sysName);
+    cSystemDriver *driver = findSystemDriver(sysName);
     if (driver == nullptr)
     {
-        fmt::printf("%s: system '%s' not recongized.\n", devName, sysName);
+        std::cout << fmt::format("{}: system '{}' not recongized.\n", devName, sysName);
         return nullptr;
     }
 
-    Machine *sysMachine = Machine::create(user, driver, devName);
+    Machine *sysMachine = Machine::create(user, *driver, devName);
 
     if (sysMachine != nullptr)
         machines.push_back(sysMachine);
@@ -146,7 +145,7 @@ void SystemEngine::dial(Machine *sysMachine, UserConsole *user)
     if (sysMachine != nullptr)
         sysMachine->setConsole(user);
 
-    // Switch system machine and device as current
+    // // Switch system machine and device as current
     dialedMachine = sysMachine;
     dialedSystem = (sysMachine != nullptr)
         ? sysMachine->getSystemDevice() : nullptr;

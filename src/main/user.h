@@ -1,17 +1,14 @@
-// user.h - user console handler package
+// user.h - user console package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/7/2021
+// Date:    May 2, 2023
+// Author:  Tim Stark
 
 #pragma once
-
-class SystemEngine;
-
 class UserConsole
 {
 public:
-    UserConsole(SystemEngine &engine);
-    ~UserConsole();
+    UserConsole(SystemEngine &);
+    ~UserConsole() = default;
 
     void prompt();
 

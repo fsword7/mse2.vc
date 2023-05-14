@@ -1,10 +1,9 @@
-// engine.h - User engine package
+// engine.h - system engine package
 //
+// Date:    May 2, 2023
 // Author:  Tim Stark
-// Date:    12/7/2021
 
 #pragma once
-
 class args_t
 {
 public:
@@ -27,21 +26,17 @@ public:
 private:
     int  count = 0;
     int  index = 0;
-    args params;
+    args params; 
 };
-
-class UserConsole;
-class SystemEngine;
-class Machine;
 
 class SystemEngine
 {
 public:
     enum cmdStatus
     {
-        cmdOk = 0,   // Successful
-        cmdNotFound, // Command not found (unknown)
-        cmdShutdown, // Multi-System Emulator Shutdown
+        cmdOk = 0,      // Successful
+        cmdNotFound,    // Command not found
+        cmdShutdown     // Shutdown Requested
     };
 
     using cmdFunc_t = cmdStatus (SystemEngine::*)(UserConsole *, args_t &);
@@ -49,46 +44,37 @@ public:
 
     struct command_t
     {
-        ctag_t *name;
-        cmdFunc_t func;
-        command_t *options;
+        cchar_t     *name;
+        cmdFunc_t   func;
+        command_t   *options;
     };
-
-public:
-    SystemEngine() = default;
-    ~SystemEngine() = default;
 
     // Global initialization routines
     void ginit();
     void gexit();
     
-    const SystemDriver *findSystemDriver(cstag_t &name);
+    const SystemDriver *findSystemDriver(cstr_t &name);
 
-    Machine *findSystem(cstag_t &name);
-    Device *findDevice(UserConsole *user, cstag_t &name);
-    Device *findDevice(cstag_t &name);
+    Machine *findSystem(cstr_t &name);
+    Device *findDevice(UserConsole *user, cstr_t &name);
+    Device *findDevice(cstr_t &name);
 
-    Machine *createMachine(UserConsole *user, cstag_t &devName, cstag_t &sysName);
+    Machine *createMachine(UserConsole *user, cstr_t &devName, cstr_t &sysName);
     void dial(Machine *sysMachine, UserConsole *user);
 
-    int split(cstag_t &cmdLine, args_t &args);
-    int execute(UserConsole *user, std::string cmdLine);
+    int split(const std::string &cmdLine, args_t &args);
+    int execute(UserConsole *user, const std::string &cmdLine);
 
-private:
     // Command function calls
     cmdStatus cmdCreate(UserConsole *user, args_t &args);
-    cmdStatus cmdDial(UserConsole *user, args_t &args);
-    cmdStatus cmdDumpOld(UserConsole *user, args_t &args);
-    cmdStatus cmdDumpm(UserConsole *user, args_t &args);
-    cmdStatus cmdList(UserConsole *user, args_t &args);
-    cmdStatus cmdStep(UserConsole *user, args_t &args);
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
-    cmdStatus cmdStart(UserConsole *user, args_t &args);
-
-    template <map::AddressType type>
-    cmdStatus cmdDump(UserConsole *user, args_t &args);
 
 private:
+    static command_t mseCommands[];
+    
+    static const SystemDriver *sysList[];
+    static std::vector<Machine *> machines;
+
     Machine *dialedMachine = nullptr;
     Device *dialedSystem = nullptr;
 
@@ -96,9 +82,4 @@ private:
     cmdFunc_t lastCommand = nullptr;
     Device   *lastDevice = nullptr;
     offs_t    lastAddress = 0;
-
-    static command_t mseCommands[];
-
-    static const SystemDriver *sysList[];
-    static std::vector<Machine *> machines;
 };

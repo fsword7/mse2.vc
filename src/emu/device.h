@@ -1,108 +1,85 @@
-// device.h - device/interface package
+// device.h - device management package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    Dec 6, 2021
+// Date:    Apr 30, 2023
+// Author:  Tim Stark
+
+#pragma once
 
 #include <type_traits>
 
-#include "lib/util/list.h"
-
-#define DEVICE_SELF "" // std::string()
-
-class Machine;
-class Device;
-class DeviceInterface;
-class ObjectFinder;
-
-template <typename Exposed, bool Required> class DeviceFinder;
-
-namespace map {
-    class MemoryRegion;
-    class MemoryBank;
-    class MemoryShare;
-}
-
-typedef uint32_t TimerDeviceID_t;
-
-template <typename T> struct isDevice
-{
-    static constexpr bool value = std::is_base_of<Device, T>::value;
-};
-
-template <typename T> struct isInterface
-{
-    static constexpr bool value = std::is_base_of<DeviceInterface, T>::value;
-};
+#define DEVICE_SELF ""
 
 // System creator package
-template<class SystemClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-struct systemTagStruct
+template<class SystemClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+struct systemNameStruct
 {
     typedef SystemClass type;
 };
 
-template <class SystemClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-auto systemTagFunc()
+template<class SystemClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+auto systemNameFunc()
 {
-    return systemTagStruct<SystemClass, shortName, fullName, fileName>{};
+    return systemNameStruct<SystemClass, shortName, fullName, fileName>{};
 }
 
-template <class SystemClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-constexpr auto systemCreator = &systemTagFunc<SystemClass, shortName, fullName, fileName>;
+template<class SystemClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+constexpr auto systemCreator = &systemNameFunc<SystemClass, shortName, fullName, fileName>;
+
 
 // Device creator package
-template<class DeviceClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-struct deviceTagStruct
+template<class DeviceClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+struct deviceNameStruct
 {
     typedef DeviceClass type;
 };
 
-template <class DeviceClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-auto deviceTagFunc()
+template<class DeviceClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+auto deviceNameFunc()
 {
-    return deviceTagStruct<DeviceClass, shortName, fullName, fileName>{};
+    return deviceNameStruct<DeviceClass, shortName, fullName, fileName>{};
 }
 
-template <class DeviceClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-constexpr auto deviceCreator = &deviceTagFunc<DeviceClass, shortName, fullName, fileName>;
+template<class DeviceClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+constexpr auto deviceCreator = &systemNameFunc<DeviceClass, shortName, fullName, fileName>;
+
 
 
 class DeviceType
 {
 private:
     typedef Device *(*createFunc)(const SystemConfig &config, const DeviceType &type,
-        cstag_t &tagName, Device *owner, uint64_t clock);
-    
-    template <typename SystemClass>
+        cstr_t &name, Device *owner, uint64_t clock);
+
+    template<typename SystemClass>
     static Device *createSystem(const SystemConfig &config, const DeviceType &type,
-        cstag_t &tagName, Device *owner, uint64_t clock)
+        cstr_t &name, Device *owner, uint64_t clock)
     {
-        return new SystemClass(config, type, tagName, clock);
+        return new SystemClass(config, type, name, clock);
     }
 
-    template <typename DeviceClass>
+    template<typename DeviceClass>
     static Device *createDevice(const SystemConfig &config, const DeviceType &type,
-        cstag_t &tagName, Device *owner, uint64_t clock)
+        cstr_t &name, Device *owner, uint64_t clock)
     {
-        return new DeviceClass(config, tagName, owner, clock);
+        return new DeviceClass(config, name, owner, clock);
     }
-   
+
 public:
     DeviceType() = default;
 
-    template <class SystemClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-    DeviceType(systemTagStruct<SystemClass, shortName, fullName, fileName>(*)())
+    template<class SystemClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+    DeviceType(systemNameStruct<SystemClass, shortName, fullName, fileName>(*)())
     : idType(typeid(SystemClass)), creator(&createSystem<SystemClass>),
       shortName(shortName), fullName(fullName), fileName(fileName)
     { }
 
-    template <class DeviceClass, ctag_t *shortName, ctag_t *fullName, ctag_t *fileName>
-    DeviceType(deviceTagStruct<DeviceClass, shortName, fullName, fileName>(*)())
+    template<class DeviceClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
+    DeviceType(deviceNameStruct<DeviceClass, shortName, fullName, fileName>(*)())
     : idType(typeid(DeviceClass)), creator(&createDevice<DeviceClass>),
       shortName(shortName), fullName(fullName), fileName(fileName)
     { }
 
-    Device *create(const SystemConfig &config, cstag_t &name, Device *owner, uint64_t clock) const
+    Device *create(const SystemConfig &config, cstr_t &name, Device *owner, uint64_t clock) const
     {
         assert(creator != nullptr);
         return creator(config, *this, name, owner, clock);
@@ -110,19 +87,18 @@ public:
 
     // Getter function calls
     inline const std::type_info &getType() const    { return idType; }
-    inline ctag_t *getFullName() const              { return fullName; }
-    inline ctag_t *getShortName() const             { return shortName; }
-    inline ctag_t *getSourceName() const            { return fileName; }
+    inline cchar_t *getFullName() const             { return fullName; }
+    inline cchar_t *getShortName() const            { return shortName; }
+    inline cchar_t *getSourceName() const           { return fileName; }
 
 private:
-    const std::type_info &idType = typeid(std::nullptr_t); // device type identification
+    const std::type_info &idType = typeid(std::nullptr_t);
     createFunc creator = nullptr;
 
-    ctag_t  *shortName = nullptr;   // Short name
-    ctag_t  *fullName = nullptr;    // Full name/description
-    ctag_t  *fileName = nullptr;    // Name of source file
+    cchar_t *shortName = nullptr;
+    cchar_t *fullName = nullptr;
+    cchar_t *fileName = nullptr;
 };
-
 template <class DeviceClass>
 class DeviceCreator : public DeviceType
 {
@@ -131,7 +107,7 @@ public:
     using DeviceType::create;
 
     template <typename... Args>
-    DeviceClass *create(SystemConfig &config, cstag_t &devName, Device *owner, Args &&... args) const
+    DeviceClass *create(SystemConfig &config, cstr_t &devName, Device *owner, Args &&... args) const
     {
         return new DeviceClass(config, devName, owner, std::forward<Args>(args)...);
     }
@@ -139,11 +115,11 @@ public:
     // For complete function calls, see them in templates.h file.
     
     template <typename... Args>
-    DeviceClass *operator () (SystemConfig &config, cstag_t &devName, Args&&... args) const;
+    DeviceClass *operator () (SystemConfig &config, cstr_t &devName, Args&&... args) const;
 
-    template <typename Exposed, bool Required, typename... Args>
-    DeviceClass &operator () (SystemConfig &config, DeviceFinder<Exposed, Required> &finder,
-        cstag_t &devName, Args &&... args) const;
+    // template <typename Exposed, bool Required, typename... Args>
+    // DeviceClass &operator () (SystemConfig &config, DeviceFinder<Exposed, Required> &finder,
+    //     cstr_t &devName, Args &&... args) const;
 
 };
 
@@ -162,19 +138,19 @@ extern DeviceCreator<Class> const &Type;
 
 #define DEFINE_DEVICE_TYPE(Type, Class, ShortName, FullName) \
 struct Class##_device_traits {                               \
-    static constexpr ctag_t shortName[] = ShortName;         \
-    static constexpr ctag_t fullName[]  = FullName;          \
-    static constexpr ctag_t fileName[]  = __FILE__;          \
+    static constexpr cchar_t shortName[] = ShortName;        \
+    static constexpr cchar_t fullName[]  = FullName;         \
+    static constexpr cchar_t fileName[]  = __FILE__;         \
 };                                                           \
-constexpr ctag_t Class##_device_traits::shortName[];         \
-constexpr ctag_t Class##_device_traits::fullName[];          \
-constexpr ctag_t Class##_device_traits::fileName[];          \
+constexpr cchar_t Class##_device_traits::shortName[];        \
+constexpr cchar_t Class##_device_traits::fullName[];         \
+constexpr cchar_t Class##_device_traits::fileName[];         \
 DeviceCreator<Class> const &Type = deviceCreator<Class,      \
     (Class##_device_traits::shortName),                      \
     (Class##_device_traits::fullName),                       \
     (Class##_device_traits::fileName)>;
 
-// ********
+using cDeviceType = const DeviceType;
 
 class Device : public BindedObject, public List<Device>
 {
@@ -183,52 +159,17 @@ public:
 
     virtual ~Device() = default;
 
-    // Getter function calls
-    inline const SystemConfig &getConfig() const    { return sysConfig; }
-    inline Device *getOwner() const                 { return owner; }
-    inline uint64_t getClock() const                { return clock; }
-    inline std::string getsDeviceName() const       { return devName; }
-    inline cchar_t *getcDeviceName() const          { return devName.c_str(); }
-    inline std::string getsPathName() const         { return pathName; }
-    inline cchar_t *getcPathName() const            { return pathName.c_str(); }
-    inline ctag_t *getFullName() const  { return type.getFullName(); }
-    inline ctag_t *getShortName() const { return type.getShortName(); }
+    Device *getOwner() const            { return owner; }
+    str_t getsDeviceName() const        { return devName; }
+    cchar_t *getcDeviceName() const     { return devName.c_str(); }
+    cchar_t *getFullName() const        { return type.getFullName(); }
+    cchar_t *getShortName() const       { return type.getShortName(); }
+    cchar_t *getSourceName() const      { return type.getSourceName(); }
 
-    inline const SystemConfig &getSystemConfig() const { return sysConfig; }
-
-    inline void setMachine(Machine *owner) { ownMachine = owner; }
-    
-    // Machine function calls
     void configure(SystemConfig &config);
-    void start();
-    void stop();
-    void reset();
 
     void addInterface(DeviceInterface *iface);
     void finishConfig();
-    void updateClock();
-    void resolvePostMapping();
-
-    Device *findDevice(ctag_t *name);
-    cfwEntry_t *getFirmwareEntries();
-
-    std::string expandPathName(cstag_t &pathName) const;
-
-    map::MemoryRegion *findMemoryRegion(cstag_t &name) const;
-    map::MemoryBank *findMemoryBank(cstag_t &name) const;
-    map::MemoryShare *findMemoryShare(cstag_t &name) const;
-
-    void registerObject(ObjectFinder *object);
-    bool findObjects();
-
-    // Virtual device function calls
-    virtual void devConfigure(SystemConfig &config) {}
-    virtual cfwEntry_t *devGetFirmwareEntries() { return nullptr; }
-    virtual void devResolveObjects() {}
-    virtual void devUpdateClock() {}
-    virtual void devStart() {}
-    virtual void devStop() {}
-    virtual void devReset() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
 	// If cast fails, return null pointer. For more information, check
@@ -246,43 +187,31 @@ public:
         return (iface = dynamic_cast<const DeviceClass *>(this)) != nullptr;
     }
 
-
 protected:
-    Device(const SystemConfig &config, const DeviceType &type, cstag_t &name, Device *owner, uint64_t clock);
+    Device(const SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock);
 
 private:
-    const DeviceType   &type;
-    const SystemConfig &sysConfig;
+    cDeviceType &type;
+    cSystemConfig &sysConfig;
 
-    ifaceList_t ifaceList;
-    std::vector<ObjectFinder *> objectList;
-
-    Machine *ownMachine = nullptr;
-    Device  *owner = nullptr;
-    bool flagStarted = false;
-
+    Device *owner = nullptr;
     uint64_t clock = 0;
 
-    std::string devName;  // Base of device name
-    std::string pathName; // full path device name
+    cstr_t devName;
 
-    cfwEntry_t *fwEntries = nullptr;
-
-protected:
-
-
+    ifaceList_t ifaceList;
 };
-
 class DeviceInterface
 {
     friend class Device;
 
 public:
-    DeviceInterface(Device *owner, ctag_t *name);
+    DeviceInterface(Device *owner, cstr_t &name);
     virtual ~DeviceInterface() = default;
 
-    inline Device *getOwningDevice() const { return owner; }
-    inline ctag_t *getName() const         { return diName; }
+    inline Device *getOwningDevice() const  { return owner; }
+    inline cstr_t  getsName() const         { return diName; }
+    inline cchar_t *getcName() const        { return diName.c_str(); }
 
     // Virtual device interface function calls
     virtual void diCompleteConfig() {}
@@ -290,9 +219,10 @@ public:
 
 private:
     Device *owner;
-    ctag_t *diName;
+    cstr_t diName;
 };
 
+// ******
 class DeviceIterator
 {
 public:

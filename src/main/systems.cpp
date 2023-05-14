@@ -1,19 +1,22 @@
+// systems.cpp - Systems database package
+//
+// Date:    May 11, 2023
+// Author:  Tim Stark
 
 #include "emu/core.h"
 #include "main/engine.h"
 
-#include "printers/epson/externs.h"
-#include "terminals/dec/externs.h"
+#include "systems/dec/externs.h"
 
 const SystemDriver *SystemEngine::sysList[] =
 {
-    // Printer series
-    &SYSTEM_NAME(ap2000),
-    &SYSTEM_NAME(mx80),
-    &SYSTEM_NAME(mx100),
+    // Computer lists
+    &SYSTEM_NAME(mv3900),
+    &SYSTEM_NAME(vs3900),
 
-    // Terminal series
-    &SYSTEM_NAME(vt100),
+    // ALphaStation/AlphaServer series
+    &SYSTEM_NAME(as200),
+    &SYSTEM_NAME(as400),
 
     // Terminator
     nullptr

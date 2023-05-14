@@ -1,8 +1,9 @@
-// list.h - list package
+// list.h - linked list package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    Dec 6, 2021
+// Date:    Apr 30, 2023
+// Author:  Tim Stark
 
+#pragma once
 template <typename T>
 class List
 {

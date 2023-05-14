@@ -1,7 +1,7 @@
-// main.cpp - main routines
+// main.cpp - main routine package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    Dec 6, 2021
+// Date:    Apr 30, 2023
+// Author:  Tim Stark
 
 #include "emu/core.h"
 #include "main/engine.h"
@@ -9,7 +9,7 @@
 
 int main(int argc, char **argv)
 {
-    std::cout << "Welcome to Multi-System Emulator System\n" << std::endl;
+    std::cout << fmt::format("Welcome to Multi-system Emulator System\n\n");
 
     SystemEngine engine;
     engine.ginit();
@@ -19,4 +19,6 @@ int main(int argc, char **argv)
 
     engine.gexit();
     exit(0);
+
+    return 0;
 }
