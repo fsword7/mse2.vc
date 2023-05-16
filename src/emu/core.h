@@ -38,6 +38,15 @@ using str_t = std::string;
 using cstr_t = const std::string;
 
 using offs_t = uint64_t;
+namespace map
+{
+    enum AddressType
+    {
+        asProgram = 0,  // Program address space
+        asData,         // Data address space
+        asIOPort        // I/O port address space
+    };
+}
 
 #include "emu/forward.h"
 #include "lib/util/list.h"

@@ -13,3 +13,18 @@ class Device;
 class DeviceInterface;
 class DeviceType;
 class Machine;
+class CPUDevice;
+class MemoryManager;
+
+namespace map
+{
+    class AddressEntry;
+    class AddressList;
+
+    class AddressConfig;
+    class AddressSpace;
+
+    template <int Level,  int dWidth, int aShift, endian_t eType>
+    class MemoryAccessSpecific;
+
+}
