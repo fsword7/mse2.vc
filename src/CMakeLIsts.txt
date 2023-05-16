@@ -12,6 +12,7 @@ set(MSE_CPP_SRCS
     main/systems.cpp
     main/user.cpp
     systems/dec/as200.cpp
+    systems/dec/es40.cpp
     systems/dec/mv3900.cpp
 )
 

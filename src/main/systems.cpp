@@ -17,6 +17,7 @@ const SystemDriver *SystemEngine::sysList[] =
     // ALphaStation/AlphaServer series
     &SYSTEM_NAME(as200),
     &SYSTEM_NAME(as400),
+    &SYSTEM_NAME(es40),
 
     // Terminator
     nullptr
