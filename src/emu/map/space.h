@@ -7,7 +7,7 @@
 
 namespace map
 {
-    // using Constructor = NamedDelegate<void (AddressList &)>;
+    using Constructor = NamedDelegate<void (AddressList &)>;
 
     class AddressConfig
     {
@@ -36,8 +36,8 @@ namespace map
         inline int16_t  getPageShift() const     { return pageShift; }
 
         // Internal address map list
-        // inline void setAddressMap(Constructor map) { imap = map; }
-        // inline Constructor getAddressMap() const   { return imap; }
+        inline void setAddressMap(Constructor map) { imap = map; }
+        inline Constructor getAddressMap() const   { return imap; }
 
         offs_t convertAddressToByte(offs_t offset) const
         {
@@ -75,7 +75,7 @@ namespace map
         int16_t  pageShift = 0;
 
         // Internal mapping
-        // Constructor imap = Constructor();
+        Constructor imap = Constructor();
     };
 
     struct AddressSpaceConfig

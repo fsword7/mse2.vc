@@ -1,7 +1,9 @@
-// alpha.h - AXP Processor package
+// axpcpu.h - Alpha Processor package
 //
 // Author:  Tim Stark
 // Date:    May 14, 2023
+
+#pragma once
 
 #define AXP_NGREGS  32      // 32 general registers
 #define AXP_NFREGS  32      // 32 floating-point registers
@@ -170,6 +172,22 @@
 #define ACC_ALTCM		0x0004   // Alternate current mode flag
 #define ACC_VPTE        0x0008   // Virtual page table entry
 
+// Memory Management - Superpage definitions
+// #define SPE0_MASK       0x0000'FFFF'C000'0000ull
+// #define SPE0_MATCH      0x0000'FFFF'8000'0000ull
+// #define SPE0_MAP        0x0000'0000'3FFF'FFFFull
+
+// #define SPE1_MASK       0x0000'FE00'0000'0000ull
+// #define SPE1_MATCH      0x0000'FC00'0000'0000ull
+// #define SPE1_MAP        0x0000'01FF'FFFF'FFFFull
+// #define SPE1_TEST       0x0000'0100'0000'0000ull
+// #define SPE1_ADD        0x0000'0E00'0000'0000ull
+
+// #define SPE2_MASK       0x0000'C000'0000'0000ull
+// #define SPE2_MATCH      0x0000'8000'0000'0000ull
+// #define SPE2_MAP        0x0000'0FFF'FFFF'FFFFull
+
+
 #define ABORT(why)
 
 #define FPSTART if (state.fpen == 0) ABORT(EXC_FPDIS);
@@ -186,27 +204,27 @@
 //#define RREG(reg)	((reg) & REG_MASK) + (state.vpcReg & PC_PAL_MODE) && ((reg) & 0x0c) == 0x04) && state.sde ? (REG_MASK+1) : 0)
 
 #define RREG2(reg) (((reg) & REG_MASK) + \
-	(((state.pcAddr & 1) && (((reg) & 0x0C) == 0x04) && state.sde) ? (REG_MASK+1) : 0))
+	(((axp.vpcAddr & 1) && (((reg) & 0x0C) == 0x04) && axp.sde) ? (REG_MASK+1) : 0))
 
 // executing instruction definitions
-#define RA		RREG2(OP_GETRA(state.opWord))
-#define RB		RREG2(OP_GETRB(state.opWord))
-#define RC		RREG2(OP_GETRC(state.opWord))
-#define RAV		state.iRegs[RA]
-#define RBV		state.iRegs[RB]
-#define RBVL	((state.opWord & OPC_LIT) ? OP_GETLIT(state.opWord) : state.iRegs[RB])
-#define RCV		state.iRegs[RC]
+#define RA		RREG2(OP_GETRA(axp.opWord))
+#define RB		RREG2(OP_GETRB(axp.opWord))
+#define RC		RREG2(OP_GETRC(axp.opWord))
+#define RAV		axp.gRegs[RA]
+#define RBV		axp.gRegs[RB]
+#define RBVL	((axp.opWord & OPC_LIT) ? OP_GETLIT(axp.opWord) : axp.gRegs[RB])
+#define RCV		axp.gRegs[RC]
 
-#define FA		OP_GETRA(state.opWord)
-#define FB		OP_GETRB(state.opWord)
-#define FC		OP_GETRC(state.opWord)
+#define FA		OP_GETRA(axp.opWord)
+#define FB		OP_GETRB(axp.opWord)
+#define FC		OP_GETRC(axp.opWord)
 #define FAV		state.fRegs[RA]
 #define FBV		state.fRegs[RB]
 #define FCV		state.fRegs[RC]
 
-#define DISP12  SXT12(state.opWord)
-#define DISP16	OP_GETMDP(state.opWord)
-#define DISP21  SXT21(state.opWord)
+#define DISP12  SXT12(axp.opWord)
+#define DISP16	OP_GETMDP(axp.opWord)
+#define DISP21  SXT21(axp.opWord)
 
 #define SXT12(val) SXTL((int32_t)(((val) & 0x800) ? ((val) | 0xFFFFF000) : ((val) & 0x00000FFF)))
 #define SXT21(val) SXTL((int32_t)(((val) & 0x100000) ? ((val) | 0xFFE00000) : ((val) & 0x001FFFFF)))
@@ -214,15 +232,54 @@
 #define SXT48(val) (((val) & 0x0000800000000000LL) \
 	? ((val) | 0xFFFF000000000000LL) : ((val) & 0x0000FFFFFFFFFFFFLL))
 
+#define setPC(vAddr)    { axp.vpcAddr = vAddr; }
+#define addPC(disp)     { axp.vpcAddr += disp; }
+#define nextPC()        { axp.vpcAddr += 4; }
+
+#include "emu/map/map.h"
+
 class AlphaProcessor : public CPUDevice
 {
 public:
     AlphaProcessor(const SystemConfig &config, cDeviceType &type,
-        cstr_t &devName, Device *owner, uint64_t clock);
+        cstr_t &devName, Device *owner, uint64_t clock,
+        int paWidth, int aWidth);
     ~AlphaProcessor() = default;
 
 protected:
-    uint64_t gRegs[AXP_NGREGS*2];   // 64-bit general registers (with shadow registers)
-    uint64_t fRegs[AXP_NFREGS];     // 64-bit floating registers
+    struct axpState
+    {
+        uint64_t gRegs[AXP_NGREGS*2];   // 64-bit general registers (with shadow registers)
+        uint64_t fRegs[AXP_NFREGS];     // 64-bit floating registers
+
+        uint64_t vpcAddr;               // Virtual PC address
+        uint64_t fpcAddr;               // Faulting PC address
+
+        uint64_t excAddr;               // Exceptions
+        uint64_t palBase;               // PAL Base Address
+
+        uint32_t opWord;                // Current instruction word
+
+        bool sde = false;               // Shadow enable flag
+
+        int icm = ACC_KERNEL;           // Current access mode
+        int dcm;                        // DTB access mode
+        int altcm;                      // Alternative access mode
+
+    } axp;
+
+    map::AddressConfig mapProgramConfig;
+
+    map::MemoryAccess<64, 3, 0, LittleEndian>::specific mapProgram;
+
+    // void translate();
+
+    // Virtual Hardware instructions for specific processors
+    virtual void pal_call() = 0;
+    virtual void hw_ld() = 0;
+    virtual void hw_st() = 0;
+    virtual void hw_rei() = 0;
+    virtual void hw_mtpr() = 0;
+    virtual void hw_mfpr() = 0;
 
 };

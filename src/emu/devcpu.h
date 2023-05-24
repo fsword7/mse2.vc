@@ -4,7 +4,12 @@
 // Author:  Tim Stark
 
 #pragma once
-class CPUDevice : public Device
+
+#include "emu/dimem.h"
+#include "emu/diexec.h"
+#include "emu/didebug.h"
+class CPUDevice : public Device,
+    public diMemory, public diExecute, public diDebug
 {
 public:
     CPUDevice(const SystemConfig &config, cDeviceType &type,

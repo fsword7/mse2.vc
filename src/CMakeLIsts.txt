@@ -1,10 +1,18 @@
 set(MSE_CPP_SRCS
-    dev/cpu/alpha/axp.cpp
+    dev/cpu/alpha/axpcpu.cpp
+    dev/cpu/alpha/axpmem.cpp
+    dev/cpu/alpha/ev4cpu.cpp
+    dev/cpu/alpha/ev5cpu.cpp
+    dev/cpu/alpha/ev6cpu.cpp
+    emu/map/addrmap.cpp
     emu/map/memmgr.cpp
     emu/map/space.cpp
     emu/devcpu.cpp
     emu/device.cpp
     emu/devsys.cpp
+    emu/didebug.cpp
+    emu/diexec.cpp
+    emu/dimem.cpp
     emu/machine.cpp
     emu/sysconfig.cpp
     main/commands.cpp
@@ -18,7 +26,13 @@ set(MSE_CPP_SRCS
 )
 
 set(MSE_H_SRCS
-    dev/cpu/alpha/axp.h
+    dev/cpu/alpha/axpcpu.h
+    dev/cpu/alpha/ev4cpu.h
+    dev/cpu/alpha/ev4ipr.h
+    dev/cpu/alpha/ev5cpu.h
+    dev/cpu/alpha/ev5ipr.h
+    dev/cpu/alpha/ev6cpu.h
+    emu/map/addrmap.h
     emu/map/he.h
     emu/map/maccess.h
     emu/map/map.h
@@ -30,6 +44,9 @@ set(MSE_H_SRCS
     emu/devcpu.h
     emu/device.h
     emu/devsys.h
+    emu/didebug.h
+    emu/diexec.h
+    emu/dimem.h
     emu/driver.h
     emu/forward.h
     emu/machine.h
