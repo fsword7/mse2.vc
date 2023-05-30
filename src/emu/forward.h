@@ -14,7 +14,8 @@ class DeviceInterface;
 class DeviceType;
 class Machine;
 class CPUDevice;
-class MemoryManager;
+
+class diMemory;
 
 namespace map
 {
@@ -27,4 +28,5 @@ namespace map
     template <int Level,  int dWidth, int aShift, endian_t eType>
     class MemoryAccessSpecific;
 
+    class MemoryManager;
 }

@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <map>
 
 #include <type_traits>
 #include <functional>
@@ -38,6 +39,12 @@ using str_t = std::string;
 using cstr_t = const std::string;
 
 using offs_t = uint64_t;
+
+template <typename T, typename U> constexpr T makeBitmask(U n)
+{
+    return T((n < (8 * sizeof(T)) ? (std::make_unsigned_t<T>(1) << n) : std::make_unsigned_t<T>(0)) - 1);
+}
+
 namespace map
 {
     enum AddressType

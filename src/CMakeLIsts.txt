@@ -6,6 +6,7 @@ set(MSE_CPP_SRCS
     dev/cpu/alpha/ev6cpu.cpp
     emu/map/addrmap.cpp
     emu/map/memmgr.cpp
+    emu/map/setup.cpp
     emu/map/space.cpp
     emu/devcpu.cpp
     emu/device.cpp

@@ -24,7 +24,7 @@ private:
     cstr_t sysName;
     Device *sysDevice = nullptr;
 
-    MemoryManager memoryManager;
+    map::MemoryManager memoryManager;
     // Scheduler scheduler;
     // VideoManager video;
 };

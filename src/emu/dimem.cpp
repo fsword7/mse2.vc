@@ -13,6 +13,18 @@ diMemory::diMemory(Device *owner)
 
 }
 
+void diMemory::diCompleteConfig()
+{
+    map::AddressConfigList list = getAddressConfigList();
+
+    for (const auto &entry : list)
+    {
+        if (entry.type >= mapAddressConfigList.size())
+            mapAddressConfigList.resize(entry.type + 1);
+        mapAddressConfigList[entry.type] = entry.config;
+    }
+}
+
 void diMemory::setAddressMap(map::AddressType space, map::Constructor map)
 {
     if (space >= mapAddressList.size())
