@@ -246,6 +246,8 @@ public:
         int paWidth, int aWidth);
     ~AlphaProcessor() = default;
 
+    map::AddressConfigList getAddressConfigList() const;
+    
 protected:
     struct axpState
     {

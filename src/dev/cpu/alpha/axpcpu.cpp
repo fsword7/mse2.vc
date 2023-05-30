@@ -17,3 +17,10 @@ AlphaProcessor::AlphaProcessor(const SystemConfig &config, cDeviceType &type,
     assert(paWidth == 34 || paWidth == 40 || paWidth == 44);
     
 }
+
+map::AddressConfigList AlphaProcessor::getAddressConfigList() const
+{
+    return map::AddressConfigList {
+		{ map::asProgram, &mapProgramConfig }
+	};
+}
