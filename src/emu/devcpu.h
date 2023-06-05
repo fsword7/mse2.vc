@@ -12,7 +12,7 @@ class CPUDevice : public Device,
     public diMemory, public diExecute, public diDebug
 {
 public:
-    CPUDevice(const SystemConfig &config, cDeviceType &type,
+    CPUDevice(SystemConfig &config, cDeviceType &type,
         cstr_t &devName, Device *owner, uint64_t clock);
 
 };

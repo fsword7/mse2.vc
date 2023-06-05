@@ -9,6 +9,16 @@
 
 #define DEVICE_SELF ""
 
+template <typename T> struct isDevice
+{
+    static constexpr bool value = std::is_base_of<Device, T>::value;
+};
+
+template <typename T> struct isInterface
+{
+    static constexpr bool value = std::is_base_of<DeviceInterface, T>::value;
+};
+
 // System creator package
 template<class SystemClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
 struct systemNameStruct
@@ -40,25 +50,24 @@ auto deviceNameFunc()
 }
 
 template<class DeviceClass, cchar_t *shortName, cchar_t *fullName, cchar_t *fileName>
-constexpr auto deviceCreator = &systemNameFunc<DeviceClass, shortName, fullName, fileName>;
-
+constexpr auto deviceCreator = &deviceNameFunc<DeviceClass, shortName, fullName, fileName>;
 
 
 class DeviceType
 {
 private:
-    typedef Device *(*createFunc)(const SystemConfig &config, const DeviceType &type,
+    typedef Device *(*createFunc)(SystemConfig &config, const DeviceType &type,
         cstr_t &name, Device *owner, uint64_t clock);
 
     template<typename SystemClass>
-    static Device *createSystem(const SystemConfig &config, const DeviceType &type,
+    static Device *createSystem(SystemConfig &config, const DeviceType &type,
         cstr_t &name, Device *owner, uint64_t clock)
     {
         return new SystemClass(config, type, name, clock);
     }
 
     template<typename DeviceClass>
-    static Device *createDevice(const SystemConfig &config, const DeviceType &type,
+    static Device *createDevice(SystemConfig &config, const DeviceType &type,
         cstr_t &name, Device *owner, uint64_t clock)
     {
         return new DeviceClass(config, name, owner, clock);
@@ -79,7 +88,7 @@ public:
       shortName(shortName), fullName(fullName), fileName(fileName)
     { }
 
-    Device *create(const SystemConfig &config, cstr_t &name, Device *owner, uint64_t clock) const
+    Device *create(SystemConfig &config, cstr_t &name, Device *owner, uint64_t clock) const
     {
         assert(creator != nullptr);
         return creator(config, *this, name, owner, clock);
@@ -201,7 +210,7 @@ public:
     }
 
 protected:
-    Device(const SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock);
+    Device(SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock);
 
 private:
     cDeviceType &type;

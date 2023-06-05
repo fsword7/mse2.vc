@@ -7,6 +7,6 @@
 class SystemDevice : public Device
 {
 public:
-    SystemDevice(const SystemConfig &config, cDeviceType &type, cstr_t &sysName, uint64_t clock);
+    SystemDevice(SystemConfig &config, cDeviceType &type, cstr_t &sysName, uint64_t clock);
 
 };

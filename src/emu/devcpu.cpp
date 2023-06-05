@@ -8,7 +8,7 @@
 #include "emu/map/addrmap.h"
 #include "emu/devcpu.h"
 
-CPUDevice::CPUDevice(const SystemConfig &config, cDeviceType &type,
+CPUDevice::CPUDevice(SystemConfig &config, cDeviceType &type,
     cstr_t &devName, Device *owner, uint64_t clock)
 : Device(config, type, devName, owner, clock),
   diMemory(this), diExecute(this), diDebug(this)

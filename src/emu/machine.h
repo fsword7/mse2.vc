@@ -9,7 +9,7 @@
 class Machine // : public sysDevice
 {
 public:
-    Machine(cSystemConfig &config, cstr_t &sysName);
+    Machine(SystemConfig &config, cstr_t &sysName);
     ~Machine() = default;
 
     inline cstr_t getDeviceName() const     { return sysDevice->getsDeviceName(); }
@@ -22,7 +22,7 @@ public:
     void start(UserConsole *user);
 
 private:
-    cSystemConfig &config;
+    SystemConfig &config;
     cstr_t sysName;
     Device *sysDevice = nullptr;
 

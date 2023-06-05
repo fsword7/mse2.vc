@@ -5,7 +5,7 @@
 
 #include "emu/core.h"
 
-Device::Device(const SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock)
+Device::Device(SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock)
 : sysConfig(config), type(type), devName(name), owner(owner), clock(clock)
 {
     // ifaceList.clear();

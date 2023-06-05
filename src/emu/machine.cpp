@@ -6,7 +6,7 @@
 #include "emu/core.h"
 #include "emu/machine.h"
 
-Machine::Machine(cSystemConfig &config, cstr_t &name)
+Machine::Machine(SystemConfig &config, cstr_t &name)
 : config(config), sysName(name), 
   sysDevice(config.getSystemDevice()),
   memoryManager(*this)

@@ -6,7 +6,7 @@
 #include "emu/core.h"
 #include "emu/devsys.h"
 
-SystemDevice::SystemDevice(const SystemConfig &config, cDeviceType &type, cstr_t &sysName, uint64_t clock)
+SystemDevice::SystemDevice(SystemConfig &config, cDeviceType &type, cstr_t &sysName, uint64_t clock)
 : Device(config, type, sysName, nullptr, clock)
 {
 
