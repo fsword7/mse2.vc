@@ -9,7 +9,7 @@
 class mv3900_Device : public SystemDevice
 {
 public:
-    mv3900_Device(const SystemConfig &config, const DeviceType &type, cstr_t &devName, uint64_t clock)
+    mv3900_Device(SystemConfig &config, const DeviceType &type, cstr_t &devName, uint64_t clock)
     : SystemDevice(config, type, devName, clock)
     //   cpu(*this, "i8080"),
     //   crt(*this, "VT100_Video"),

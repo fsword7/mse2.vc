@@ -8,7 +8,7 @@
 class EV5Processor : public AlphaProcessor
 {
 public:
-    EV5Processor(const SystemConfig &config, cDeviceType &type,
+    EV5Processor(SystemConfig &config, cDeviceType &type,
         cstr_t &devName, Device *owner, uint64_t clock);
     ~EV5Processor() = default;
 
@@ -27,3 +27,12 @@ private:
         uint64_t palTemp[24];   // PALtemp registers
     } ev5;
 };
+class axp21164_cpuDevice : public EV5Processor
+{
+public:
+	axp21164_cpuDevice(SystemConfig &config, cstr_t &devName, Device *owner, uint64_t clock);
+};
+
+DECLARE_DEVICE_TYPE(AXP21164, axp21164_cpuDevice);
+
+

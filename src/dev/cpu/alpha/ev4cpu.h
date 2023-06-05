@@ -15,7 +15,7 @@
 class EV4Processor : public AlphaProcessor
 {
 public:
-    EV4Processor(const SystemConfig &config, cDeviceType &type,
+    EV4Processor(SystemConfig &config, cDeviceType &type,
         cstr_t &devName, Device *owner, uint64_t clock);
     ~EV4Processor() = default;
 
@@ -40,11 +40,11 @@ private:
     } ev4;
 };
 
-// class axp21064_cpuDevice : public EV4Processor
-// {
-// public:
-// 	axp21064_cpuDevice(const SystemConfig &config, cstr_t &devName, Device *owner, uint64_t clock);
-// };
+class axp21064_cpuDevice : public EV4Processor
+{
+public:
+	axp21064_cpuDevice(SystemConfig &config, cstr_t &devName, Device *owner, uint64_t clock);
+};
 
-// DECLARE_DEVICE_TYPE(AXP21064, axp21064_cpuDevice);
+DECLARE_DEVICE_TYPE(AXP21064, axp21064_cpuDevice);
 

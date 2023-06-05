@@ -11,7 +11,7 @@
 #include "dev/cpu/alpha/ev4cpu.h"
 #include "dev/cpu/alpha/ev4ipr.h"
 
-EV4Processor::EV4Processor(const SystemConfig &config, cDeviceType &type,
+EV4Processor::EV4Processor(SystemConfig &config, cDeviceType &type,
     cstr_t &devName, Device *owner, uint64_t clock)
 : AlphaProcessor(config, type, devName, owner, clock, 34, 9)
 {
@@ -120,8 +120,8 @@ void EV4Processor::hw_mfpr()
     }
 }
 
-// DEFINE_DEVICE_TYPE(AXP21064, axp21064_cpuDevice, "AXP 21064", "DEC Alpha 21064")
+DEFINE_DEVICE_TYPE(AXP21064, axp21064_cpuDevice, "AXP 21064", "DEC Alpha 21064")
 
-// axp21064_cpuDevice::axp21064_cpuDevice(const SystemConfig &config, cstr_t &devName, Device *owner, uint64_t clock)
-// : EV4Processor(config, AXP21064, devName, owner, clock)
-// { }
+axp21064_cpuDevice::axp21064_cpuDevice(SystemConfig &config, cstr_t &devName, Device *owner, uint64_t clock)
+: EV4Processor(config, AXP21064, devName, owner, clock)
+{ }

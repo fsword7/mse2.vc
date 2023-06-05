@@ -241,7 +241,7 @@
 class AlphaProcessor : public CPUDevice
 {
 public:
-    AlphaProcessor(const SystemConfig &config, cDeviceType &type,
+    AlphaProcessor(SystemConfig &config, cDeviceType &type,
         cstr_t &devName, Device *owner, uint64_t clock,
         int paWidth, int aWidth);
     ~AlphaProcessor() = default;

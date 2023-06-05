@@ -9,7 +9,7 @@
 #include "emu/devcpu.h"
 #include "dev/cpu/alpha/axpcpu.h"
 
-AlphaProcessor::AlphaProcessor(const SystemConfig &config, cDeviceType &type,
+AlphaProcessor::AlphaProcessor(SystemConfig &config, cDeviceType &type,
     cstr_t &devName, Device *owner, uint64_t clock, int paWidth, int aWidth)
 : CPUDevice(config, type, devName, owner, clock),
   mapProgramConfig("program", LittleEndian,  64, 16, 8, 8,  paWidth, 16, aWidth, 8)
