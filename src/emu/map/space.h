@@ -148,17 +148,17 @@ namespace map
         offs_t getAddrMask() const { return addrMask; }
         uint64_t getUnmapped() const { return unmapValue; }
         
-        // template <int dWidth, int aShift>
-        // HandlerReadUnmapped<dWidth, aShift> *getUnmappedRead() const 
-        // { 
-        //     return static_cast<HandlerReadUnmapped<dWidth, aShift> *>(unmapRead);
-        // }
+        template <int dWidth, int aShift>
+        HandlerReadUnmapped<dWidth, aShift> *getUnmappedRead() const 
+        { 
+            return static_cast<HandlerReadUnmapped<dWidth, aShift> *>(unmapRead);
+        }
 
-        // template <int dWidth, int aShift>
-        // HandlerWriteUnmapped<dWidth, aShift> *getUnmappedWrite() const
-        // { 
-        //     return static_cast<HandlerWriteUnmapped<dWidth, aShift> *>(unmapWrite);
-        // }
+        template <int dWidth, int aShift>
+        HandlerWriteUnmapped<dWidth, aShift> *getUnmappedWrite() const
+        { 
+            return static_cast<HandlerWriteUnmapped<dWidth, aShift> *>(unmapWrite);
+        }
         
         // Setup initialization routines
         void prepare(UserConsole *user);

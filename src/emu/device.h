@@ -167,9 +167,22 @@ public:
     cchar_t *getSourceName() const      { return type.getSourceName(); }
 
     void configure(SystemConfig &config);
+    void start();
+    void stop();
+    void reset();
 
     void addInterface(DeviceInterface *iface);
     void finishConfig();
+
+    // Mapping calls
+    void resolveFinalMapping();
+    bool findObjects();
+
+    // Virtual device function calls
+    void devConfigure(SystemConfig &config) {}
+    void devStart() {}
+    void devStop() {}
+    void devReset() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
 	// If cast fails, return null pointer. For more information, check
@@ -193,6 +206,7 @@ protected:
 private:
     cDeviceType &type;
     cSystemConfig &sysConfig;
+    bool startedFlag = false;
 
     Device *owner = nullptr;
     uint64_t clock = 0;

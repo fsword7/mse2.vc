@@ -22,7 +22,38 @@ void Device::configure(SystemConfig &config)
     assert(&config == &sysConfig);
 
     // Device initialization
-    // devConfigure(config);   
+    devConfigure(config);   
+}
+
+void Device::start()
+{
+    devStart();
+    startedFlag = true;
+}
+
+void Device::stop()
+{
+    devStop();
+    startedFlag = false;
+}
+
+void Device::reset()
+{
+    devReset();
+}
+
+// **** Mapping function calls ****
+
+bool Device::findObjects()
+{
+    bool allFound = true;
+    
+    return false;
+}
+
+void Device::resolveFinalMapping()
+{
+    findObjects();
 }
 
 // **** Device Interface function calls ****

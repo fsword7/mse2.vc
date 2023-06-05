@@ -4,6 +4,7 @@
 // Author:  Tim Stark
 
 #include "emu/core.h"
+#include "emu/machine.h"
 #include "main/engine.h"
 #include "main/user.h"
 
@@ -30,6 +31,50 @@ SystemEngine::cmdStatus SystemEngine::cmdCreate(UserConsole *user, args_t &args)
     return cmdOk;
 }
 
+SystemEngine::cmdStatus SystemEngine::cmdDial(UserConsole *user, args_t &args)
+{
+    std::string devName = args.getNext();
+
+    if (devName == "none")
+    {
+        dial(nullptr, user);
+        std::cout << fmt::format("({}): Dialed system released\n", args[0]);
+    }
+    else
+    {
+        Machine *sysMachine = findSystem(devName);
+        if (sysMachine == nullptr)
+        {
+            std::cout << fmt::format("({}): system '{}' not found - not dialed\n",
+                args[0], devName);
+            return cmdOk;
+        }
+
+        dial(sysMachine, user);
+        std::cout << fmt::format("({}): Dialed system '{}'\n",
+            args[0], devName);
+    }
+
+    return cmdOk;
+}
+
+SystemEngine::cmdStatus SystemEngine::cmdStart(UserConsole *user, args_t &args)
+{
+    std::string devName = args.getNext();
+    Machine *sysMachine = findSystem(devName);
+
+    if (sysMachine == nullptr)
+    {
+        std::cout << fmt::format("{}: system not found\n", devName);
+        return cmdOk;
+    }
+
+    // Start system machine (final initialization)
+    sysMachine->start(user);
+
+    return cmdOk;
+}
+
 SystemEngine::cmdStatus SystemEngine::cmdQuit(UserConsole *user, args_t &args)
 {
     return cmdShutdown;
@@ -38,14 +83,14 @@ SystemEngine::cmdStatus SystemEngine::cmdQuit(UserConsole *user, args_t &args)
 SystemEngine::command_t SystemEngine::mseCommands[] =
 {
     { "create",   &SystemEngine::cmdCreate,                 nullptr },
-    // { "dial",     &SystemEngine::cmdDial,                   nullptr },
+    { "dial",     &SystemEngine::cmdDial,                   nullptr },
     // { "dumpp",    &SystemEngine::cmdDump<map::asProgram>,   nullptr },
     // { "dumpd",    &SystemEngine::cmdDump<map::asData>,      nullptr },
     // { "dumpio",   &SystemEngine::cmdDump<map::asIOPort>,    nullptr },
     // { "dumpm",    &SystemEngine::cmdDumpm,                  nullptr },
     // { "list",     &SystemEngine::cmdList,                   nullptr },
     // { "exit",     &SystemEngine::cmdQuit,                   nullptr },
-    // { "start",    &SystemEngine::cmdStart,                  nullptr },
+    { "start",    &SystemEngine::cmdStart,                  nullptr },
     // { "step",     &SystemEngine::cmdStep,                   nullptr },
     { "quit",     &SystemEngine::cmdQuit,                   nullptr },
 

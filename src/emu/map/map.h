@@ -6,7 +6,7 @@
 #pragma once
 
 #include "emu/map/he.h"
-// #include "emu/map/hun.h"
+#include "emu/map/heun.h"
 
 #include "emu/map/space.h"
 #include "emu/map/maccess.h"

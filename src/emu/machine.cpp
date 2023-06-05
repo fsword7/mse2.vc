@@ -28,3 +28,23 @@ void Machine::setConsole(UserConsole *user)
 {
 
 }
+
+void Machine::startAllDevices(UserConsole *user)
+{
+    for (Device &dev : DeviceIterator(*sysDevice))
+    {
+      std::cout << fmt::format("{}: starting {} device...\n",
+          dev.getcDeviceName(), dev.getShortName());
+      dev.start();
+    }
+}
+
+// starting machine during post-configuration stage
+void Machine::start(UserConsole *user)
+{
+    assert(sysDevice != nullptr);
+
+    // memoryManager.init(user);
+
+    startAllDevices(user);
+}

@@ -5,6 +5,7 @@ set(MSE_CPP_SRCS
     dev/cpu/alpha/ev5cpu.cpp
     dev/cpu/alpha/ev6cpu.cpp
     emu/map/addrmap.cpp
+    emu/map/heun.cpp
     emu/map/memmgr.cpp
     emu/map/setup.cpp
     emu/map/space.cpp
@@ -35,6 +36,7 @@ set(MSE_H_SRCS
     dev/cpu/alpha/ev6cpu.h
     emu/map/addrmap.h
     emu/map/he.h
+    emu/map/heun.h
     emu/map/maccess.h
     emu/map/map.h
     emu/map/memlib.h

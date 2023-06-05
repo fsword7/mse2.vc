@@ -15,9 +15,11 @@ public:
     inline cstr_t getDeviceName() const     { return sysDevice->getsDeviceName(); }
     inline Device *getSystemDevice() const  { return sysDevice; }
 
-    void setConsole(UserConsole *user);
-
     static Machine *create(UserConsole *user, cSystemDriver &driver, cstr_t &devName);
+
+    void setConsole(UserConsole *user);
+    void startAllDevices(UserConsole *user);
+    void start(UserConsole *user);
 
 private:
     cSystemConfig &config;
