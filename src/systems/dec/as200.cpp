@@ -52,7 +52,8 @@ private:
 
 void as200_Device::as200(SystemConfig &config)
 {
-    
+    // AXP21064(config, cpu, "cpu", 0);
+
 }
 
 void as200_Device::as200_init()
