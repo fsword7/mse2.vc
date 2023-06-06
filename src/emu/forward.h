@@ -9,6 +9,7 @@ class SystemEngine;
 class SystemDriver;
 class UserConsole;
 class SystemConfig;
+class ObjectFinder;
 class Device;
 class DeviceInterface;
 class DeviceType;
@@ -29,4 +30,9 @@ namespace map
     class MemoryAccessSpecific;
 
     class MemoryManager;
+    class MemoryBlock;
+    class MemoryRegion;
+    class MemoryShare;
+    class MemoryBank;
+
 }

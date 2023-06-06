@@ -14,6 +14,7 @@ public:
 
     inline cstr_t getDeviceName() const     { return sysDevice->getsDeviceName(); }
     inline Device *getSystemDevice() const  { return sysDevice; }
+    inline map::MemoryManager &getMemoryManager() { return memoryManager; }
 
     static Machine *create(UserConsole *user, cSystemDriver &driver, cstr_t &devName);
 

@@ -61,3 +61,4 @@ namespace map
 #include "emu/driver.h"
 #include "emu/sysconfig.h"
 #include "emu/device.h"
+#include "emu/objfinder.h"

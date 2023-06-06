@@ -108,6 +108,7 @@ private:
     cchar_t *fullName = nullptr;
     cchar_t *fileName = nullptr;
 };
+
 template <class DeviceClass>
 class DeviceCreator : public DeviceType
 {
@@ -168,9 +169,11 @@ public:
 
     virtual ~Device() = default;
 
-    Device *getOwner() const            { return owner; }
-    str_t getsDeviceName() const        { return devName; }
+    Device  *getOwner() const           { return owner; }
+    str_t    getsDeviceName() const     { return devName; }
+    str_t    getsPathName() const       { return pathName; }
     cchar_t *getcDeviceName() const     { return devName.c_str(); }
+    cchar_t *getcPathName() const       { return pathName.c_str(); }
     cchar_t *getFullName() const        { return type.getFullName(); }
     cchar_t *getShortName() const       { return type.getShortName(); }
     cchar_t *getSourceName() const      { return type.getSourceName(); }
@@ -185,7 +188,15 @@ public:
 
     // Mapping calls
     void resolveFinalMapping();
+    void registerObject(ObjectFinder *object);
     bool findObjects();
+
+    Device *findDevice(cchar_t *name);
+    str_t expandPathName(cstr_t &pathName) const;
+
+    map::MemoryRegion *findMemoryRegion(cstr_t &name) const;
+    map::MemoryBank *findMemoryBank(cstr_t &name) const;
+    map::MemoryShare *findMemoryShare(cstr_t &name) const;
 
     // Virtual device function calls
     void devConfigure(SystemConfig &config) {}
@@ -215,14 +226,19 @@ protected:
 private:
     cDeviceType &type;
     cSystemConfig &sysConfig;
-    bool startedFlag = false;
 
+    cstr_t devName;     // Base of device name
+    str_t  pathName;    // full path device name
+
+    Machine *ownMachine = nullptr;
     Device *owner = nullptr;
     uint64_t clock = 0;
 
-    cstr_t devName;
+    bool startedFlag = false;
 
     ifaceList_t ifaceList;
+    std::vector<ObjectFinder *> objectList;
+
 };
 class DeviceInterface
 {

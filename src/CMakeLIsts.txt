@@ -16,6 +16,7 @@ set(MSE_CPP_SRCS
     emu/diexec.cpp
     emu/dimem.cpp
     emu/machine.cpp
+    emu/objfinder.cpp
     emu/sysconfig.cpp
     main/commands.cpp
     main/engine.cpp
@@ -53,6 +54,7 @@ set(MSE_H_SRCS
     emu/driver.h
     emu/forward.h
     emu/machine.h
+    emu/objfinder.h
     emu/sysconfig.h
     lib/util/list.h
     main/engine.h
