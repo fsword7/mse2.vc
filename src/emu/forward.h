@@ -18,6 +18,9 @@ class CPUDevice;
 
 class diMemory;
 
+template <typename Exposed, bool Required>
+class DeviceFinder;
+
 namespace map
 {
     class AddressEntry;

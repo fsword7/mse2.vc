@@ -16,8 +16,8 @@ class as200_Device : public SystemDevice
 {
 public:
     as200_Device(SystemConfig &config, const DeviceType &type, cstr_t &devName, uint64_t clock)
-    : SystemDevice(config, type, devName, clock)
-    //   cpu(*this, "i8080"),
+    : SystemDevice(config, type, devName, clock),
+      cpu(*this, "DEC 21064")
     //   crt(*this, "VT100_Video"),
     //   usart(*this, "usart"),
     //   dbrg(*this, "dbrg"),
@@ -39,7 +39,7 @@ public:
     void as400_setProgram(map::AddressList &map);
 
 private:
-    // RequiredDevice<mcs80_cpuDevice> cpu;
+    RequiredDevice<axp21064_cpuDevice> cpu;
     // RequiredDevice<vt100video_t> crt;
     // RequiredDevice<i8251_Device> usart;
     // RequiredDevice<com5016_013_Device> dbrg;
@@ -52,7 +52,8 @@ private:
 
 void as200_Device::as200(SystemConfig &config)
 {
-    // AXP21064(config, cpu, "cpu", 0);
+    AXP21064(config, cpu, "cpu", 0);
+    cpu->setAddressMap(map::asProgram, &as200_Device::as200_setProgram);
 
 }
 
@@ -68,6 +69,8 @@ void as200_Device::as200_setProgram(map::AddressList &map)
 
 void as200_Device::as400(SystemConfig &config)
 {
+    AXP21064(config, cpu, "cpu", 0);
+    cpu->setAddressMap(map::asProgram, &as200_Device::as400_setProgram);
 
 }
 

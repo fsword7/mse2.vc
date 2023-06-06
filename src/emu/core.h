@@ -55,6 +55,22 @@ namespace map
     };
 }
 
+template <typename Dest, typename Source>
+inline Dest mse_static_cast(Source *src)
+{
+#ifdef ENABLE_DEBUG
+#endif /* ENABLE_DEBUG */
+	return static_cast<Dest>(src);
+}
+
+template <class Dest, class Source>
+inline Dest mse_static_cast(Source &src)
+{
+#ifdef ENABLE_DEBUG
+#endif /* ENABLE_DEBUG */
+	return static_cast<Dest>(src);
+}
+
 #include "emu/forward.h"
 #include "lib/util/list.h"
 #include "emu/delegate.h"
@@ -62,3 +78,6 @@ namespace map
 #include "emu/sysconfig.h"
 #include "emu/device.h"
 #include "emu/objfinder.h"
+
+#include "emu/templates.h"
+

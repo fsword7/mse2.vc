@@ -21,27 +21,27 @@ AddressList::AddressList(Device &dev, AddressType space)
     dev.hasInterface(bus);
     assert(bus != nullptr);
 
-    // config = bus->getAddressConfig(space);
-    // assert(config != nullptr);
+    config = bus->getAddressConfig(space);
+    assert(config != nullptr);
 
-    // // mapping space with system device
-    // Constructor map = bus->getAddressMap(space);
-    // if (!map.isNull())
-    // {
-    //     // with system device
-    //     owner = device.getOwner();
-    //     map(*this);
-    // }
+    // mapping space with system device
+    Constructor map = bus->getAddressMap(space);
+    if (!map.isNull())
+    {
+        // with system device
+        owner = device.getOwner();
+        map(*this);
+    }
 
-    // // mapping space with internal device
-    // // That dhould be last so that it takes a priority
-    // map = config->getAddressMap();
-    // if (!map.isNull())
-    // {
-    //     // with internal device
-    //     owner = &dev;
-    //     map(*this);
-    // }
+    // mapping space with internal device
+    // That dhould be last so that it takes a priority
+    map = config->getAddressMap();
+    if (!map.isNull())
+    {
+        // with internal device
+        owner = &dev;
+        map(*this);
+    }
 }
 
 AddressList::~AddressList()

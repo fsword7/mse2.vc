@@ -21,7 +21,7 @@ void MemoryManager::init(UserConsole *user)
     for (diMemory &bus : InterfaceIterator<diMemory>(*sysMachine.getSystemDevice()))
     {
         list.push_back(&bus);
-        // allocate(user, bus);
+        allocate(user, bus);
     }
 }
 

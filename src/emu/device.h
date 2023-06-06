@@ -127,9 +127,9 @@ public:
     template <typename... Args>
     DeviceClass *operator () (SystemConfig &config, cstr_t &devName, Args&&... args) const;
 
-    // template <typename Exposed, bool Required, typename... Args>
-    // DeviceClass &operator () (SystemConfig &config, DeviceFinder<Exposed, Required> &finder,
-    //     cstr_t &devName, Args &&... args) const;
+    template <typename Exposed, bool Required, typename... Args>
+    DeviceClass &operator () (SystemConfig &config, DeviceFinder<Exposed, Required> &finder,
+        cstr_t &devName, Args &&... args) const;
 
 };
 
@@ -170,6 +170,7 @@ public:
     virtual ~Device() = default;
 
     Device  *getOwner() const           { return owner; }
+    SystemConfig &getConfig() const     { return sysConfig; }
     str_t    getsDeviceName() const     { return devName; }
     str_t    getsPathName() const       { return pathName; }
     cchar_t *getcDeviceName() const     { return devName.c_str(); }
@@ -225,7 +226,7 @@ protected:
 
 private:
     cDeviceType &type;
-    cSystemConfig &sysConfig;
+    SystemConfig &sysConfig;
 
     cstr_t devName;     // Base of device name
     str_t  pathName;    // full path device name
