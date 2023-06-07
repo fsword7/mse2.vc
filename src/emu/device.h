@@ -200,10 +200,10 @@ public:
     map::MemoryShare *findMemoryShare(cstr_t &name) const;
 
     // Virtual device function calls
-    void devConfigure(SystemConfig &config) {}
-    void devStart() {}
-    void devStop() {}
-    void devReset() {}
+    virtual void devConfigure(SystemConfig &config) {}
+    virtual void devStart() {}
+    virtual void devStop() {}
+    virtual void devReset() {}
 
 	// Dynamic_cast safely converts references and pointers to up, down and sideways. 
 	// If cast fails, return null pointer. For more information, check

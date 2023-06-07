@@ -17,7 +17,7 @@ class as200_Device : public SystemDevice
 public:
     as200_Device(SystemConfig &config, const DeviceType &type, cstr_t &devName, uint64_t clock)
     : SystemDevice(config, type, devName, clock),
-      cpu(*this, "DEC 21064")
+      cpu(*this, "cpu")
     //   crt(*this, "VT100_Video"),
     //   usart(*this, "usart"),
     //   dbrg(*this, "dbrg"),

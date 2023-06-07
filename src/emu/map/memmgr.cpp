@@ -12,7 +12,7 @@ using namespace map;
 
 void MemoryManager::init(UserConsole *user)
 {
-    std::cout << fmt::format("{}: Memory Management Initialiation...",
+    std::cout << fmt::format("{}: Memory Management Initialiation...\n",
         sysMachine.getDeviceName());
 
     std::vector<diMemory *> list;
@@ -23,6 +23,12 @@ void MemoryManager::init(UserConsole *user)
         list.push_back(&bus);
         allocate(user, bus);
     }
+
+    for (auto const bus : list)
+        bus->prepare(user);
+
+    for (auto const bus : list)
+        bus->populate(user);   
 }
 
 // Memory block function call definitions

@@ -93,6 +93,20 @@ public:
 
         mapAddressSpaceList[space] = new Space(manager, *this, space, mapAddressConfigList[space]->getAddrWidth());
     }
+    
+    void prepare(UserConsole *user)
+    {
+        for (auto &space : mapAddressSpaceList)
+            if (space != nullptr)
+                space->prepare(user);
+    }
+
+    void populate(UserConsole *user)
+    { 
+        for (auto &space : mapAddressSpaceList)
+            if (space != nullptr)
+                space->populate(user);
+    }
 
 private:
     Device &owner;

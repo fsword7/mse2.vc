@@ -44,7 +44,11 @@ void Machine::start(UserConsole *user)
 {
     assert(sysDevice != nullptr);
 
-    // memoryManager.init(user);
+    memoryManager.init(user);
+
+    // Finding required objects to being linked
+    for (Device &dev : DeviceIterator(*sysDevice))
+        dev.resolveFinalMapping();
 
     startAllDevices(user);
 }
