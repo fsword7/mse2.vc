@@ -128,7 +128,7 @@ Machine *SystemEngine::createMachine(UserConsole *user, cstr_t &devName, cstr_t 
         return nullptr;
     }
 
-    Machine *sysMachine = Machine::create(user, *driver, devName);
+    Machine *sysMachine = new Machine(user, *driver, devName);
 
     if (sysMachine != nullptr)
         machines.push_back(sysMachine);

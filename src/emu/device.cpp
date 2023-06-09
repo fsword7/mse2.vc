@@ -7,7 +7,8 @@
 #include "emu/machine.h"
 
 Device::Device(SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock)
-: sysConfig(config), type(type), devName(name), owner(owner), clock(clock)
+: sysConfig(config), type(type), ownMachine(config.getMachine()),
+  devName(name), owner(owner), clock(clock)
 {
     ifaceList.clear();
 
@@ -96,20 +97,17 @@ void Device::resolveFinalMapping()
 
 map::MemoryRegion *Device::findMemoryRegion(cstr_t &name) const
 {
-    assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findRegion(expandPathName(name));
+    return ownMachine.getMemoryManager().findRegion(expandPathName(name));
 }
 
 map::MemoryBank *Device::findMemoryBank(cstr_t &name) const
 {
-    assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findBank(expandPathName(name));
+    return ownMachine.getMemoryManager().findBank(expandPathName(name));
 }
 
 map::MemoryShare *Device::findMemoryShare(cstr_t &name) const
 {
-    assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findShare(expandPathName(name));
+    return ownMachine.getMemoryManager().findShare(expandPathName(name));
 }
 
 // **** Device Interface function calls ****

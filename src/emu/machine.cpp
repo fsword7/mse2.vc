@@ -6,27 +6,16 @@
 #include "emu/core.h"
 #include "emu/machine.h"
 
-Machine::Machine(SystemConfig &config, cstr_t &name)
-: config(config), sysName(name), 
-  sysDevice(config.getSystemDevice()),
-  memoryManager(*this)
+Machine::Machine(UserConsole *user, cSystemDriver &driver, cstr_t &name)
+: sysName(name), user(user),
+  memoryManager(*this),
+  config(driver, name, *this)
 {
-    // Assign this to all devices
-    // for (Device &dev : DeviceIterator(*sysDevice))
-    //     dev.setMachine(this);
-}
-
-Machine *Machine::create(UserConsole *user, cSystemDriver &driver, cstr_t &devName)
-{
-    SystemConfig *config = new SystemConfig(driver, devName);
-    Machine *sysMachine = new Machine(*config, devName);
-
-    return sysMachine;
+    sysDevice = config.getSystemDevice();
 }
 
 void Machine::setConsole(UserConsole *user)
 {
-
 }
 
 void Machine::startAllDevices(UserConsole *user)

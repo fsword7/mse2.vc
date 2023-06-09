@@ -7,7 +7,7 @@
 class SystemConfig
 {
 public:
-    SystemConfig(cSystemDriver &driver, cstr_t &name);
+    SystemConfig(cSystemDriver &driver, cstr_t &name, Machine &machine);
 
     Device *createSystemDevice(const DeviceType &type, cstr_t &name, uint64_t clock = 0);
     Device *addDevice(Device *dev, Device *owner = nullptr);
@@ -26,13 +26,15 @@ public:
     inline Device *getSystemDevice() const  { return sysDevice; }
     inline Device *getCurrentDevice() const { return curDevice; }
     inline Device *getConfigDevice() const  { return !cfgDevice.empty() ? cfgDevice.top() : nullptr; }
-    
+    inline Machine &getMachine() const      { return ownMachine; }
+
     inline const SystemDriver &getSystemDriver() const { return driver; }
 
     void setPerfectQuantum(Device &device, cstr_t &devName);
 
 private:
     const SystemDriver &driver;
+    Machine &ownMachine;
 
     Device *sysDevice = nullptr;
     Device *curDevice = nullptr;

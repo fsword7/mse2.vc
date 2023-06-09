@@ -227,11 +227,12 @@ protected:
 private:
     cDeviceType &type;
     SystemConfig &sysConfig;
+    Machine &ownMachine;
 
     cstr_t devName;     // Base of device name
     str_t  pathName;    // full path device name
 
-    Machine *ownMachine = nullptr;
+    // Machine *ownMachine = nullptr;
     Device *owner = nullptr;
     uint64_t clock = 0;
 

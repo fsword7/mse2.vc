@@ -5,8 +5,8 @@
 
 #include "emu/core.h"
 
-SystemConfig::SystemConfig(cSystemDriver &driver, cstr_t &name)
-: driver(driver)
+SystemConfig::SystemConfig(cSystemDriver &driver, cstr_t &name, Machine &machine)
+: driver(driver), ownMachine(machine)
 {
     createSystemDevice(driver.type, name, 0);
 
