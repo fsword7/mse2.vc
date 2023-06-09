@@ -17,7 +17,8 @@ class as200_Device : public SystemDevice
 public:
     as200_Device(SystemConfig &config, const DeviceType &type, cstr_t &devName, uint64_t clock)
     : SystemDevice(config, type, devName, clock),
-      cpu(*this, "cpu")
+      cpu(*this, "cpu"),
+      ramData(*this, "ram")
     //   crt(*this, "VT100_Video"),
     //   usart(*this, "usart"),
     //   dbrg(*this, "dbrg"),
@@ -46,7 +47,7 @@ private:
     // RequiredDevice<rs232_portDevice> rs232;
     // RequiredDevice<er1400_Device> nvr;
 
-    // RequiredSharedPointer<uint8_t> ramData;
+    RequiredRegionPointer<uint8_t> ramData;
 };
 
 
@@ -64,7 +65,7 @@ void as200_Device::as200_init()
 
 void as200_Device::as200_setProgram(map::AddressList &map)
 {
-    map(0x0000'0000, 0x17FF'FFFF).ram().size(0x1000'0000).expandable().share("ram");
+    map(0x0000'0000, 0x17FF'FFFF).ram().size(0x1000'0000).expandable().region("ram");
 }
 
 void as200_Device::as400(SystemConfig &config)
@@ -81,7 +82,7 @@ void as200_Device::as400_init()
 
 void as200_Device::as400_setProgram(map::AddressList &map)
 {
-    map(0x0000'0000, 0x17FF'FFFF).ram().size(0x1000'0000).expandable().share("ram");
+    map(0x0000'0000, 0x17FF'FFFF).ram().size(0x1000'0000).expandable().region("ram");
 }
 
 COMPUTER(as200, nullptr, dec, as200, as200_Device, as200, as200_init, "DEC", "AlphaStation 200", SYSTEM_NOT_WORKING);

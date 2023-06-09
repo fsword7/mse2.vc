@@ -159,7 +159,8 @@ namespace map
     class AddressList
     {
         friend class AddressEntry;
-    
+        friend class AddressSpace;
+
     public:
         AddressList(Device &dev, AddressType space);
         ~AddressList();
