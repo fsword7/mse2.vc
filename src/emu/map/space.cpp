@@ -9,6 +9,8 @@
 
 #include "emu/map/hea.h"
 #include "emu/map/hem.h"
+#include "emu/map/hedp.h"
+
 #include "emu/map/hedr.h"
 #include "emu/map/hedw.h"
 
@@ -645,16 +647,16 @@ namespace map
             offs_t nstart, nend, nmask, nmirror;
             convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
 
-            // if (dWidth == accWidth)
-            // {
-            //     auto handler = new HandlerReadDelegate<dWidth, aShift, Read>(this, 0, rHandler);
-            //     handler->setAddressSpace(nstart, nend);
-            //     rootRead->populate(nstart, nend, nmirror, handler);
-            // }
-            // else
-            // {
+            if (dWidth == accWidth)
+            {
+                auto handler = new HandlerReadDelegate<dWidth, aShift, Read>(this, 0, rHandler);
+                handler->setAddressSpace(nstart, nend);
+                rootRead->populate(nstart, nend, nmirror, handler);
+            }
+            else
+            {
 
-            // }
+            }
         }
 
         template <int accWidth, typename Write>
@@ -678,16 +680,16 @@ namespace map
             offs_t nstart, nend, nmask, nmirror;
             convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
 
-            // if (dWidth == accWidth)
-            // {
-            //     auto handler = new HandlerWriteDelegate<dWidth, aShift, Write>(this, 0, wHandler);
-            //     handler->setAddressSpace(nstart, nend);
-            //     rootWrite->populate(nstart, nend, nmirror, handler);
-            // }
-            // else
-            // {
+            if (dWidth == accWidth)
+            {
+                auto handler = new HandlerWriteDelegate<dWidth, aShift, Write>(this, 0, wHandler);
+                handler->setAddressSpace(nstart, nend);
+                rootWrite->populate(nstart, nend, nmirror, handler);
+            }
+            else
+            {
 
-            // }
+            }
 
         }
     };
