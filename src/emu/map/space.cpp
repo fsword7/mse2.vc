@@ -7,11 +7,51 @@
 #include "emu/map/map.h"
 #include "emu/map/memmgr.h"
 
+#include "emu/map/hea.h"
+#include "emu/map/hem.h"
+#include "emu/map/hedr.h"
+#include "emu/map/hedw.h"
 
 #include "emu/dimem.h"
 
 namespace map
 {
+     
+    template <typename Delegate> struct HandlerWidth;
+
+    template <> struct HandlerWidth<read8d_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<read8do_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<read8dom_t> { static constexpr int value = 0; };
+
+    template <> struct HandlerWidth<read16d_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<read16do_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<read16dom_t> { static constexpr int value = 1; };
+
+    template <> struct HandlerWidth<read32d_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<read32do_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<read32dom_t> { static constexpr int value = 2; };
+
+    template <> struct HandlerWidth<read64d_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<read64do_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<read64dom_t> { static constexpr int value = 3; };
+
+
+    template <> struct HandlerWidth<write8d_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<write8do_t> { static constexpr int value = 0; };
+    template <> struct HandlerWidth<write8dom_t> { static constexpr int value = 0; };
+
+    template <> struct HandlerWidth<write16d_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<write16do_t> { static constexpr int value = 1; };
+    template <> struct HandlerWidth<write16dom_t> { static constexpr int value = 1; };
+
+    template <> struct HandlerWidth<write32d_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<write32do_t> { static constexpr int value = 2; };
+    template <> struct HandlerWidth<write32dom_t> { static constexpr int value = 2; };
+
+    template <> struct HandlerWidth<write64d_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<write64do_t> { static constexpr int value = 3; };
+    template <> struct HandlerWidth<write64dom_t> { static constexpr int value = 3; };
+
     template <int Level, int dWidth, int aShift, endian_t eType>
     class AddressSpaceSpecific : public AddressSpace
     {
@@ -192,11 +232,86 @@ namespace map
                 //     rootRead = new HandlerReadDispatch<32, dWidth, aShift>(this, r, nullptr);
                 //     rootWrite = new HandlerWriteDispatch<32, dWidth, aShift>(this, r, nullptr);
                 //     break;
+
+                case 33:
+                    rootRead = new HandlerReadDispatch<33, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<33, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 34:
+                    rootRead = new HandlerReadDispatch<34, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<34, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 35:
+                    rootRead = new HandlerReadDispatch<35, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<35, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 36:
+                    rootRead = new HandlerReadDispatch<36, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<36, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 37:
+                    rootRead = new HandlerReadDispatch<37, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<37, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 38:
+                    rootRead = new HandlerReadDispatch<38, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<38, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 39:
+                    rootRead = new HandlerReadDispatch<39, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<39, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 40:
+                    rootRead = new HandlerReadDispatch<40, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<40, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 41:
+                    rootRead = new HandlerReadDispatch<41, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<41, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 42:
+                    rootRead = new HandlerReadDispatch<42, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<42, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 43:
+                    rootRead = new HandlerReadDispatch<43, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<43, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 44:
+                    rootRead = new HandlerReadDispatch<44, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<44, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 45:
+                    rootRead = new HandlerReadDispatch<45, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<45, dWidth, aShift>(this, r, nullptr);
+                    break;
+     
+                case 46:
+                    rootRead = new HandlerReadDispatch<46, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<46, dWidth, aShift>(this, r, nullptr);
+                    break;
+
+                case 47:
+                    rootRead = new HandlerReadDispatch<47, dWidth, aShift>(this, r, nullptr);
+                    rootWrite = new HandlerWriteDispatch<47, dWidth, aShift>(this, r, nullptr);
+                    break;
             }
 
             // Assign dispatch table for direct read/write accesses
-            // dispatchRead = rootRead->getDispatch();
-            // dispatchWrite = rootWrite->getDispatch();
+            dispatchRead = rootRead->getDispatch();
+            dispatchWrite = rootWrite->getDispatch();
             
             std::cout << fmt::format("{}: Global address range {:0{}X} - {:0{}X} ({}-bit addressing)\n",
                 dev.getsDeviceName(), r.start, config.getAddrPrecision(),
@@ -292,7 +407,289 @@ namespace map
         {
         }
 
+        // ****************************
+        // * Address Space Installers *
+        // ****************************
 
+        void convertAddressMirror(offs_t start, offs_t end, offs_t mirror,
+            offs_t &nstart, offs_t &nend, offs_t &nmask, offs_t &nmirror)
+        {
+            offs_t lowMask    = (config.getDataWidth() >> config.getAddrShift()) - 1;
+            offs_t setBits    = start | end;
+            offs_t changeBits = start ^ end;
+
+            changeBits |= changeBits >> 1;
+            changeBits |= changeBits >> 2;
+            changeBits |= changeBits >> 4;
+            changeBits |= changeBits >> 8;
+            changeBits |= changeBits >> 16;
+
+            nstart  = start;
+            nend    = end;
+            nmask   = changeBits;
+            nmirror = mirror;
+        }
+
+        void setUnmapped(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint64_t flags, AccessType acc, bool quiet)
+        {
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            if (acc == accRead)
+            {
+                // auto handler = quiet ?
+                //     static_cast<HandlerRead<dWidth, aShift> *>(new HandlerReadNop<dWidth, aShift>(this)) : 
+                //     static_cast<HandlerRead<dWidth, aShift> *>(new HandlerReadUnmapped<dWidth, aShift>(this));
+                auto handler = static_cast<HandlerRead<dWidth, aShift> *>(quiet ? nopRead : unmapRead); 
+                handler->ref();
+                rootRead->populate(nstart, nend, nmirror, handler);
+            }
+
+            if (acc == accWrite)
+            {
+                // auto handler = quiet ?
+                //     static_cast<HandlerWrite<dWidth, aShift> *>(new HandlerWriteNop<dWidth, aShift>(this)) : 
+                //     static_cast<HandlerWrite<dWidth, aShift> *>(new HandlerWriteUnmapped<dWidth, aShift>(this));
+                auto handler = static_cast<HandlerWrite<dWidth, aShift> *>(quiet ? nopWrite : unmapWrite); 
+                handler->ref();
+                rootWrite->populate(nstart, nend, nmirror, handler);
+            }
+        }
+
+        void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) override
+        {
+            assert(data != nullptr);
+
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            if (acc == accRead)
+            {
+                auto handler = new HandlerReadMemory<dWidth, aShift>(this, data);
+                handler->setAddressSpace(nstart, nend);
+                rootRead->populate(nstart, nend, nmirror, handler);
+            }
+
+            if (acc == accWrite)
+            {
+                auto handler = new HandlerWriteMemory<dWidth, aShift>(this, data);
+                handler->setAddressSpace(nstart, nend);
+                rootWrite->populate(nstart, nend, nmirror, handler);
+            }
+        }
+
+
+
+        // 8-bit read device delegate call setup
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read8d_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read8do_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read8dom_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 16-bit read device delegate call setup 
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read16d_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read16do_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read16dom_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 32-bit read device delegate call setup
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read32d_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read32do_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read32dom_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 64-bit read device delegate call setup
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read64d_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read64do_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  read64dom_t handler) override
+        {
+            setReadHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 8-bit write device delegate call setup
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write8d_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write8do_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write8dom_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 16-bit write device delegate call setup
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write16d_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write16do_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write16dom_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 32-bit write device delegate call setup
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write32d_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write32do_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write32dom_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        // 64-bit write device delegate call setup
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write64d_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write64do_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        void setWriteHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror,  write64dom_t handler) override
+        {
+            setWriteHandleri(addrStart, addrEnd, addrMask, addrMirror, handler);
+        }
+
+        template <typename Read>
+        void setReadHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, Read &rHandler)
+        {
+            rHandler.resolve();
+
+            setReadHandlerHelper<HandlerWidth<Read>::value>(addrStart, addrEnd, addrMask, addrMirror, rHandler);
+        }
+
+        template <typename Write>
+        void setWriteHandleri(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, Write &wHandler)
+        {
+            wHandler.resolve();
+
+            setWriteHandlerHelper<HandlerWidth<Write>::value>(addrStart, addrEnd, addrMask, addrMirror, wHandler);
+        }
+
+        template <int accWidth, typename Read>
+        void setReadHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Read &rHandler)
+        {
+            if constexpr(dWidth < accWidth)
+            {
+                std::cout << fmt::format("{}: (R) Can't set a {}-bit handler in {}-bit bus\n",
+                    device.getsDeviceName(), 8 << accWidth, 8 << dWidth);
+                return;
+            }
+
+            std::cout << fmt::format("{}: {:0{}X}-{:0{}X} Mask {:0{}X} Mirror {:0{}X} - {}-bit read delegate {} on {}-bit bus\n",
+                device.getsDeviceName(),
+                addrStart, config.getAddrPrecision(),
+                addrEnd, config.getAddrPrecision(),
+                addrMask, config.getAddrPrecision(),
+                addrMirror, config.getAddrPrecision(),
+                8 << accWidth, rHandler.getName(), 8 << dWidth);
+
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            // if (dWidth == accWidth)
+            // {
+            //     auto handler = new HandlerReadDelegate<dWidth, aShift, Read>(this, 0, rHandler);
+            //     handler->setAddressSpace(nstart, nend);
+            //     rootRead->populate(nstart, nend, nmirror, handler);
+            // }
+            // else
+            // {
+
+            // }
+        }
+
+        template <int accWidth, typename Write>
+        void setWriteHandlerHelper(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, const Write &wHandler)
+        {
+            if constexpr(dWidth < accWidth)
+            {
+                std::cout << fmt::format("{}: (W) Can't set a {}-bit handler in {}-bit bus\n",
+                    device.getsDeviceName(), 8 << accWidth, 8 << dWidth);
+                return;
+            }
+
+            std::cout << fmt::format("{}: {:0{}X}-{:0{}X} Mask {:0{}X} Mirror {:0{}X} - {}-bit write delegate {} on {}-bit bus\n",
+                device.getsDeviceName(),
+                addrStart, config.getAddrPrecision(),
+                addrEnd, config.getAddrPrecision(),
+                addrMask, config.getAddrPrecision(),
+                addrMirror, config.getAddrPrecision(),
+                8 << accWidth, wHandler.getName(), 8 << dWidth);
+
+            offs_t nstart, nend, nmask, nmirror;
+            convertAddressMirror(addrStart, addrEnd, addrMirror, nstart, nend, nmask, nmirror);
+
+            // if (dWidth == accWidth)
+            // {
+            //     auto handler = new HandlerWriteDelegate<dWidth, aShift, Write>(this, 0, wHandler);
+            //     handler->setAddressSpace(nstart, nend);
+            //     rootWrite->populate(nstart, nend, nmirror, handler);
+            // }
+            // else
+            // {
+
+            // }
+
+        }
     };
 
     // ********
