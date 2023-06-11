@@ -37,6 +37,10 @@ set(MSE_H_SRCS
     dev/cpu/alpha/ev6cpu.h
     emu/map/addrmap.h
     emu/map/he.h
+    emu/map/hea.h
+    emu/map/hedr.h
+    emu/map/hedw.h
+    emu/map/hem.h
     emu/map/heun.h
     emu/map/maccess.h
     emu/map/map.h
