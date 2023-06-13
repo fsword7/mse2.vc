@@ -38,6 +38,9 @@ namespace map
             data.resize(bytes);
         }
 
+        inline cstr_t &getsName() const  { return name; }
+        inline cchar_t *getcName() const { return name.c_str(); }
+        
         inline uint8_t *getData() const { return data.data(); }
         inline size_t getSize() const   { return data.size(); }
         inline size_t getBytes() const  { return data.size(); }

@@ -194,10 +194,17 @@ namespace map
                     entry->addrEnd, config.getAddrPrecision(),
                     entry->regionName ? fullName : "anonymous");
 
-                entry->memData = manager.allocateMemory(entry->device, space, 
-                    entry->regionName ? fullName : "(anonymous)",
-                    config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
-                    config.getDataWidth(), config.getEndianType());
+                if (entry->regionName != nullptr)
+                {
+                    MemoryRegion *region = manager.allocateRegion(entry->device, space, entry->regionName,
+                        config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
+                        config.getDataWidth(), config.getEndianType());
+                    entry->memData = region->getData();
+                }
+                else
+                    entry->memData = manager.allocateMemory(entry->device, space, "(anonymous)",
+                        config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
+                        config.getDataWidth(), config.getEndianType());
             }
         }
     }

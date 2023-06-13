@@ -4,6 +4,7 @@
 // Author:  Tim Stark
 
 #include "emu/core.h"
+#include "emu/map/memmgr.h"
 #include "emu/machine.h"
 #include "main/engine.h"
 #include "main/user.h"
@@ -58,6 +59,29 @@ SystemEngine::cmdStatus SystemEngine::cmdDial(UserConsole *user, args_t &args)
     return cmdOk;
 }
 
+SystemEngine::cmdStatus SystemEngine::cmdListr(UserConsole *user, args_t &args)
+{
+    Machine *sysMachine = dialedMachine;
+    map::MemoryManager &mgr = sysMachine->getMemoryManager();
+
+    // Make ensure that system is dialed
+    if (sysMachine == nullptr)
+    {
+        std::cout << fmt::format("{}: Plese dial system first\n", args[0]);
+        return cmdOk;
+    }
+
+    map::RegionList list = mgr.getRegionList();
+    for (auto iter : list)
+    {
+        map::MemoryRegion *region = iter.second;
+
+        std::cout << fmt::format("{}\n", region->getsName());
+    }
+
+    return cmdOk;
+}
+
 SystemEngine::cmdStatus SystemEngine::cmdStart(UserConsole *user, args_t &args)
 {
     std::string devName = args.getNext();
@@ -89,6 +113,7 @@ SystemEngine::command_t SystemEngine::mseCommands[] =
     // { "dumpio",   &SystemEngine::cmdDump<map::asIOPort>,    nullptr },
     // { "dumpm",    &SystemEngine::cmdDumpm,                  nullptr },
     // { "list",     &SystemEngine::cmdList,                   nullptr },
+    { "listr",    &SystemEngine::cmdListr,                  nullptr },
     // { "exit",     &SystemEngine::cmdQuit,                   nullptr },
     { "start",    &SystemEngine::cmdStart,                  nullptr },
     // { "step",     &SystemEngine::cmdStep,                   nullptr },

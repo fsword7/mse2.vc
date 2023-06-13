@@ -18,6 +18,11 @@ namespace map
 
         inline Machine &getMachine() const      { return sysMachine; }
 
+        inline BlockList &getBlockList()        { return blocks; }
+        inline RegionList &getRegionList()      { return regions; }
+        inline ShareList &getShareList()        { return shares; }
+        inline BankList &getBankList()          { return banks; }
+
         void init(UserConsole *user);
         void allocate(UserConsole *user, diMemory &bus);
 
