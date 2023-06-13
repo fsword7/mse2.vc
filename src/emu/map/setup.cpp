@@ -146,25 +146,56 @@ namespace map
                 }
                 else
                 {
-                    std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - non-existant region '{}'\n",
+                    std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - non-existent, now allocating region '{}'\n",
                         entry->device.getsDeviceName(), asInfo[space],
                         entry->addrStart, config.getAddrPrecision(),
                         entry->addrEnd, config.getAddrPrecision(),
                         fullName);
 
-                    // Allocating anonymous memory space safely as default below...
+                    // Allocating memory space safely as default below...
                 }
             }
 
             if (entry->memData == nullptr && (entry->read.type == mapROMSpace ||
                 entry->read.type == mapRAMSpace || entry->write.type == mapRAMSpace))
             {
-                std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - allocating anonymous memory space\n",
+                if (entry->expFlag == true)
+                {
+                    if (entry->addrSize >= (entry->addrEnd - entry->addrStart + 1))
+                    {
+                        std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - {:0{}X} too big - reduced to {:0{}X}\n",
+                            entry->device.getsDeviceName(), asInfo[space],
+                            entry->addrStart, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision(),
+                            entry->addrSize - 1, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision());
+                
+                        entry->addrSize = (entry->addrEnd - entry->addrStart + 1);
+                    }
+
+                    if (entry->addrSize < (entry->addrEnd - entry->addrStart + 1))
+                    {
+                        std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - expandable range up to {:0{}X}\n",
+                            entry->device.getsDeviceName(), asInfo[space],
+                            entry->addrStart, config.getAddrPrecision(),
+                            (entry->addrStart + entry->addrSize) - 1, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision());
+
+                        // Adjust new ending address for desired memory length
+                        entry->addrEnd = entry->addrStart + entry->addrSize - 1;
+                    }
+                }
+
+                cstr_t fullName = entry->device.expandPathName(entry->regionName);
+
+                std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - allocating {} memory space\n",
                     entry->device.getsDeviceName(), asInfo[space],
                     entry->addrStart, config.getAddrPrecision(),
-                    entry->addrEnd, config.getAddrPrecision());
+                    entry->addrEnd, config.getAddrPrecision(),
+                    entry->regionName ? fullName : "anonymous");
 
-                entry->memData = manager.allocateMemory(entry->device, space, "(anonymous)",
+                entry->memData = manager.allocateMemory(entry->device, space, 
+                    entry->regionName ? fullName : "(anonymous)",
                     config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
                     config.getDataWidth(), config.getEndianType());
             }

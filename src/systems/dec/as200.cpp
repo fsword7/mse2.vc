@@ -65,7 +65,7 @@ void as200_Device::as200_init()
 
 void as200_Device::as200_setProgram(map::AddressList &map)
 {
-    map(0x0000'0000, 0x17FF'FFFF).ram().size(0x1000'0000).expandable().region("ram");
+    map(0x0000'0000, 0x17FF'FFFF).ram().allocate(0x1000'0000).region("ram");
 }
 
 void as200_Device::as400(SystemConfig &config)
@@ -82,8 +82,19 @@ void as200_Device::as400_init()
 
 void as200_Device::as400_setProgram(map::AddressList &map)
 {
-    map(0x0000'0000, 0x17FF'FFFF).ram().size(0x1000'0000).expandable().region("ram");
+    map(0x0000'0000, 0x17FF'FFFF).ram().allocate(0x1000'0000).region("ram");
 }
 
+// cchar_t as200_memList[] =
+// {
+//     { "8m",   8 * 1024 * 1024 },
+//     { "16m",  16 * 1024 * 1024 },
+//     { "32m",  32 * 1024 * 1024 },
+//     { "64m",  64 * 1024 * 1024 },
+//     { "128m", 128 * 1024 * 1024 },
+//     { "256m", 256 * 1024 * 1024 },
+//     { "384m", 384 * 1024 * 1024 }
+// };
+ 
 COMPUTER(as200, nullptr, dec, as200, as200_Device, as200, as200_init, "DEC", "AlphaStation 200", SYSTEM_NOT_WORKING);
 COMPUTER(as400, nullptr, dec, as200, as200_Device, as400, as400_init, "DEC", "AlphaStation 400", SYSTEM_NOT_WORKING);

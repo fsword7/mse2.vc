@@ -36,32 +36,33 @@ namespace map
     public:
         AddressEntry(Device &device, AddressList &map, offs_t start, offs_t end);
 
-        AddressEntry  &ram()                 { read.type = mapRAMSpace; write.type = mapRAMSpace; return *this; }
-        AddressEntry  &rom()                 { read.type = mapROMSpace; write.type = mapNOP;      return *this; }
-        AddressEntry  &ronly()               { read.type = mapRAMSpace;  return *this; }
-        AddressEntry  &wonly()               { write.type = mapRAMSpace; return *this; }
+        AddressEntry  &ram()                    { read.type = mapRAMSpace; write.type = mapRAMSpace; return *this; }
+        AddressEntry  &rom()                    { read.type = mapROMSpace; write.type = mapNOP;      return *this; }
+        AddressEntry  &ronly()                  { read.type = mapRAMSpace;  return *this; }
+        AddressEntry  &wonly()                  { write.type = mapRAMSpace; return *this; }
         
-        AddressEntry  &noprw()               { read.type = mapNOP; write.type = mapNOP; return *this; }
-        AddressEntry  &nopr()                { read.type = mapNOP;  return *this; }
-        AddressEntry  &nopw()                { write.type = mapNOP; return *this; }
+        AddressEntry  &noprw()                  { read.type = mapNOP; write.type = mapNOP; return *this; }
+        AddressEntry  &nopr()                   { read.type = mapNOP;  return *this; }
+        AddressEntry  &nopw()                   { write.type = mapNOP; return *this; }
 
-        AddressEntry  &unmaprw()             { read.type = mapUnmapped; write.type = mapUnmapped; return *this; }
-        AddressEntry  &unmapr()              { read.type = mapUnmapped; return *this; }
-        AddressEntry  &unmapw()              { write.type = mapUnmapped; return *this; }
+        AddressEntry  &unmaprw()                { read.type = mapUnmapped; write.type = mapUnmapped; return *this; }
+        AddressEntry  &unmapr()                 { read.type = mapUnmapped; return *this; }
+        AddressEntry  &unmapw()                 { write.type = mapUnmapped; return *this; }
 
-        AddressEntry  &expandable()          { expFlag = true; return *this; }
-        AddressEntry  &unexpandable()        { expFlag = false; return *this; }
-        AddressEntry  &size(offs_t size)     { memSize = size; return *this; }
+        // Set default memory size for memory space allocation
+        AddressEntry  &expandable()             { expFlag = true; return *this; }
+        AddressEntry  &unexpandable()           { expFlag = false; return *this; }
+        AddressEntry  &allocate(offs_t size)    { addrSize = size; expFlag = true; return *this; }
 
-        AddressEntry  &mirror(offs_t bits)   { addrMirror = bits; return *this; }
+        AddressEntry  &mirror(offs_t bits)      { addrMirror = bits; return *this; }
         AddressEntry  &mask(uint64_t mask);
 
         AddressEntry  &region(cchar_t *name, offs_t off = 0);
-        AddressEntry  &share(cchar_t *name)   { shareName = name; return *this; }
+        AddressEntry  &share(cchar_t *name)     { shareName = name; return *this; }
 
-        AddressEntry  &bankr(cchar_t *name)   { read.type = mapBank; read.name = name; return *this; }
-        AddressEntry  &bankw(cchar_t *name)   { write.type = mapBank; write.name = name; return *this; }
-        AddressEntry  &bankrw(cchar_t *name)  { bankr(name); bankw(name); return *this; }
+        AddressEntry  &bankr(cchar_t *name)     { read.type = mapBank; read.name = name; return *this; }
+        AddressEntry  &bankw(cchar_t *name)     { write.type = mapBank; write.name = name; return *this; }
+        AddressEntry  &bankrw(cchar_t *name)    { bankr(name); bankw(name); return *this; }
 
         AddressEntry  &r(read8d_t func);
         AddressEntry  &r(read8do_t func);
@@ -103,6 +104,8 @@ namespace map
         offs_t addrEnd;
         offs_t addrMask;
         offs_t addrMirror;
+        offs_t addrSize = 0;        // Expandable memory space
+        bool   expFlag = false;
 
         mapHandler read, write;
 
@@ -113,11 +116,9 @@ namespace map
         // Memeory Share parameters
         cchar_t *shareName = nullptr;
 
-        // Memory parameters
+        // Memory parameters (allocated space)
         uint8_t   *memData = nullptr;
         size_t     memSize = 0;
-        size_t     maxSize = 0;
-        bool       expFlag = false;
 
         // 8-bit device delegate calls
         read8d_t        read8;
