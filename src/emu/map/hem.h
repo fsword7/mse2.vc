@@ -11,7 +11,7 @@ namespace map
     class HandlerReadMemory : public HandlerReadAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerReadMemory(AddressSpace *space, void *base)
         : HandlerReadAddress<dWidth, aShift>(space, 0),
@@ -42,7 +42,7 @@ namespace map
     class HandlerWriteMemory : public HandlerWriteAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerWriteMemory(AddressSpace *space, void *base)
         : HandlerWriteAddress<dWidth, aShift>(space, 0),

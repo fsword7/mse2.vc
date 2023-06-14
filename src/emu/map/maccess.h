@@ -10,8 +10,8 @@ namespace map
     template <int Level,  int dWidth, int aShift, endian_t eType>
     class MemoryAccessSpecific
     {
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
-        using nativeType = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
+        using nativeType = HandlerSize_t<dWidth>;
 
         static constexpr int      pageBits    = std::min(0, determineDispatchLowBits(Level, dWidth, aShift));
         static constexpr uint64_t nativeBytes = 1ull << dWidth;

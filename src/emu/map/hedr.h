@@ -11,7 +11,7 @@ namespace map
     class HandlerReadDispatch : public HandlerRead<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         HandlerReadDispatch(AddressSpace *space, const HandlerEntry::range &init,
             HandlerRead<dWidth, aShift> *handler = nullptr)

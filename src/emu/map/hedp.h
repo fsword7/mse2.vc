@@ -11,7 +11,7 @@ namespace map
     class HandlerReadDelegate : public HandlerReadAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerReadDelegate(AddressSpace *space, uint32_t flags, const Read &delegate)
         : HandlerReadAddress<dWidth, aShift>(space, flags), delegate(delegate)
@@ -68,7 +68,7 @@ namespace map
     class HandlerWriteDelegate : public HandlerWriteAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerWriteDelegate(AddressSpace *space, uint32_t flags, const Write &delegate)
         : HandlerWriteAddress<dWidth, aShift>(space, flags), delegate(delegate)

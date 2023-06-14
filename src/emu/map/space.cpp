@@ -57,7 +57,7 @@ namespace map
     template <int Level, int dWidth, int aShift, endian_t eType>
     class AddressSpaceSpecific : public AddressSpace
     {
-        using uintx_t = HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
         using thisType = AddressSpaceSpecific<Level, dWidth, aShift, eType>;
         using nativeType = uintx_t;
         
@@ -351,11 +351,15 @@ namespace map
             return dispatchRead[(addr & addrMask) >> pageBits]->read(addr, mask, cpu);
         }
 
+        auto rop() { return [this](offs_t addr, nativeType mask, CPUDevice *cpu) -> nativeType { return readNative(addr, mask, cpu); }; }
+
         uint8_t read8(offs_t addr, CPUDevice *cpu) override
         {
             if (dWidth == 0)
                 return readNative(addr, 0xFF, cpu);
-            return unmapValue;
+            else
+                return readGeneric<dWidth, aShift, eType, 0, true>(rop(), addr, 0xFF, cpu);
+            // return unmapValue;
         }
 
         uint16_t read16(offs_t addr, CPUDevice *cpu) override

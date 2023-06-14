@@ -11,7 +11,7 @@ namespace map
     class HandlerWriteDispatch : public HandlerWrite<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         HandlerWriteDispatch(AddressSpace *space, const HandlerEntry::range &init,
             HandlerWrite<dWidth, aShift> *handler = nullptr)

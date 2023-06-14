@@ -22,11 +22,12 @@
 namespace map
 {
     // Data width - types
-    template <int dWidth> struct HandlerSize { };
-    template <> struct HandlerSize<0> { using uintx_t = uint8_t; };
-    template <> struct HandlerSize<1> { using uintx_t = uint16_t; };
-    template <> struct HandlerSize<2> { using uintx_t = uint32_t; };
-    template <> struct HandlerSize<3> { using uintx_t = uint64_t; };
+    template <int dWidth> struct HandlerSize;
+    template <int dWidth> using HandlerSize_t = typename HandlerSize<dWidth>::type;
+    template <> struct HandlerSize<0> { using type = uint8_t; };
+    template <> struct HandlerSize<1> { using type = uint16_t; };
+    template <> struct HandlerSize<2> { using type = uint32_t; };
+    template <> struct HandlerSize<3> { using type = uint64_t; };
 
     constexpr int determineDispatchLevel(int aWidth)
     {
@@ -98,7 +99,7 @@ namespace map
     class HandlerRead : public HandlerEntry
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         static constexpr offs_t nativeMask = (dWidth - aShift) >= 0 ? makeBitmask<offs_t>(dWidth - aShift) : 0;
 
@@ -139,8 +140,8 @@ namespace map
     class HandlerWrite : public HandlerEntry
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
-        
+        using uintx_t = HandlerSize_t<dWidth>;
+      
         static constexpr offs_t nativeMask = (dWidth - aShift) >= 0 ? makeBitmask<offs_t>(dWidth - aShift) : 0;
 
         HandlerWrite(AddressSpace *space, uint32_t flags)

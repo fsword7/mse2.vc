@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "emu/map/generic.h"
+
 namespace map
 {
     using Constructor = NamedDelegate<void (AddressList &)>;
@@ -89,6 +91,7 @@ namespace map
 
     using AddressConfigList = std::vector<AddressSpaceConfig>;
     using cAddressConfig = const AddressConfig;
+
 
     class AddressSpaceInstaller
     {
