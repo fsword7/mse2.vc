@@ -165,6 +165,11 @@ namespace map
     public:
         AddressList(Device &dev, AddressType space);
         ~AddressList();
+        
+        inline void setGlobalAddressMask(offs_t mask)   { gaddrMask = mask; }
+        inline void setUnmappedValue(uint64_t val)      { unmapValue = val; }
+        inline void setUnmappedHigh()                   { unmapValue = ~0ull; }
+        inline void setUnmappedLow()                    { unmapValue = 0ull; }
 
         AddressEntry &operator () (offs_t start, offs_t end);
 

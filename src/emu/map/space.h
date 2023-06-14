@@ -9,6 +9,9 @@ namespace map
 {
     using Constructor = NamedDelegate<void (AddressList &)>;
 
+    extern cchar_t *asInfo[];
+    extern cchar_t *asDescrip[];
+
     class AddressConfig
     {
     public:

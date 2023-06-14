@@ -65,6 +65,7 @@ void as200_Device::as200_init()
 
 void as200_Device::as200_setProgram(map::AddressList &map)
 {
+    map.setUnmappedHigh();
     map(0x0000'0000, 0x17FF'FFFF).ram().allocate(0x1000'0000).region("ram");
 }
 
@@ -82,6 +83,7 @@ void as200_Device::as400_init()
 
 void as200_Device::as400_setProgram(map::AddressList &map)
 {
+    map.setUnmappedHigh();
     map(0x0000'0000, 0x17FF'FFFF).ram().allocate(0x1000'0000).region("ram");
 }
 

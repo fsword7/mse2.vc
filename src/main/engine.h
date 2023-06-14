@@ -72,6 +72,9 @@ public:
     cmdStatus cmdStart(UserConsole *user, args_t &args);
     cmdStatus cmdQuit(UserConsole *user, args_t &args);
 
+    template <map::AddressType type>
+    cmdStatus cmdDumpm(UserConsole *user, args_t &args);
+
 private:
     static command_t mseCommands[];
     

@@ -73,11 +73,17 @@ public:
 
     void setAddressMap(map::AddressType space, map::Constructor map);
     
-
     inline map::cAddressConfig *getAddressConfig(map::AddressType space = map::asProgram)
     {
         if (space >= 0 && space < mapAddressConfigList.size())
             return mapAddressConfigList[space];
+        return nullptr;
+    }
+
+    inline map::AddressSpace *getAddressSpace(map::AddressType space = map::asProgram)
+    {
+       if (space >= 0 && space < mapAddressSpaceList.size())
+            return mapAddressSpaceList[space];
         return nullptr;
     }
 

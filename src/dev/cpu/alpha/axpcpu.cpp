@@ -12,7 +12,7 @@
 AlphaProcessor::AlphaProcessor(SystemConfig &config, cDeviceType &type,
     cstr_t &devName, Device *owner, uint64_t clock, int paWidth, int aWidth)
 : CPUDevice(config, type, devName, owner, clock),
-  mapProgramConfig("program", LittleEndian,  64, 16, 8, 8,  paWidth, 16, aWidth, 3)
+  mapProgramConfig("program", LittleEndian,  64, 16, 2, 8,  paWidth, 16, aWidth, 3)
 {
     assert(paWidth == 34 || paWidth == 40 || paWidth == 44);
     

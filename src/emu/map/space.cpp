@@ -60,6 +60,10 @@ namespace map
         using uintx_t = HandlerSize<dWidth>::uintx_t;
         using thisType = AddressSpaceSpecific<Level, dWidth, aShift, eType>;
         using nativeType = uintx_t;
+        
+        static constexpr int      pageBits    = std::max(0, determineDispatchLowBits(Level, dWidth, aShift));
+        static constexpr uint64_t nativeBytes = 1ull << dWidth;
+        static constexpr uint64_t nativeMask  = dWidth - aShift >= 0 ? (1ull << (dWidth - aShift)) - 1ull : 0;
 
         HandlerRead<dWidth, aShift> *rootRead = nullptr;
         HandlerWrite<dWidth, aShift> *rootWrite = nullptr;
@@ -342,12 +346,16 @@ namespace map
             return rw;
         }
 
+        inline uintx_t readNative(offs_t addr, uintx_t mask, CPUDevice *cpu)
+        {
+            return dispatchRead[(addr & addrMask) >> pageBits]->read(addr, mask, cpu);
+        }
+
         uint8_t read8(offs_t addr, CPUDevice *cpu) override
         {
-            // if (dWidth == 0)
-            //     return readNative(addr, 0xFF, cpu);
-            // return unmapValue;
-            return 0;
+            if (dWidth == 0)
+                return readNative(addr, 0xFF, cpu);
+            return unmapValue;
         }
 
         uint16_t read16(offs_t addr, CPUDevice *cpu) override
