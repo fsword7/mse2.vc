@@ -49,4 +49,16 @@ void es40_Device::es40_init()
 
 }
 
+static const fwEntry_t FW_NAME(es40)[] =
+{      
+    // FW_REGION("cpu", 0x10000, FW_ERASEFF),
+    // FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
+    // FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-034e2-00.e40", 0x1800, 0x0800, 0, nullptr),
+
+	FW_END
+};
+
+
 COMPUTER(es40, nullptr, dec, es40, es40_Device, es40, es40_init, "DEC", "AlphaServer ES40", SYSTEM_NOT_WORKING);

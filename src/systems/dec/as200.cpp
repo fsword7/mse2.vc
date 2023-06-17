@@ -87,6 +87,29 @@ void as200_Device::as400_setProgram(map::AddressList &map)
     map(0x0000'0000, 0x17FF'FFFF).ram().allocate(0x1000'0000).region("ram");
 }
 
+static const fwEntry_t FW_NAME(as200)[] =
+{      
+    // FW_REGION("cpu", 0x10000, FW_ERASEFF),
+    // FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
+    // FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-034e2-00.e40", 0x1800, 0x0800, 0, nullptr),
+
+	FW_END
+};
+
+static const fwEntry_t FW_NAME(as400)[] =
+{      
+    // FW_REGION("cpu", 0x10000, FW_ERASEFF),
+    // FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
+    // FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-034e2-00.e40", 0x1800, 0x0800, 0, nullptr),
+
+	FW_END
+};
+
+
 // cchar_t as200_memList[] =
 // {
 //     { "8m",   8 * 1024 * 1024 },

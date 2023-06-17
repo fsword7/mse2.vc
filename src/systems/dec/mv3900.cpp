@@ -61,6 +61,27 @@ void mv3900_Device::vs3900_init()
 {
 
 }
+static const fwEntry_t FW_NAME(mv3900)[] =
+{      
+    // FW_REGION("cpu", 0x10000, FW_ERASEFF),
+    // FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
+    // FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-034e2-00.e40", 0x1800, 0x0800, 0, nullptr),
+
+	FW_END
+};
+
+static const fwEntry_t FW_NAME(vs3900)[] =
+{      
+    // FW_REGION("cpu", 0x10000, FW_ERASEFF),
+    // FW_LOAD("23-061e2-00.e56", 0x0000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-032e2-00.e52", 0x0800, 0x0800, 0, nullptr),
+    // FW_LOAD("23-033e2-00.e45", 0x1000, 0x0800, 0, nullptr),
+    // FW_LOAD("23-034e2-00.e40", 0x1800, 0x0800, 0, nullptr),
+
+	FW_END
+};
 
 COMPUTER(mv3900, nullptr, dec, mv3900, mv3900_Device, mv3900, mv3900_init, "DEC", "MicroVAX 3900", SYSTEM_NOT_WORKING);
 COMPUTER(vs3900, nullptr, dec, mv3900, mv3900_Device, vs3900, vs3900_init, "DEC", "VAXserver 3900", SYSTEM_NOT_WORKING);
