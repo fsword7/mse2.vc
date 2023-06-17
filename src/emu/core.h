@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
+#include <filesystem>
 
 #include <string>
 #include <vector>
@@ -40,6 +42,8 @@ using cstr_t = const std::string;
 
 using offs_t = uint64_t;
 
+namespace fs = std::filesystem;
+
 template <typename T, typename U> constexpr T makeBitmask(U n)
 {
     return T((n < (8 * sizeof(T)) ? (std::make_unsigned_t<T>(1) << n) : std::make_unsigned_t<T>(0)) - 1);
@@ -74,6 +78,7 @@ inline Dest mse_static_cast(Source &src)
 #include "emu/forward.h"
 #include "lib/util/list.h"
 #include "emu/delegate.h"
+#include "emu/map/fw.h"
 #include "emu/driver.h"
 #include "emu/sysconfig.h"
 #include "emu/device.h"

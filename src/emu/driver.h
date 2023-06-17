@@ -14,6 +14,7 @@ struct SystemDriver
     cchar_t *section;
     const DeviceType &type;
     sysConfigure configure;
+    cfwEntry_t *romEntries;
 
     cchar_t *description;
     cchar_t *source;
@@ -42,20 +43,6 @@ systemCreator<Class,                        \
     (SYSTEM_TRAITS_NAME(Name)::fileName)>
 
 
-// #define COMPUTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
-// SYSTEM_TRAITS(Name, Description) \
-// extern const SystemDriver SYSTEM_NAME(Name) = \
-// {                                \
-//     #Name,                       \
-//     #Parent,                     \
-//     #Section,                    \
-//     SYSTEM_TYPE(Name, Class),    \
-//     [] (SystemConfig &config, Device &owner) { static_cast<Class &>(owner).Configure(config); }, \
-//     FW_NAME(Name),               \
-//     #Description,                \
-//     __FILE__                     \
-// };
-
 #define COMPUTER(Name, Parent, Section, Type, Class, Configure, Reset, Company, Description, Flags) \
 SYSTEM_TRAITS(Name, Description) \
 extern const SystemDriver SYSTEM_NAME(Name) = \
@@ -65,6 +52,7 @@ extern const SystemDriver SYSTEM_NAME(Name) = \
     #Section,                    \
     SYSTEM_TYPE(Name, Class),    \
     [] (SystemConfig &config, Device &owner) { static_cast<Class &>(owner).Configure(config); }, \
+    FW_NAME(Name),               \
     #Description,                \
     __FILE__                     \
 };

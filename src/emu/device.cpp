@@ -110,6 +110,20 @@ map::MemoryShare *Device::findMemoryShare(cstr_t &name) const
     return ownMachine.getMemoryManager().findShare(expandPathName(name));
 }
 
+cfwEntry_t *Device::getFirmwareEntries()
+{
+    static constexpr cfwEntry_t fwEmpty[] = { FW_END };
+
+    if (fwEntries == nullptr)
+    {
+        fwEntries = devGetFirmwareEntries();
+        if (fwEntries == nullptr)
+            fwEntries = fwEmpty;
+    } 
+
+    return fwEntries;
+}
+
 // **** Device Interface function calls ****
 
 void Device::addInterface(DeviceInterface *iface)

@@ -199,7 +199,10 @@ public:
     map::MemoryBank *findMemoryBank(cstr_t &name) const;
     map::MemoryShare *findMemoryShare(cstr_t &name) const;
 
+    cfwEntry_t *getFirmwareEntries();
+
     // Virtual device function calls
+    virtual cfwEntry_t *devGetFirmwareEntries() { return nullptr; }
     virtual void devConfigure(SystemConfig &config) {}
     virtual void devStart() {}
     virtual void devStop() {}
@@ -241,7 +244,9 @@ private:
     ifaceList_t ifaceList;
     std::vector<ObjectFinder *> objectList;
 
+    cfwEntry_t *fwEntries = nullptr;
 };
+
 class DeviceInterface
 {
     friend class Device;
