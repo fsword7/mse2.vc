@@ -1,7 +1,7 @@
-// fw.h - Firmware inage management package
+// fw.h - Fireware Image Managerment package
 //
 // Author:  Tim Stark
-// Date:    12/27/21
+// Date:    Jun 17, 2023
 
 #pragma once
 
@@ -137,12 +137,12 @@
 
 struct fwEntry_t
 {
-	ctag_t		*name;		// Region/file name
-	ctag_t		*hash;		// Hash checksum string
+	cchar_t		*name;		// Region/file name
+	cchar_t		*hash;		// Hash checksum string
 	uint32_t	flags;		// ROM entry flags
 	uint32_t	offset;		// offset
 	uint32_t	length;		// length
 	uint32_t	value;
 };
 
-typedef const fwEntry_t cfwEntry_t;
+using cfwEntry_t = const fwEntry_t;

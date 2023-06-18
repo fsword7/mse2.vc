@@ -1,13 +1,10 @@
 // heun.cpp - Handler Entry - Unmapped/NOP (No Operation)
 //
 // Author:  Tim Stark
-// Date:    12/13/2021
+// Date:    6/5/2023
 
 #include "emu/core.h"
-#include "emu/map/he.h"
-#include "emu/map/heun.h"
-#include "emu/map/maccess.h"
-#include "emu/map/space.h"
+#include "emu/map/map.h"
 
 namespace map
 {

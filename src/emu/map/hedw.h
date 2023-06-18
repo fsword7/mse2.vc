@@ -1,7 +1,7 @@
-// hedw.h - Write Handler Entry - Dispatch
+// hedw.h - Header Entry Dispatch (Write access) package
 //
 // Author:  Tim Stark
-// Date:    12/14/2021
+// Date:    Jun 9, 2023
 
 #pragma once
 
@@ -11,7 +11,7 @@ namespace map
     class HandlerWriteDispatch : public HandlerWrite<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         HandlerWriteDispatch(AddressSpace *space, const HandlerEntry::range &init,
             HandlerWrite<dWidth, aShift> *handler = nullptr)
@@ -38,14 +38,14 @@ namespace map
 
         static void validate() 
         {
-            fmt::printf("Low bits<%d, %d>: %d\n", dWidth, aShift, lowBits);
+            std::cout << fmt::format("Low bits<{}, {}>: {}\n", dWidth, aShift, lowBits);
         }
 
         HandlerWrite<dWidth, aShift> *const *getDispatch() const override { return dispatch; }
 
-        std::string getName() { return "dispatch"; }
+        str_t getsName() { return "dispatch"; }
 
-        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, CPUDevice *cpu) const override
         {
             offs_t off = (offset >> lowBits) & bitMask;
             assert(dispatch[off] != nullptr);

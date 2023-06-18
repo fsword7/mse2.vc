@@ -1,11 +1,13 @@
-// map.h - mapping package
+// map.h - Memory Management package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/7/2021
+// Author:  Tim Stark
+// Date:    May 15, 2023
+
+#pragma once
 
 #include "emu/map/he.h"
 #include "emu/map/heun.h"
 
-#include "emu/map/maccess.h"
 #include "emu/map/space.h"
-#include "emu/map/mview.h"
+#include "emu/map/maccess.h"
+// #include "emu/map/mview.h"

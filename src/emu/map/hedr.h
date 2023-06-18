@@ -1,7 +1,7 @@
-// hedr.h - read handler entry package - dispatch
+// hedr.h - Header Entry Dispatch (Read access) package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/8/2021
+// Author:  Tim Stark
+// Date:    Jun 9, 2023
 
 #pragma once
 
@@ -11,7 +11,7 @@ namespace map
     class HandlerReadDispatch : public HandlerRead<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         HandlerReadDispatch(AddressSpace *space, const HandlerEntry::range &init,
             HandlerRead<dWidth, aShift> *handler = nullptr)
@@ -38,14 +38,14 @@ namespace map
 
         static void validate() 
         {
-            fmt::printf("Low bits<%d, %d>: %d\n", dWidth, aShift, lowBits);
+            std::cout << fmt::format("Low bits<{}, {}>: {}\n", dWidth, aShift, lowBits);
         }
 
         HandlerRead<dWidth, aShift> *const *getDispatch() const override { return dispatch; }
 
-        std::string getName() { return "dispatch"; }
+        str_t getsName() { return "dispatch"; }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        uintx_t read(offs_t offset, uintx_t mask, CPUDevice *cpu) const override
         {
             offs_t off = (offset >> lowBits) & bitMask;
             assert(dispatch[off] != nullptr);

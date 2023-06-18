@@ -1,9 +1,10 @@
-// memmgr.cpp - memory manager package
+// memmgr.cpp - Memory Manager package
 //
 // Author:  Tim Stark
-// Date:    12/10/2021
+// Date:    May 11, 2023
 
 #include "emu/core.h"
+#include "emu/map/map.h"
 #include "emu/machine.h"
 #include "emu/dimem.h"
 
@@ -11,28 +12,28 @@ using namespace map;
 
 void MemoryManager::init(UserConsole *user)
 {
-    fmt::printf("%s: Memory manager initialization\n",
+    std::cout << fmt::format("{}: Memory Management Initialiation...\n",
         sysMachine.getDeviceName());
 
-    std::vector<diMemory *> memories;
+    std::vector<diMemory *> list;
 
-    memories.clear();
+    list.clear();
     for (diMemory &bus : InterfaceIterator<diMemory>(*sysMachine.getSystemDevice()))
     {
-        memories.push_back(&bus);
+        list.push_back(&bus);
         allocate(user, bus);
     }
 
-    for (auto const bus : memories)
+    for (auto const bus : list)
         bus->prepare(user);
 
-    for (auto const bus : memories)
+    for (auto const bus : list)
         bus->populate(user);   
 }
 
 // Memory block function call definitions
 
-uint8_t *MemoryManager::allocateMemory(Device &owner, AddressType space, cstag_t &name,
+uint8_t *MemoryManager::allocateMemory(Device &owner, AddressType space, cstr_t &name,
     size_t bytes, int dWidth, endian_t eType)
 {
     MemoryBlock *block = new MemoryBlock(name, bytes, dWidth, eType);
@@ -45,7 +46,7 @@ uint8_t *MemoryManager::allocateMemory(Device &owner, AddressType space, cstag_t
 
 // Memory region function call definitions
 
-MemoryRegion *MemoryManager::allocateRegion(Device &owner, AddressType space, cstag_t &name,
+MemoryRegion *MemoryManager::allocateRegion(Device &owner, AddressType space, cstr_t &name,
     size_t bytes, int dWidth, endian_t eType)
 {
     MemoryRegion *region = new MemoryRegion(&sysMachine, name, bytes, dWidth, eType);
@@ -55,12 +56,12 @@ MemoryRegion *MemoryManager::allocateRegion(Device &owner, AddressType space, cs
     return region;
 }
 
-void MemoryManager::releaeRegion(cstag_t &name)
+void MemoryManager::releaeRegion(cstr_t &name)
 {
     regions.erase(name);
 }
 
-MemoryRegion *MemoryManager::findRegion(cstag_t &name)
+MemoryRegion *MemoryManager::findRegion(cstr_t &name)
 {
     auto entry = regions.find(name);
     if (entry != regions.end())
@@ -70,7 +71,7 @@ MemoryRegion *MemoryManager::findRegion(cstag_t &name)
 
 // Memory share function call definitions
 
-MemoryShare *MemoryManager::allocateShare(Device &owner, AddressType space, cstag_t &name,
+MemoryShare *MemoryManager::allocateShare(Device &owner, AddressType space, cstr_t &name,
     size_t bytes, int dWidth, endian_t eType)
 {
     if (findShare(name) != nullptr)
@@ -84,7 +85,7 @@ MemoryShare *MemoryManager::allocateShare(Device &owner, AddressType space, csta
     return share;
 }
 
-MemoryShare *MemoryManager::findShare(cstag_t &name)
+MemoryShare *MemoryManager::findShare(cstr_t &name)
 {
     auto entry = shares.find(name);
     if (entry != shares.end())
@@ -94,7 +95,7 @@ MemoryShare *MemoryManager::findShare(cstag_t &name)
 
 // Memory block function call definitions
 
-MemoryBank *MemoryManager::findBank(cstag_t &name)
+MemoryBank *MemoryManager::findBank(cstr_t &name)
 {
     auto entry = banks.find(name);
     if (entry != banks.end())

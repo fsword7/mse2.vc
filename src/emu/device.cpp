@@ -1,29 +1,42 @@
-// device.cpp - Device/Interface package
+// device.cpp - device management package
 //
+// Date:    Apr 30, 2023
 // Author:  Tim Stark
-// Date:    Dec 6, 2021
 
 #include "emu/core.h"
 #include "emu/machine.h"
 
-Device::Device(const SystemConfig &config, const DeviceType &type, cstag_t &name, Device *owner, uint64_t clock)
-: type(type), sysConfig(config), devName(name), owner(owner), clock(clock)
+Device::Device(SystemConfig &config, cDeviceType &type, cstr_t &name, Device *owner, uint64_t clock)
+: sysConfig(config), type(type), ownMachine(config.getMachine()),
+  devName(name), owner(owner), clock(clock)
 {
     ifaceList.clear();
 
-    // Expand device name to path name
+    // // Expand device name to path name
     if (owner != nullptr)
         pathName.assign(owner->getsPathName()).append(".").append(name);
     else
         pathName.assign(name);
 }
 
-void Device::addInterface(DeviceInterface *iface)
+str_t Device::expandPathName(cstr_t &pathName) const
 {
-    ifaceList.push_back(iface);
+    str_t newPathName(this->pathName);
+
+    if (!pathName.empty())
+    {
+        if (pathName.find('.') != std::string::npos)
+            newPathName.assign(pathName);
+        else
+            newPathName.append(".").append(pathName);
+    }
+
+    std::cout << fmt::format("Expend pathname: {} + {} -> {}\n",
+        this->pathName, pathName.empty() ? "(self)" : pathName, newPathName);
+    return newPathName;
 }
 
-Device *Device::findDevice(ctag_t *name)
+Device *Device::findDevice(cchar_t *name)
 {
     // Return this as self device
     if (name == nullptr)
@@ -37,43 +50,24 @@ Device *Device::findDevice(ctag_t *name)
     return nullptr;
 }
 
-std::string Device::expandPathName(cstag_t &pathName) const
-{
-    std::string newPathName(this->pathName);
-
-    if (!pathName.empty())
-    {
-        if (pathName.find('.') != std::string::npos)
-            newPathName.assign(pathName);
-        else
-            newPathName.append(".").append(pathName);
-    }
-
-    fmt::printf("Expend pathname: %s + %s -> %s\n",
-        this->pathName, pathName.empty() ? "(self)" : pathName, newPathName);
-    return newPathName;
-}
-
 void Device::configure(SystemConfig &config)
 {
-    assert (&config == &sysConfig);
+    assert(&config == &sysConfig);
 
     // Device initialization
-    devConfigure(config);
+    devConfigure(config);   
 }
 
 void Device::start()
 {
     devStart();
-    // updateClock();
-
-    flagStarted = true;
+    startedFlag = true;
 }
 
 void Device::stop()
 {
     devStop();
-    flagStarted = false;
+    startedFlag = false;
 }
 
 void Device::reset()
@@ -81,23 +75,39 @@ void Device::reset()
     devReset();
 }
 
-void Device::finishConfig()
+// **** Mapping function calls ****
+
+void Device::registerObject(ObjectFinder *object)
 {
-    for (auto *iface : ifaceList)
-        iface->diCompleteConfig();
+    objectList.push_back(object);
 }
 
-void Device::updateClock()
+bool Device::findObjects()
 {
-    for (auto &iface : ifaceList)
-        iface->diUpdateClock();
-    devUpdateClock();
+    bool allFound = true;
+    for (auto &object : objectList)
+        allFound &= object->find();   
+    return false;
 }
 
-void Device::resolvePostMapping()
+void Device::resolveFinalMapping()
 {
     findObjects();
-    devResolveObjects();
+}
+
+map::MemoryRegion *Device::findMemoryRegion(cstr_t &name) const
+{
+    return ownMachine.getMemoryManager().findRegion(expandPathName(name));
+}
+
+map::MemoryBank *Device::findMemoryBank(cstr_t &name) const
+{
+    return ownMachine.getMemoryManager().findBank(expandPathName(name));
+}
+
+map::MemoryShare *Device::findMemoryShare(cstr_t &name) const
+{
+    return ownMachine.getMemoryManager().findShare(expandPathName(name));
 }
 
 cfwEntry_t *Device::getFirmwareEntries()
@@ -114,40 +124,22 @@ cfwEntry_t *Device::getFirmwareEntries()
     return fwEntries;
 }
 
-map::MemoryRegion *Device::findMemoryRegion(cstag_t &name) const
+// **** Device Interface function calls ****
+
+void Device::addInterface(DeviceInterface *iface)
 {
-    assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findRegion(expandPathName(name));
+    ifaceList.push_back(iface);
 }
 
-map::MemoryBank *Device::findMemoryBank(cstag_t &name) const
+void Device::finishConfig()
 {
-    assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findBank(expandPathName(name));
-}
-
-map::MemoryShare *Device::findMemoryShare(cstag_t &name) const
-{
-    assert(ownMachine != nullptr);
-    return ownMachine->getMemoryManager().findShare(expandPathName(name));
-}
-
-void Device::registerObject(ObjectFinder *object)
-{
-    objectList.push_back(object);
-}
-
-bool Device::findObjects()
-{
-    bool allFound = true;
-    for (auto &object : objectList)
-        allFound &= object->find();
-    return false;   
+    for (auto *iface : ifaceList)
+        iface->diCompleteConfig();
 }
 
 // ********
 
-DeviceInterface::DeviceInterface(Device *owner, ctag_t *name)
+DeviceInterface::DeviceInterface(Device *owner, cstr_t &name)
 : owner(owner), diName(name)
 {
     owner->addInterface(this);

@@ -1,13 +1,9 @@
-// delegate.h - delegate callback packages
+// delegate package
 //
+// Date:    Apr 30, 2023
 // Author:  Tim Stark
-// Date:    Dec 6, 2021
 
 #pragma once
-
-class Device;
-class DeviceInterface;
-
 class BindedObject
 {
 public:
@@ -87,9 +83,9 @@ private:
     template <class FunctionClass>
     static GenericClass *bindLate(LateBindBase &object)
     {
-        fmt::printf("Attempting to bind member function (%llX)...\n", offs_t(&object));
-        fmt::printf("Type info: FunctionClass = %s LateBindBase = %s\n",
-            typeid(FunctionClass).name(), typeid(&object).name());
+        // fmt::printf("Attempting to bind member function (%llX)...\n", offs_t(&object));
+        // fmt::printf("Type info: FunctionClass = %s LateBindBase = %s\n",
+        //     typeid(FunctionClass).name(), typeid(&object).name());
 
         return reinterpret_cast<GenericClass *>(&object);
         
@@ -231,29 +227,29 @@ public:
     NamedDelegate() = default;
 
     template <class FunctionClass>
-    NamedDelegate(member_ptr_func<FunctionClass> func, ctag_t *name, FunctionClass *obj)
+    NamedDelegate(member_ptr_func<FunctionClass> func, cchar_t *name, FunctionClass *obj)
     : base(func, obj), fncName(name) {}
 
     template <class FunctionClass>
-    NamedDelegate(member_ptr_cfunc<FunctionClass> func, ctag_t *name, FunctionClass *obj)
+    NamedDelegate(member_ptr_cfunc<FunctionClass> func, cchar_t *name, FunctionClass *obj)
     : base(func, obj), fncName(name) {}
 
     template <class FunctionClass>
-    NamedDelegate(static_ref_func<FunctionClass> func, ctag_t *name, FunctionClass *obj)
+    NamedDelegate(static_ref_func<FunctionClass> func, cchar_t *name, FunctionClass *obj)
     : base(func, obj), fncName(name) {}
 
-    inline ctag_t *getName() const { return fncName; }
+    inline cchar_t *getName() const { return fncName; }
 
     NamedDelegate &operator = (const NamedDelegate &src) = default;
 
 private:
-    ctag_t *fncName = nullptr;
+    cchar_t *fncName = nullptr;
 };
 
 class DeviceDelegateHelper
 {
 public:
-    DeviceDelegateHelper(Device &owner, ctag_t *name = nullptr)
+    DeviceDelegateHelper(Device &owner, cchar_t *name = nullptr)
     : base(owner), devName(name)
     { }
 
@@ -262,11 +258,11 @@ public:
         return reinterpret_cast<BindedObject &>(base.get());
     }
 
-    void setName(ctag_t *name) { devName = name; }
+    void setName(cchar_t *name) { devName = name; }
 
 private:
     std::reference_wrapper<Device> base;
-    ctag_t *devName = nullptr;
+    cchar_t *devName = nullptr;
 };
 
 template <typename Signature> class DeviceDelegate;
@@ -291,7 +287,7 @@ private:
 
 public:
     template <typename T>
-	using supportCallback = std::bool_constant<std::is_constructible_v<DeviceDelegate, Device &, ctag_t *, T, ctag_t *>>;
+	using supportCallback = std::bool_constant<std::is_constructible_v<DeviceDelegate, Device &, cchar_t *, T, cchar_t *>>;
 
     explicit DeviceDelegate(Device &owner) : nbase(), DeviceDelegateHelper(owner) {}
     DeviceDelegate(const nbase &src) : nbase(src) {}
@@ -299,42 +295,42 @@ public:
     // DeviceDelegate &operator = (DeviceDelegate &src) = default;
 
     template <class D>
-    DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (D::*func)(Args...), ctag_t *fncName)
+    DeviceDelegate(Device &dev, cchar_t *devName, ReturnType (D::*func)(Args...), cchar_t *fncName)
     : nbase(func, fncName, static_cast<D *>(nullptr)), DeviceDelegateHelper(dev, devName)
-    { fmt::printf("Name: %s (%llX)\n", fncName, offs_t(&dev)); }
+    { /* fmt::printf("Name: %s (%llX)\n", fncName, offs_t(&dev)); */ }
 
     template <class D>
-    DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (D::*func)(Args...) const, ctag_t *fncName)
+    DeviceDelegate(Device &dev, cchar_t *devName, ReturnType (D::*func)(Args...) const, cchar_t *fncName)
     : nbase(func, fncName, static_cast<D *>(nullptr)), DeviceDelegateHelper(dev, devName)
     { }
 
     template <class D>
-    DeviceDelegate(Device &dev, ctag_t *devName, ReturnType (*func)(D &, Args...), ctag_t *fncName)
+    DeviceDelegate(Device &dev, cchar_t *devName, ReturnType (*func)(D &, Args...), cchar_t *fncName)
     : nbase(func, fncName, static_cast<D *>(nullptr)), DeviceDelegateHelper(dev, devName)
     { }
 
 
     template <class T, class D>
-    DeviceDelegate(T &object, ReturnType (D::*func)(Args...), ctag_t *fncName)
+    DeviceDelegate(T &object, ReturnType (D::*func)(Args...), cchar_t *fncName)
     : nbase(func, fncName, static_cast<D *>(&object)), DeviceDelegateHelper(getDevice(object))
     { }
 
     template <class T, class D>
-    DeviceDelegate(T &object, ReturnType (D::*func)(Args...) const, ctag_t *fncName)
+    DeviceDelegate(T &object, ReturnType (D::*func)(Args...) const, cchar_t *fncName)
     : nbase(func, fncName, static_cast<D *>(&object)), DeviceDelegateHelper(getDevice(object))
     { }
 
     template <class T, class D>
-    DeviceDelegate(T &object, ReturnType (*func)(D &, Args...), ctag_t *fncName)
+    DeviceDelegate(T &object, ReturnType (*func)(D &, Args...), cchar_t *fncName)
     : nbase(func, fncName, static_cast<D *>(&object)), DeviceDelegateHelper(getDevice(object))
     { }
 
 
-	template <class D> void set(ReturnType (D::*func)(Args ...), ctag_t *name)
+	template <class D> void set(ReturnType (D::*func)(Args ...), cchar_t *name)
 		{ nbase::operator = (nbase(func, name, static_cast<D *>(nullptr))); setName(nullptr); }
-	template <class D> void set(ReturnType (D::*func)(Args ...) const, ctag_t *name)
+	template <class D> void set(ReturnType (D::*func)(Args ...) const, cchar_t *name)
 		{ nbase::operator = (nbase(func, name, static_cast<D *>(nullptr))); setName(nullptr); }
-	template <class D> void set(ReturnType (*func)(D &, Args ...), ctag_t *name)
+	template <class D> void set(ReturnType (*func)(D &, Args ...), cchar_t *name)
 		{ nbase::operator = (nbase(func, name, static_cast<D *>(nullptr))); setName(nullptr); }
 
     void resolve()
@@ -390,13 +386,13 @@ template <typename D, typename T, typename Enable = void> struct device_class_rw
 
 template <typename D, typename T, typename Ret, typename... Args>
 struct device_class_rw<D, Ret (T::*)(Args...),
-    std::enable_if_t<std::is_constructible<D, Device &, ctag_t *, Ret (T::*)(Args...), ctag_t *>::value> > { using type = T; };
+    std::enable_if_t<std::is_constructible<D, Device &, cchar_t *, Ret (T::*)(Args...), cchar_t *>::value> > { using type = T; };
 template <typename D, typename T, typename Ret, typename... Args>
 struct device_class_rw<D, Ret (T::*)(Args...) const,
-    std::enable_if_t<std::is_constructible<D, Device &, ctag_t *, Ret (T::*)(Args...) const, ctag_t *>::value> > { using type = T; };
+    std::enable_if_t<std::is_constructible<D, Device &, cchar_t *, Ret (T::*)(Args...) const, cchar_t *>::value> > { using type = T; };
 template <typename D, typename T, typename Ret, typename... Args>
 struct device_class_rw<D, Ret (*)(T &, Args...),
-    std::enable_if_t<std::is_constructible<D, Device &, ctag_t *, Ret (*)(T &, Args...), ctag_t *>::value> > { using type = T; };
+    std::enable_if_t<std::is_constructible<D, Device &, cchar_t *, Ret (*)(T &, Args...), cchar_t *>::value> > { using type = T; };
 
 template <typename D, typename T> using device_class_rw_t = typename device_class_rw<D, T>::type;
 
@@ -470,13 +466,13 @@ template <typename T> using delegate_rw_device_class_t = typename delegate_rw_ty
 
 
 template <typename T>
-inline delegate_rw_t<T> makeDelegate(Device &base, ctag_t *devName, T &&func, ctag_t *fncName)
+inline delegate_rw_t<T> makeDelegate(Device &base, cchar_t *devName, T &&func, cchar_t *fncName)
 {
     return delegate_rw_t<T>(base, devName, std::forward<T>(func), fncName);
 }
 
 template <typename T>
-inline delegate_rw_t<T> makeDelegate(delegate_rw_device_class_t<T> &object, T &&func, ctag_t *fncName)
+inline delegate_rw_t<T> makeDelegate(delegate_rw_device_class_t<T> &object, T &&func, cchar_t *fncName)
 {
     return delegate_rw_t<T>(object, std::forward<T>(func), fncName);
 }

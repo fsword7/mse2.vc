@@ -1,38 +1,23 @@
-// space.h - Address space package
+// space.h - Address Space (memory access) package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    Dec 7, 2021
+// Author:  Tim Stark
+// Date:    May 14, 2023
 
 #pragma once
 
-class ProcessorDevice;
-class UserConsole;
-class diMemory;
+#include "emu/map/generic.h"
 
 namespace map
 {
-    class MemoryManager;
-    class MemoryView;
-    class MemoryBank;
-    class AddressList;
-    class AddressEntry;
-
     using Constructor = NamedDelegate<void (AddressList &)>;
-  
-    // enum AddressType
-    // {
-    //     asProgram = 0,  // Program address space
-    //     asData,         // Data address space
-    //     asIOPort        // I/O port address space
-    // };
 
-    extern ctag_t *asInfo[];
-    extern ctag_t *asDescrip[];
+    extern cchar_t *asInfo[];
+    extern cchar_t *asDescrip[];
 
     class AddressConfig
     {
     public:
-        AddressConfig(ctag_t *name, endian_t eType,
+        AddressConfig(cchar_t *name, endian_t eType,
             uint16_t dWidth, uint16_t dRadix, uint16_t dPrecision, uint16_t bWidth,
             uint16_t aWidth, uint16_t aRadix, uint16_t aPrecision, int16_t aShift)
         : name(name), endianType(eType),
@@ -80,7 +65,7 @@ namespace map
         }
 
     private:
-        ctag_t *name = nullptr;
+        cchar_t *name = nullptr;
 
         endian_t endianType = LittleEndian;
         uint16_t dataWidth = 0;
@@ -107,6 +92,7 @@ namespace map
     using AddressConfigList = std::vector<AddressSpaceConfig>;
     using cAddressConfig = const AddressConfig;
 
+
     class AddressSpaceInstaller
     {
     protected:
@@ -120,8 +106,8 @@ namespace map
 
         virtual void setMemorySpace(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, uint8_t *data, AccessType acc) = 0;
 
-        virtual void setMemoryView(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryView *view) = 0;
-        virtual void setMemoryBank(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryBank *bank, uint64_t flags, AccessType acc) = 0;
+        // virtual void setMemoryView(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryView *view) = 0;
+        // virtual void setMemoryBank(offs_t addrStart, offs_t addrEnd, offs_t addrMirror, MemoryBank *bank, uint64_t flags, AccessType acc) = 0;
 
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, read8d_t handler) = 0;
         virtual void setReadHandler(offs_t addrStart, offs_t addrEnd, offs_t addrMask, offs_t addrMirror, read8do_t handler) = 0;
@@ -206,21 +192,21 @@ namespace map
         // }
 
         // Virtual function calls
-        virtual uint8_t  read8(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
-        virtual uint16_t read16(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
-        virtual uint16_t read16u(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
-        virtual uint32_t read32(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
-        virtual uint32_t read32u(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
-        virtual uint64_t read64(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
-        virtual uint64_t read64u(offs_t addr, ProcessorDevice *cpu = nullptr) = 0;
+        virtual uint8_t  read8(offs_t addr, CPUDevice *cpu = nullptr) = 0;
+        virtual uint16_t read16(offs_t addr, CPUDevice *cpu = nullptr) = 0;
+        virtual uint16_t read16u(offs_t addr, CPUDevice *cpu = nullptr) = 0;
+        virtual uint32_t read32(offs_t addr, CPUDevice *cpu = nullptr) = 0;
+        virtual uint32_t read32u(offs_t addr, CPUDevice *cpu = nullptr) = 0;
+        virtual uint64_t read64(offs_t addr, CPUDevice *cpu = nullptr) = 0;
+        virtual uint64_t read64u(offs_t addr, CPUDevice *cpu = nullptr) = 0;
 
-        virtual void write8(offs_t addr, uint8_t data, ProcessorDevice *cpu = nullptr) = 0;
-        virtual void write16(offs_t addr, uint16_t data, ProcessorDevice *cpu = nullptr) = 0;
-        virtual void write16u(offs_t addr, uint16_t data, ProcessorDevice *cpu = nullptr) = 0;
-        virtual void write32(offs_t addr, uint32_t data, ProcessorDevice *cpu = nullptr) = 0;
-        virtual void write32u(offs_t addr, uint32_t data, ProcessorDevice *cpu = nullptr) = 0;
-        virtual void write64(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
-        virtual void write64u(offs_t addr, uint64_t data, ProcessorDevice *cpu = nullptr) = 0;
+        virtual void write8(offs_t addr, uint8_t data, CPUDevice *cpu = nullptr) = 0;
+        virtual void write16(offs_t addr, uint16_t data, CPUDevice *cpu = nullptr) = 0;
+        virtual void write16u(offs_t addr, uint16_t data, CPUDevice *cpu = nullptr) = 0;
+        virtual void write32(offs_t addr, uint32_t data, CPUDevice *cpu = nullptr) = 0;
+        virtual void write32u(offs_t addr, uint32_t data, CPUDevice *cpu = nullptr) = 0;
+        virtual void write64(offs_t addr, uint64_t data, CPUDevice *cpu = nullptr) = 0;
+        virtual void write64u(offs_t addr, uint64_t data, CPUDevice *cpu = nullptr) = 0;
 
     protected:
         AddressType     space;
@@ -239,4 +225,4 @@ namespace map
         HandlerEntry *nopRead = nullptr;
         HandlerEntry *nopWrite = nullptr;
     };
-}
+};

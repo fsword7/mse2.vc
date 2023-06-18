@@ -1,7 +1,7 @@
-// fwloader.h - firmware loader package
+// fwloader.h - Firmware Loader package
 //
 // Author:  Tim Stark
-// Date:    1/2/22
+// Date:    Jun 17, 2023
 
 #pragma once
 
@@ -26,7 +26,7 @@ protected:
     int readImageData(uint8_t *buffer, int length, cfwEntry_t *entry);
     bool loadImageData(cfwEntry_t *parent, cfwEntry_t *entry);
 
-    void processImageEntries(ctag_t *pkgName, cfwEntry_t *&entry, const Device &dev);
+    void processImageEntries(cchar_t *pkgName, cfwEntry_t *&entry, const Device &dev);
     void processRegionList();
 
     Machine &sysMachine;

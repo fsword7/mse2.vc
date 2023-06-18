@@ -1,7 +1,7 @@
-// fwloader.h - firmware loader package
+// fwloader.cpp - Firmware Loader package
 //
 // Author:  Tim Stark
-// Date:    1/2/22
+// Date:    Jun 17, 2023
 
 #include "emu/core.h"
 #include "emu/map/map.h"
@@ -82,18 +82,18 @@ bool FirmwareLoader::loadImageData(cfwEntry_t *parent, cfwEntry_t *entry)
     uint8_t *base = region->getBase() + offset;
     int actual;
 
-    fmt::printf("%s: Reading image data: off=%X len=%X\n", FW_GETNAME(entry), offset, length);
+    std::cout << fmt::format("{}: Reading image data: off={:X} len={:X}\n", FW_GETNAME(entry), offset, length);
     actual = readImageData(base, length, entry);
     if (actual != length)
     {
-        fmt::printf("%s: Got %d (%X) bytes - expected %d (%X) bytes\n",
+        std::cout << fmt::format("{}: Got {} ({:X}) bytes - expected {} ({:X}) bytes\n",
             FW_GETNAME(entry), actual, actual, length, length);
         return false;
     }
     return true;
 }
 
-void FirmwareLoader::processImageEntries(ctag_t *pkgName, cfwEntry_t *&entry, const Device &dev)
+void FirmwareLoader::processImageEntries(cchar_t *pkgName, cfwEntry_t *&entry, const Device &dev)
 {
     cfwEntry_t *parent = entry++;
 
@@ -104,7 +104,7 @@ void FirmwareLoader::processImageEntries(ctag_t *pkgName, cfwEntry_t *&entry, co
             cfwEntry_t *base = entry;
             int imageLength = 0;
 
-            fmt::printf("%s: Loading image file '%s'...\n",
+            std::cout << fmt::format("{}: Loading image file '{}'...\n",
                 dev.getsDeviceName(), FW_GETNAME(entry));
             openImageFile(pkgName, entry);
 
@@ -122,8 +122,8 @@ void FirmwareLoader::processImageEntries(ctag_t *pkgName, cfwEntry_t *&entry, co
 
 void FirmwareLoader::processRegionList()
 {
-    ctag_t *pkgName;
-    ctag_t *rgnName;
+    cchar_t *pkgName;
+    cchar_t *rgnName;
     uint32_t rgnLength;
     cfwEntry_t *entry;
 
@@ -133,14 +133,14 @@ void FirmwareLoader::processRegionList()
     {
         pkgName = dev.getShortName();
 
-        fmt::printf("%s: Initializing firmware entries for %s...\n",
+        std::cout << fmt::format("{}: Initializing firmware entries for {}...\n",
             dev.getsDeviceName(), pkgName);
         for (entry = first(dev); entry != nullptr; entry = next(entry))
         {
             if (FWENTRY_ISCONTAINER(entry))
             {
                 pkgName = FW_GETNAME(entry);
-                fmt::printf("%s: Package '%s' container\n",
+                std::cout << fmt::format("{}: Package '{}' container\n",
                     dev.getsDeviceName(), pkgName);
                 continue;
             }
@@ -148,9 +148,9 @@ void FirmwareLoader::processRegionList()
             rgnName = FWREGION_GETNAME(*entry);
             rgnLength = FWREGION_GETLENGTH(*entry);
 
-            cstag_t fullName = dev.expandPathName(std::string(rgnName));
+            cstr_t fullName = dev.expandPathName(str_t(rgnName));
 
-            fmt::printf("%s: Processing firmware region '%s' length %d (%X) bytes\n",
+            std::cout << fmt::format("{}: Processing firmware region '{}' length {} ({:X}) bytes\n",
                 dev.getsDeviceName(), fullName, rgnLength, rgnLength);
 
             if (FWREGION_ISROMDATA(*entry))
@@ -168,6 +168,6 @@ void FirmwareLoader::processRegionList()
                 processImageEntries(pkgName, entry, dev);
             }
         }
-        fmt::printf("%s: End of firmware entries\n", dev.getsDeviceName());
+        std::cout << fmt::format("{}: End of firmware entries\n", dev.getsDeviceName());
     }
 }

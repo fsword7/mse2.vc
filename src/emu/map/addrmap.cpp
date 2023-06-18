@@ -1,7 +1,7 @@
-// addrmap.cpp - mapping address list package
+// addrmap.cpp - Address Mapping package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/7/2021
+// Author:  Tim Stark
+// Date:    May 24, 2023
 
 #include "emu/core.h"
 #include "emu/map/map.h"
@@ -13,8 +13,10 @@ using namespace map;
 AddressList::AddressList(Device &dev, AddressType space)
 : device(dev), addrSpace(space)
 {
+    // Initializa address list
     list.clear();
 
+    // Obtain memory interface from device
     diMemory *bus = nullptr;
     dev.hasInterface(bus);
     assert(bus != nullptr);
@@ -49,16 +51,15 @@ AddressList::~AddressList()
     list.clear();
 }
 
-AddressEntry &AddressList::operator () (offs_t start, offs_t end)
+AddressEntry &AddressList::operator() (offs_t start, offs_t end)
 {
-    // Creating entry with current owning device
     AddressEntry *entry = new AddressEntry(*owner, *this, start, end);
     list.push_back(entry);
 
     return *entry;
 }
 
-// ********
+// ******
 
 AddressEntry::AddressEntry(Device &dev, AddressList &map, offs_t start, offs_t end)
 : device(dev), map(map), addrStart(start), addrEnd(end),
@@ -74,16 +75,7 @@ AddressEntry::AddressEntry(Device &dev, AddressList &map, offs_t start, offs_t e
 
 }
 
-void AddressEntry::view(MemoryView &nview)
-{
-    read.type = mapView;
-    write.type = mapView;
-    mview = &nview;
-
-    mview->init(addrStart, addrEnd, map.getConfig());
-}
-
-AddressEntry &AddressEntry::region(ctag_t *name, offs_t off)
+AddressEntry &AddressEntry::region(cchar_t *name, offs_t off)
 {
     // Assign region space to that entry
     regionName = name;

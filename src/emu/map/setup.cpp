@@ -1,17 +1,19 @@
-// setup.cpp - Address space package - setup routines
+// setup.cpp - Address Space package - Setup routines
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/8/2021
+// Author:  Tim Stark
+// Date:    May 30, 2023
+
 
 #include "emu/core.h"
 #include "emu/map/map.h"
 #include "emu/map/memmgr.h"
+#include "emu/map/addrmap.h"
 #include "emu/dimem.h"
 #include "main/user.h"
 
 namespace map
 {
-    ctag_t *asInfo[] = { "program", "data", "io" };
+    cchar_t *asInfo[] = { "program", "data", "io" };
 
     AddressSpace::AddressSpace(MemoryManager &manager, diMemory &bus, AddressType space)
     : AddressSpaceInstaller(), space(space), config(*bus.getAddressConfig(space)),
@@ -20,36 +22,37 @@ namespace map
         addrMask = makeBitmask<offs_t>(config.getAddrWidth());
     }
 
+
     void AddressSpace::prepare(UserConsole *user)
     {
         assert(map == nullptr);
         map = new AddressList(device, space);
 
-        fmt::printf("%s: Preparing for %s address space\n",
+        std::cout << fmt::format("{}: Preparing for {} address space\n",
             device.getsDeviceName(), asInfo[space]);
 
         unmapValue = map->unmapValue;
         if (map->gaddrMask != 0ull)
         {
             if (map->gaddrMask & ~addrMask)
-                fmt::printf("%s.%s: Can't set a global mask of %0*llX on a %d-bit address width (mask %0*llX)\n",
-                    device.getsDeviceName(), asInfo[space], config.getAddrPrecision(), map->gaddrMask,
-                    config.getAddrPrecision(), addrMask);
+                std::cout << fmt::format("{}.{}: Can't set a global mask of {:0{}X} on a {}-bit address width (mask {:0{}X})\n",
+                    device.getsDeviceName(), asInfo[space], map->gaddrMask, config.getAddrPrecision(),
+                    config.getAddrWidth(), addrMask, config.getAddrPrecision());
             addrMask = map->gaddrMask;
         }
 
         for (AddressEntry *entry : map->list)
         {
-            fmt::printf("%s.%s: Mapping %0*llX-%0*llX mask %0*llX mirror %0*llX\n",
+            std::cout << fmt::format("{}.{}: Mapping {:0{}X}-{:0{}X} mask {:0{}X} mirror {:0{}X}\n",
                 entry->device.getsDeviceName(), asInfo[space],
-                config.getAddrPrecision(), entry->addrStart,
-                config.getAddrPrecision(), entry->addrEnd,
-                config.getAddrPrecision(), entry->addrMask,
-                config.getAddrPrecision(), entry->addrMirror);
+                entry->addrStart, config.getAddrPrecision(),
+                entry->addrEnd, config.getAddrPrecision(),
+                entry->addrMask, config.getAddrPrecision(),
+                entry->addrMirror, config.getAddrPrecision());
 
             if (entry->shareName != nullptr)
             {
-                cstag_t fullName = entry->device.expandPathName(entry->shareName);
+                cstr_t fullName = entry->device.expandPathName(entry->shareName);
                 MemoryShare *share = manager.findShare(fullName);
 
                 if (share == nullptr)
@@ -57,9 +60,9 @@ namespace map
                     // Allocate new shared memory space
                     size_t bytes = config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart);
 
-                    fmt::printf("%s.%s: creating share '%s' of length %0*llX (%d) bytes\n",
+                    std::cout << fmt::format("{}.{}: creating share '{}' of length {:0{}X} ({}) bytes\n",
                         entry->device.getsDeviceName(), asInfo[space],
-                        fullName, config.getAddrPrecision(), bytes, bytes);
+                        fullName, bytes, config.getAddrPrecision(), bytes);
 
                     share = manager.allocateShare(entry->device, space, fullName,
                         bytes, config.getDataWidth(), config.getEndianType());
@@ -74,7 +77,7 @@ namespace map
                         entry->memData = (uint8_t *)share->getData();
                     else
                     {
-                        fmt::printf("%s.%s: %s\n", entry->device.getsDeviceName(),
+                        std::cout << fmt::format("{}.{}: {}\n", entry->device.getsDeviceName(),
                             asInfo[space], share->getErrorMessage());
                         // Allocating anonymous memory space safely as default below...
                     }
@@ -96,43 +99,43 @@ namespace map
                 }
                 else if (region == nullptr)
                 {
-                    fmt::printf("%s.%s: %0*llX-%0*llX - not attached with required region '%s' space\n",
+                    std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - not attached with required region '{}' space\n",
                         entry->device.getsDeviceName(), asInfo[space],
-                        config.getAddrPrecision(), entry->addrStart,
-                        config.getAddrPrecision(), entry->addrEnd,
+                        entry->addrStart, config.getAddrPrecision(),
+                        entry->addrEnd, config.getAddrPrecision(),
                         device.getsPathName());
                 }
                 else
                 {
-                    fmt::printf("%s.%s: %0*llX-%0*llX - region '%s' out of range\n",
+                    std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - region '{}' out of range\n",
                         entry->device.getsDeviceName(), asInfo[space],
-                        config.getAddrPrecision(), entry->addrStart,
-                        config.getAddrPrecision(), entry->addrEnd,
+                        entry->addrStart, config.getAddrPrecision(),
+                        entry->addrEnd, config.getAddrPrecision(),
                         device.getsPathName());
                 }
             }
 
             if (entry->regionName != nullptr)
             {
-                cstag_t fullName = entry->device.expandPathName(entry->regionName);
+                cstr_t fullName = entry->device.expandPathName(entry->regionName);
                 MemoryRegion *region = manager.findRegion(fullName);
 
                 if (region != nullptr)
                 {
-                    fmt::printf("%s.%s: %0*llX-%0*llX - attached region '%s' space\n",
+                    std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - attached region '{}' space\n",
                         entry->device.getsDeviceName(), asInfo[space],
-                        config.getAddrPrecision(), entry->addrStart,
-                        config.getAddrPrecision(), entry->addrEnd,
+                        entry->addrStart, config.getAddrPrecision(),
+                        entry->addrEnd, config.getAddrPrecision(),
                         fullName);
 
                     // Determine ending address for expandable memory space
                     if (region->getSize() < (entry->addrEnd - entry->addrStart + 1))
                     {
-                        fmt::printf("%s.%s: %0*llX-%0*llX - expandable range up to %0*llX\n",
+                        std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - expandable range up to {:0{}X}\n",
                             entry->device.getsDeviceName(), asInfo[space],
-                            config.getAddrPrecision(), entry->addrStart,
-                            config.getAddrPrecision(), (entry->addrStart + region->getSize()) - 1,
-                            config.getAddrPrecision(), entry->addrEnd);
+                            entry->addrStart, config.getAddrPrecision(),
+                            (entry->addrStart + region->getSize()) - 1, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision());
 
                         // Adjust new ending address for desired memory length
                         entry->addrEnd = entry->addrStart + region->getSize() - 1;
@@ -143,27 +146,65 @@ namespace map
                 }
                 else
                 {
-                    fmt::printf("%s.%s: %0*llX-%0*llX - non-existant region '%s'\n",
+                    std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - non-existent, now allocating region '{}'\n",
                         entry->device.getsDeviceName(), asInfo[space],
-                        config.getAddrPrecision(), entry->addrStart,
-                        config.getAddrPrecision(), entry->addrEnd,
+                        entry->addrStart, config.getAddrPrecision(),
+                        entry->addrEnd, config.getAddrPrecision(),
                         fullName);
 
-                    // Allocating anonymous memory space safely as default below...
+                    // Allocating memory space safely as default below...
                 }
             }
 
             if (entry->memData == nullptr && (entry->read.type == mapROMSpace ||
                 entry->read.type == mapRAMSpace || entry->write.type == mapRAMSpace))
             {
-                fmt::printf("%s.%s: %0*llX-%0*llX - allocating anonymous memory space\n",
-                    entry->device.getsDeviceName(), asInfo[space],
-                    config.getAddrPrecision(), entry->addrStart,
-                    config.getAddrPrecision(), entry->addrEnd);
+                if (entry->expFlag == true)
+                {
+                    if (entry->addrSize >= (entry->addrEnd - entry->addrStart + 1))
+                    {
+                        std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - {:0{}X} too big - reduced to {:0{}X}\n",
+                            entry->device.getsDeviceName(), asInfo[space],
+                            entry->addrStart, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision(),
+                            entry->addrSize - 1, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision());
+                
+                        entry->addrSize = (entry->addrEnd - entry->addrStart + 1);
+                    }
 
-                entry->memData = manager.allocateMemory(entry->device, space, "(anonymous)",
-                    config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
-                    config.getDataWidth(), config.getEndianType());
+                    if (entry->addrSize < (entry->addrEnd - entry->addrStart + 1))
+                    {
+                        std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - expandable range up to {:0{}X}\n",
+                            entry->device.getsDeviceName(), asInfo[space],
+                            entry->addrStart, config.getAddrPrecision(),
+                            (entry->addrStart + entry->addrSize) - 1, config.getAddrPrecision(),
+                            entry->addrEnd, config.getAddrPrecision());
+
+                        // Adjust new ending address for desired memory length
+                        entry->addrEnd = entry->addrStart + entry->addrSize - 1;
+                    }
+                }
+
+                cstr_t fullName = entry->device.expandPathName(entry->regionName);
+
+                std::cout << fmt::format("{}.{}: {:0{}X}-{:0{}X} - allocating {} memory space\n",
+                    entry->device.getsDeviceName(), asInfo[space],
+                    entry->addrStart, config.getAddrPrecision(),
+                    entry->addrEnd, config.getAddrPrecision(),
+                    entry->regionName ? fullName : "anonymous");
+
+                if (entry->regionName != nullptr)
+                {
+                    MemoryRegion *region = manager.allocateRegion(entry->device, space, entry->regionName,
+                        config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
+                        config.getDataWidth(), config.getEndianType());
+                    entry->memData = region->getData();
+                }
+                else
+                    entry->memData = manager.allocateMemory(entry->device, space, "(anonymous)",
+                        config.convertAddressToByte(entry->addrEnd+1 - entry->addrStart),
+                        config.getDataWidth(), config.getEndianType());
             }
         }
     }
@@ -191,14 +232,14 @@ namespace map
                 setMemorySpace(entry->addrStart, entry->addrEnd, entry->addrMirror, entry->memData, acc);
                 break;
             
-            case mapBank:
-                setMemoryBank(entry->addrStart, entry->addrEnd, entry->addrMirror, bank, 0, acc);
-                break;
+            // case mapBank:
+            //     setMemoryBank(entry->addrStart, entry->addrEnd, entry->addrMirror, bank, 0, acc);
+            //     break;
 
-            case mapView:
-                if (acc == accRead)
-                    setMemoryView(entry->addrStart, entry->addrEnd, entry->addrMirror, entry->mview);
-                break;
+            // case mapView:
+            //     if (acc == accRead)
+            //         setMemoryView(entry->addrStart, entry->addrEnd, entry->addrMirror, entry->mview);
+            //     break;
 
             case mapDelegate:
                 if (acc == accRead)
@@ -348,7 +389,7 @@ namespace map
 
     void AddressSpace::populate(UserConsole *user)
     {
-        fmt::printf("%s: Populating for %s address space\n",
+        std::cout << fmt::format("{}: Populating for {} address space\n",
             device.getsDeviceName(), asInfo[space]);
 
         assert(map != nullptr);

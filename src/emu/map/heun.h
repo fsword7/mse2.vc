@@ -1,7 +1,7 @@
 // heun.h - Handler Entry - Unmapped/NOP (No Operation)
 //
 // Author:  Tim Stark
-// Date:    12/13/2021
+// Date:    6/5/2023
 
 #pragma once
 
@@ -20,9 +20,9 @@ namespace map
 
         ~HandlerReadUnmapped() = default;
 
-        cstag_t getName() const { return "unmapped"; }
+        cstr_t getName() const { return "unmapped"; }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        uintx_t read(offs_t offset, uintx_t mask, CPUDevice *cpu) const override
         {
             return base::space->getUnmapped();
         }
@@ -41,9 +41,9 @@ namespace map
 
         ~HandlerWriteUnmapped() = default;
 
-        cstag_t getName() const { return "unmapped"; }
+        cstr_t getName() const { return "unmapped"; }
 
-        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, CPUDevice *cpu) const override
         {
         }
     };
@@ -63,9 +63,9 @@ namespace map
 
         ~HandlerReadNop() = default;
 
-        cstag_t getName() const { return "nop"; }
+        cstr_t getName() const { return "nop"; }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        uintx_t read(offs_t offset, uintx_t mask, CPUDevice *cpu) const override
         {
             return base::space->getUnmapped();
         }
@@ -84,9 +84,9 @@ namespace map
 
         ~HandlerWriteNop() = default;
 
-        cstag_t getName() const { return "nop"; }
+        cstr_t getName() const { return "nop"; }
 
-        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, CPUDevice *cpu) const override
         {
         }
     };

@@ -1,7 +1,7 @@
-// hem.h - Handler Entry - Memory access
-// 
+// hem.h - Header Entry (Memory Access) package
+//
 // Author:  Tim Stark
-// Date:    12/14/2021
+// Date:    Jun 10, 2023
 
 #pragma once
 
@@ -11,7 +11,7 @@ namespace map
     class HandlerReadMemory : public HandlerReadAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerReadMemory(AddressSpace *space, void *base)
         : HandlerReadAddress<dWidth, aShift>(space, 0),
@@ -22,9 +22,9 @@ namespace map
 
         ~HandlerReadMemory() = default;
 
-        cstag_t getName() const { return fmt::sprintf("memory @%llX", this->baseAddress); }
+        cstr_t getName() const { return fmt::format("memory @{:X}", this->baseAddress); }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        uintx_t read(offs_t offset, uintx_t mask, CPUDevice *cpu) const override
         {
             return base[((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift)];
         }
@@ -42,7 +42,7 @@ namespace map
     class HandlerWriteMemory : public HandlerWriteAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerWriteMemory(AddressSpace *space, void *base)
         : HandlerWriteAddress<dWidth, aShift>(space, 0),
@@ -53,9 +53,9 @@ namespace map
 
         ~HandlerWriteMemory() = default;
 
-        cstag_t getName() const { return fmt::sprintf("memory @%llX", this->baseAddress); }
+        cstr_t getName() const { return fmt::format("memory @{:X}", this->baseAddress); }
 
-        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, CPUDevice *cpu) const override
         {
             offs_t off = ((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift);
             base[off] = (base[off] & ~mask) | (data & mask);
@@ -82,9 +82,9 @@ namespace map
 
         ~HandlerReadMemoryBank() = default;
 
-        cstag_t getName() const { return bank.getName(); }
+        cstr_t getName() const { return bank.getName(); }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        uintx_t read(offs_t offset, uintx_t mask, CPUDevice *cpu) const override
         {
             return bank.getBase()[((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift)];
         }
@@ -110,9 +110,9 @@ namespace map
 
         ~HandlerWriteMemoryBank() = default;
 
-        cstag_t getName() const { return bank.getName(); }
+        cstr_t getName() const { return bank.getName(); }
 
-        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, CPUDevice *cpu) const override
         {
             offs_t off = ((offset - this->baseAddress) & this->maskAddress) >> std::max(0, dWidth - aShift);
             bank.getBase()[off] = (bank.getBase()[off] & ~mask) | (data & mask);

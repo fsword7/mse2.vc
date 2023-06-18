@@ -1,12 +1,9 @@
-// dimem.h - Memory Device Interface package
+// dimem.h - Device Interface - Memory Interface package
 //
 // Author:  Tim Stark
-// Date:    Dec 10, 2021
+// Date:    May 24, 2023
 
 #pragma once
-
-#include "emu/map/map.h"
-#include "emu/map/addrmap.h"
 
 class diMemory : public DeviceInterface
 {
@@ -44,7 +41,37 @@ public:
 
     virtual map::AddressConfigList getAddressConfigList() const = 0;
 
-    inline int getAddressConfigCount() const { return mapAddressConfigList.size(); }
+    void diCompleteConfig();
+
+    // Address mapping routines
+
+    map::Constructor getAddressMap(map::AddressType space)
+    {
+        if (space >= 0 && space < mapAddressList.size())
+            return mapAddressList[space];
+        return map::Constructor();
+    }
+
+    template <typename T, typename Return, typename... Args>
+    void setAddressMap(map::AddressType space, Return (T::*func)(Args... args))
+    {
+        Device &cdev = *getOwningDevice().getConfig().getConfigDevice();
+
+        if constexpr(isRelatedClass<Device, T>::value)
+        {
+            std::cout << fmt::format("{}: ({} - related device) set address list map\n",
+                cdev.getsDeviceName(), typeid(T).name());
+            setAddressMap(space, map::Constructor(func, cdev.getcDeviceName(), &mse_static_cast<T &>(cdev)));
+        }
+        else
+        {
+            std::cout << fmt::format("{}: ({} - unrelated device) set address list map\n",
+                cdev.getsDeviceName(), typeid(T).name());         
+            setAddressMap(space, map::Constructor(func, cdev.getcDeviceName(), &dynamic_cast<T &>(cdev)));
+        }    
+    }
+
+    void setAddressMap(map::AddressType space, map::Constructor map);
     
     inline map::cAddressConfig *getAddressConfig(map::AddressType space = map::asProgram)
     {
@@ -60,43 +87,6 @@ public:
         return nullptr;
     }
 
-    // template <typename T, typename U, typename Return, typename... Args>
-    // std::enable_if_t<isUnrelatedDevice<Device, T>::value>
-    // setAddressMap(map::AddressType space, T &obj, Return (U::*func)(Args...))
-    // {
-    //     setAddressMap(space, map::Constructor(func, obj.getDeviceName(), &dynamic_cast<U &>(obj)));
-    // }
-
-    template <typename T, typename Return, typename... Args>
-    void setAddressMap(map::AddressType space, Return (T::*func)(Args... args))
-    {
-        Device &cdev = *getOwningDevice().getConfig().getConfigDevice();
-
-        if constexpr(isRelatedClass<Device, T>::value)
-        {
-            fmt::printf("%s: (%s - related device) set address list map\n",
-                cdev.getsDeviceName(), typeid(T).name());
-            setAddressMap(space, map::Constructor(func, cdev.getcDeviceName(), &mse_static_cast<T &>(cdev)));
-        }
-        else
-        {
-            fmt::printf("%s: (%s - unrelated device) set address list map\n",
-                cdev.getsDeviceName(), typeid(T).name());         
-            setAddressMap(space, map::Constructor(func, cdev.getcDeviceName(), &dynamic_cast<T &>(cdev)));
-        }    
-    }
-
-    void setAddressMap(map::AddressType space, map::Constructor map);
-
-    map::Constructor getAddressMap(map::AddressType space)
-    {
-        if (space >= 0 && space < mapAddressList.size())
-            return mapAddressList[space];
-        return map::Constructor();
-    }
-
-    void diCompleteConfig() override;
-
     // Address space setup routines
     template <typename Space>
     void allocate(map::MemoryManager &manager, map::AddressType space)
@@ -109,7 +99,7 @@ public:
 
         mapAddressSpaceList[space] = new Space(manager, *this, space, mapAddressConfigList[space]->getAddrWidth());
     }
-
+    
     void prepare(UserConsole *user)
     {
         for (auto &space : mapAddressSpaceList)
@@ -123,7 +113,7 @@ public:
             if (space != nullptr)
                 space->populate(user);
     }
-    
+
 private:
     Device &owner;
 

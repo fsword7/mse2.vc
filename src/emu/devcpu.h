@@ -1,24 +1,18 @@
-// devcpu.h - CPU processor device
+// devcpu.h - CPU Device Package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    12/7/2021
+// Date:    May 8, 2023
+// Author:  Tim Stark
 
 #pragma once
 
-#include "emu/diexec.h"
 #include "emu/dimem.h"
+#include "emu/diexec.h"
 #include "emu/didebug.h"
-
-class ProcessorDevice
-: public Device,
-  public diMemory,
-  public diExecute,
-  public diDebug
+class CPUDevice : public Device,
+    public diMemory, public diExecute, public diDebug
 {
 public:
-    ProcessorDevice(const SystemConfig &config, const DeviceType &type,
-        cstag_t &devName, Device *owner, uint64_t clock);
+    CPUDevice(SystemConfig &config, cDeviceType &type,
+        cstr_t &devName, Device *owner, uint64_t clock);
 
 };
-
-using cpuDevice = ProcessorDevice;

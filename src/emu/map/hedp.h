@@ -1,7 +1,7 @@
-// hedp.h - Handler Entry - Delegate I/O access
-// 
+// hedp.h - Header Entry (Delegate) package
+//
 // Author:  Tim Stark
-// Date:    12/16/2021
+// Date:    Jun 11, 2023
 
 #pragma once
 
@@ -11,7 +11,7 @@ namespace map
     class HandlerReadDelegate : public HandlerReadAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerReadDelegate(AddressSpace *space, uint32_t flags, const Read &delegate)
         : HandlerReadAddress<dWidth, aShift>(space, flags), delegate(delegate)
@@ -20,9 +20,9 @@ namespace map
 
         ~HandlerReadDelegate() = default;
 
-        cstag_t getName() const { return delegate.getName(); }
+        cstr_t getsName() const { return delegate.getName(); }
 
-        uintx_t read(offs_t offset, uintx_t mask, ProcessorDevice *cpu) const override
+        uintx_t read(offs_t offset, uintx_t mask, CPUDevice *cpu) const override
         {
             return readi<Read>(offset, mask);
         }
@@ -68,7 +68,7 @@ namespace map
     class HandlerWriteDelegate : public HandlerWriteAddress<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
  
         HandlerWriteDelegate(AddressSpace *space, uint32_t flags, const Write &delegate)
         : HandlerWriteAddress<dWidth, aShift>(space, flags), delegate(delegate)
@@ -77,9 +77,9 @@ namespace map
 
         ~HandlerWriteDelegate() = default;
 
-        cstag_t getName() const { return delegate.getName(); }
+        cstr_t getsName() const { return delegate.getName(); }
 
-        void write(offs_t offset, uintx_t data, uintx_t mask, ProcessorDevice *cpu) const override
+        void write(offs_t offset, uintx_t data, uintx_t mask, CPUDevice *cpu) const override
         {
             writei<Write>(offset, data, mask);
         }

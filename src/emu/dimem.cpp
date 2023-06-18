@@ -1,17 +1,17 @@
-// dimem.cpp - Memory Device Interface package
+// dimem.cpp - Device Interface - Memory Interface package
 //
 // Author:  Tim Stark
-// Date:    Dec 10, 2021
+// Date:    May 24, 2023
 
 #include "emu/core.h"
 #include "emu/map/map.h"
-#include "emu/map/addrmap.h"
 #include "emu/dimem.h"
 
 diMemory::diMemory(Device *owner)
 : DeviceInterface(owner, "memory"), owner(*owner)
-{ }
+{
 
+}
 
 void diMemory::diCompleteConfig()
 {

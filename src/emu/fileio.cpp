@@ -1,7 +1,7 @@
-// fileio.h - I/O file management
+// fileio.cpp - I/O File Management package
 //
 // Author:  Tim Stark
-// Date:    1/2/2022
+// Date:    Jun 17, 2023
 
 #include "emu/core.h"
 #include "emu/fileio.h"

@@ -1,7 +1,7 @@
-// hea.h - Handler Entry - Address Space
+// hea.h - Header Entry (Address Space) package
 //
 // Author:  Tim Stark
-// Date:    12/14/2021
+// Date:    Jun 10, 2023
 
 #pragma once
 
@@ -11,7 +11,7 @@ namespace map
     class HandlerReadAddress : public HandlerRead<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         HandlerReadAddress(AddressSpace *space, uint32_t flags)
         : HandlerRead<dWidth, aShift>(space, flags)
@@ -35,7 +35,7 @@ namespace map
     class HandlerWriteAddress : public HandlerWrite<dWidth, aShift>
     {
     public:
-        using uintx_t = typename HandlerSize<dWidth>::uintx_t;
+        using uintx_t = HandlerSize_t<dWidth>;
 
         HandlerWriteAddress(AddressSpace *space, uint32_t flags)
         : HandlerWrite<dWidth, aShift>(space, flags)

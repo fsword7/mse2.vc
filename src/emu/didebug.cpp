@@ -1,11 +1,13 @@
-// didebug.h - Debugging/Disassembler Device Interface package
+// didebug.cpp - Device Interface - Debug Interface package
 //
 // Author:  Tim Stark
-// Date:    Jan 7, 2022
+// Date:    May 24, 2023
 
 #include "emu/core.h"
 #include "emu/didebug.h"
 
 diDebug::diDebug(Device *owner)
 : DeviceInterface(owner, "debug")
-{ }
+{
+
+}

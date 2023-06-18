@@ -1,25 +1,23 @@
 // sysconfig.h - system configuration package
 //
-// Author:  Tim Stark (fsword007@gmail.com)
-// Date:    Dec 6, 2021
+// Date:    May 2, 2023
+// Author:  Tim Stark
 
-class Device;
-class DeviceType;
-
+#pragma once
 class SystemConfig
 {
 public:
-    SystemConfig(const SystemDriver &driver, cstag_t &name);
+    SystemConfig(cSystemDriver &driver, cstr_t &name, Machine &machine);
 
-    Device *createSystemDevice(const DeviceType &type, cstag_t &name, uint64_t clock = 0);
+    Device *createSystemDevice(const DeviceType &type, cstr_t &name, uint64_t clock = 0);
     Device *addDevice(Device *dev, Device *owner = nullptr);
 
     template <typename Creator, typename... Args>
-    auto *addDeviceType(cstag_t &devName, Creator &&type, Args &&... args)
+    auto *addDeviceType(cstr_t &devName, Creator &&type, Args &&... args)
     {
         Device *owner = sysDevice;
 
-        fmt::printf("%s: Creating %s device...\n", devName, type.getShortName());
+        std::cout << fmt::format("{}: Creating {} device...\n", devName, type.getShortName());
         auto dev = type.create(*this, devName, owner, std::forward<Args>(args)...);
         return addDevice(dev, owner);
     }
@@ -28,13 +26,15 @@ public:
     inline Device *getSystemDevice() const  { return sysDevice; }
     inline Device *getCurrentDevice() const { return curDevice; }
     inline Device *getConfigDevice() const  { return !cfgDevice.empty() ? cfgDevice.top() : nullptr; }
-    
+    inline Machine &getMachine() const      { return ownMachine; }
+
     inline const SystemDriver &getSystemDriver() const { return driver; }
 
-    void setPerfectQuantum(Device &device, cstag_t &devName);
+    void setPerfectQuantum(Device &device, cstr_t &devName);
 
 private:
     const SystemDriver &driver;
+    Machine &ownMachine;
 
     Device *sysDevice = nullptr;
     Device *curDevice = nullptr;
@@ -42,3 +42,5 @@ private:
 
     std::pair<Device *, std::string> perfectQuantumDevice;
 };
+
+using cSystemConfig = const SystemConfig;

@@ -1,46 +1,46 @@
-// memlib.h - memory library package
+// memlib.h - Memory Library package
 //
 // Author:  Tim Stark
-// Date:    12/12/2021
-
-#pragma once
+// Date:    May 11, 2023
 
 namespace map
 {
     class MemoryBlock
     {
     public:
-        MemoryBlock(cstag_t &name, size_t bytes, int width, endian_t type)
+        MemoryBlock(cstr_t &name, size_t bytes, int width, endian_t type)
         : name(name), size(bytes), width(width), eType(type)
         {
             assert(width == 8 || width == 16 || width == 32 || width == 64);
-            
-            // Now allocating memory space
             data.resize(bytes);
         }
 
         inline uint8_t *getData() const { return data.data(); }
+        inline size_t getSize() const   { return data.size(); }
+        inline size_t getBytes() const  { return data.size(); }
 
     private:
         mutable std::vector<uint8_t> data;
 
-        cstag_t     name;
-        size_t      size;
-        int         width;
-        endian_t    eType;
+        cstr_t   &name;
+        size_t    size;
+        int       width;
+        endian_t  eType;
     };
 
     class MemoryRegion
     {
     public:
-        MemoryRegion(Machine *sys, cstag_t &name, size_t bytes, int width, endian_t type)
-        : system(sys), name(name), width(width), eType(type)
+        MemoryRegion(Machine *sys, cstr_t &name, size_t bytes, int width, endian_t type)
+        : sysMachine(sys), name(name), size(bytes), width(width), eType(type)
         {
             assert(width == 8 || width == 16 || width == 32 || width == 64);
-
             data.resize(bytes);
         }
 
+        inline cstr_t &getsName() const  { return name; }
+        inline cchar_t *getcName() const { return name.c_str(); }
+        
         inline uint8_t *getData() const { return data.data(); }
         inline size_t getSize() const   { return data.size(); }
         inline size_t getBytes() const  { return data.size(); }
@@ -51,48 +51,49 @@ namespace map
     private:
         mutable std::vector<uint8_t> data;
 
-        Machine     *system = nullptr;
-        size_t      size;
-        cstag_t     name;
-        int         width;
-        endian_t    eType;
+        Machine  *sysMachine = nullptr;
+        cstr_t   &name;
+        size_t    size;
+        int       width;
+        endian_t  eType;
     };
+
 
     class MemoryShare
     {
     public:
-        MemoryShare(void *data, cstag_t &name, size_t bytes, uint8_t width, endian_t type)
+        MemoryShare(void *data, cstr_t &name, size_t bytes, uint8_t width, endian_t type)
         : data(data), size(bytes), name(name), eType(type), bitWidth(width),
           byteWidth(width <= 8 ? 1 : width <= 16 ? 2 : width <= 32 ? 4 : 8)
         {
         }
 
-        inline cstag_t  getName() const         { return name; }
+        inline cstr_t   getName() const         { return name; }
         inline uint8_t *getData() const         { return reinterpret_cast<uint8_t *>(data); }
         inline size_t   getBytes() const        { return size; }
         inline int      getBitWidth() const     { return bitWidth; }
         inline int      getByteWidth() const    { return byteWidth; }
-        inline cstag_t &getErrorMessage() const { return errMessage; }
+        inline cstr_t  &getErrorMessage() const { return errMessage; }
 
         bool compare(size_t bytes, int precision, int width, endian_t type)
         {
             if (width != bitWidth)
             {
-                errMessage = fmt::sprintf("share '%s' found with unexpected width (expected %d, found %d)",
+                errMessage = fmt::format("share '{}' found with unexpected width (expected {}, found {})",
                     name, width, bitWidth);
                 return false;
             }
 
             if (bytes != size)
             {
-                errMessage = fmt::sprintf("share '%s' found with unexpected size (expected %0*llX, found %0*llX)",
+                errMessage = fmt::format("share '{}' found with unexpected size (expected {:0{}X}, found {:0{}X})",
                     name, precision, bytes, precision, size);
                 return false;
             }
 
             if (type != eType)
             {
-                errMessage = fmt::sprintf("share '%s' found with unexpected endian type (expected %s, found %s)",
+                errMessage = fmt::format("share '{}' found with unexpected endian type (expected {}, found {})",
                     name, type  == LittleEndian ? "little" : "big",
                     eType == LittleEndian ? "little" : "big");
                 return false;
@@ -102,29 +103,28 @@ namespace map
         }
 
     private:
-        void        *data;
+        void       *data;
         size_t      size;
-        cstag_t     name;
+        cstr_t      name;
         endian_t    eType;
         int         bitWidth;
         int         byteWidth;
 
-        std::string errMessage;
+        str_t       errMessage;
     };
-
     class MemoryBank
     {
     public:
-        MemoryBank(cstag_t tagName)
+        MemoryBank(cstr_t tagName)
         {
-            name = fmt::sprintf("Bank '%s'", tagName);
+            name = fmt::format("Bank '{}'", tagName);
 
             entries.clear();
         }
         ~MemoryBank() = default;
 
         inline uint8_t *getBase() const { return entries[idxEntry]; }
-        inline cstag_t getName() const  { return name; }
+        inline cstr_t getName() const   { return name; }
 
         void configureEntries(int startEntry, int nEntries, void *base, offs_t stride)
         {
@@ -157,11 +157,12 @@ namespace map
     private:
         std::vector<uint8_t *> entries;
         int idxEntry = 0;
-        std::string name;
+        str_t name;
     };
 
+
     using BlockList  = std::vector<MemoryBlock *>;
-    using RegionList = std::map<std::string, MemoryRegion *>;
-    using ShareList  = std::map<std::string, MemoryShare *>;
-    using BankList   = std::map<std::string, MemoryBank *>;
+    using RegionList = std::map<str_t, MemoryRegion *>;
+    using ShareList  = std::map<str_t, MemoryShare *>;
+    using BankList   = std::map<str_t, MemoryBank *>;
 }

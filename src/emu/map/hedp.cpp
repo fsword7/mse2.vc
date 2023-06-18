@@ -1,7 +1,7 @@
-// hedp.h - Handler Entry - Delegate I/O access
-// 
+// hedp.cpp - Header Entry (Delegate) package
+//
 // Author:  Tim Stark
-// Date:    12/16/2021
+// Date:    Jun 11, 2023
 
 #include "emu/core.h"
 #include "emu/map/he.h"
