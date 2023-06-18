@@ -4,6 +4,7 @@ set(MSE_CPP_SRCS
     dev/cpu/alpha/ev4cpu.cpp
     dev/cpu/alpha/ev5cpu.cpp
     dev/cpu/alpha/ev6cpu.cpp
+    dev/cpu/m68k/m68kcpu.cpp
     emu/map/addrmap.cpp
     emu/map/hedp.cpp
     emu/map/heun.cpp
@@ -38,6 +39,7 @@ set(MSE_H_SRCS
     dev/cpu/alpha/ev5cpu.h
     dev/cpu/alpha/ev5ipr.h
     dev/cpu/alpha/ev6cpu.h
+    dev/cpu/m68k/m68kcpu.h
     emu/map/addrmap.h
     emu/map/fw.h
     emu/map/he.h
