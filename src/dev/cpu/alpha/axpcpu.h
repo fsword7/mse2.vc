@@ -272,7 +272,9 @@ protected:
 
     map::AddressConfig mapProgramConfig;
 
-    map::MemoryAccess<64, 3, 0, LittleEndian>::specific mapProgram;
+    map::MemoryAccess<34, 3, 0, LittleEndian>::specific mapProgram4;
+    map::MemoryAccess<40, 3, 0, LittleEndian>::specific mapProgram5;
+    map::MemoryAccess<44, 3, 0, LittleEndian>::specific mapProgram6;
 
     // void translate();
 
