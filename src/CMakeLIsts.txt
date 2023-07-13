@@ -21,7 +21,9 @@ set(MSE_CPP_SRCS
     emu/fwloader.cpp
     emu/machine.cpp
     emu/objfinder.cpp
+    emu/scheduler.cpp
     emu/sysconfig.cpp
+    lib/util/time.cpp
     main/commands.cpp
     main/engine.cpp
     main/main.cpp
@@ -68,8 +70,11 @@ set(MSE_H_SRCS
     emu/fwloader.h
     emu/machine.h
     emu/objfinder.h
+    emu/scheduler.h
     emu/sysconfig.h
     lib/util/list.h
+    lib/util/time.h
+    lib/util/xtal.h
     main/engine.h
     main/user.h
 )
